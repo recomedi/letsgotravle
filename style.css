@@ -63,6 +63,7 @@ a {
     left: -120px;
     transform: scale(0.9); /* 축소 */
     width: 120%;
+    z-index: 10;
 }
 
 
@@ -410,6 +411,11 @@ a {
     font-weight: bold;
     white-space: nowrap;
 }
+
+
+
+
+
 
 /* 풋터 스타일 */
 .footer {
