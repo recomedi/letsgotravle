@@ -170,3 +170,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+
+
+  // 매인헤더 및 풋터 로드 후 이벤트 리스너 추가
+document.addEventListener("DOMContentLoaded", () => {
+    loadComponent("mainHeader", "mainHeader.html", () => {
+        // 헤더 로드 완료 후 메뉴 버튼 이벤트 리스너 추가
+        const menuButton = document.getElementById("menu-toggle");
+        const sideMenu = document.getElementById("side-menu");
+
+        if (menuButton && sideMenu) {
+            menuButton.addEventListener("click", () => {
+                sideMenu.classList.toggle("active");
+            });
+
+            // 외부 클릭 시 메뉴 닫기
+            document.addEventListener("click", (event) => {
+                if (!menuButton.contains(event.target) && !sideMenu.contains(event.target)) {
+                    sideMenu.classList.remove("active");
+                }
+            });
+        }
+    });
+
+    loadComponent("footer-placeholder", "footer.html");
+});
