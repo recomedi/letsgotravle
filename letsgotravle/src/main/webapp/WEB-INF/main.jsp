@@ -6,7 +6,7 @@
 <%@ include file="header.jsp" %>
 
 메인화면입니다.
-main push test2
+main push test3
 
 
 
