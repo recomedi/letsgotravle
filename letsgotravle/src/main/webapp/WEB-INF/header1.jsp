@@ -1,15 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
-   <script>
+    
+  <script>
 	// 메세지
 	const msg = "${requestScope.msg}";
 	if (msg != null && msg != "") {
 	 alert(msg);
 	}
 	</script>
-	
+
     <header class="header">
+        <section class="allheaders">
         <a href="${pageContext.request.contextPath}/">
             <img src="${pageContext.request.contextPath}/resources/images/logo.png" class="logo" alt="LOGOTRIP Logo">
         </a>
@@ -29,6 +30,6 @@
                 <span class="bar"></span>
                 <span class="bar"></span>
             </button>
-            
         </div>
+ </section>      
     </header>

@@ -38,6 +38,6 @@ public class HomeController {
 //		        con.setRequestProperty("Authorization", "Bearer " + token);
 
 		
-		return "WEB-INF/main";
+		return "WEB-INF/travel/scheduleDetails";
 	}
 }

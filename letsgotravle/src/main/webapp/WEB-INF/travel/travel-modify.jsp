@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="wrap">
-        <header class="hd"></header>
+        <%@ include file="/WEB-INF/header1.jsp" %>
         <div class="inner travle" id="travle-modify">
             
             <section class="contents pt-30">
@@ -199,5 +199,6 @@
     // });
 
     </script>
+    <%@ include file="/WEB-INF/footer.jsp" %>
 </body>
 </html>
