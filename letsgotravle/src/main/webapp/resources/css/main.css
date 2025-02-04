@@ -27,6 +27,7 @@ a {
     align-items: center;
     background-color: transparent; /* 배경 투명 */
     width: 100%; /* 화면 가로 전체 */
+    min-width: 1260px;
     padding: 20px 40px;
     height: 85px;
     box-sizing: border-box;
@@ -111,6 +112,7 @@ a {
     overflow: hidden;
     margin-top: -130px;
     min-width: 1260px;
+    
 }
 
 .parallax__header {
@@ -187,10 +189,9 @@ a {
  /* Content Section */
  .parallax__content {
     position: relative;
-    padding: 100px 0;
+    padding: 100px 30px;
     margin: 0 auto;
-    max-width: 1260px;
-    box-sizing: border-box;
+    max-width: 1200px;
     text-align: center;
     background-color: #fff; /* Contrast background */
     color: #ddd; /* Light text */
@@ -219,7 +220,6 @@ a {
     grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개 */
     gap: 20px; /* 카드 간격 */
     width: 1200px; /* 전체 컨테이너의 최대 너비 설정 */
-    box-sizing: border-box;
     margin: 0 auto; /* 중앙 정렬 */
     /* padding: 0 15px; 좌우 여백 추가 */
 }
@@ -358,6 +358,7 @@ a {
     font-family: 'Jeju Gothic', sans-serif;
     font-size: 16px;
     line-height: 1.6;
+    min-width: 1260px;
 }
 
 /* 내용 정렬 */

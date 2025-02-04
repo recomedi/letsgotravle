@@ -111,31 +111,38 @@
 }
 
 .breadcrumb {
-  position: absolute;
-  top: 100px; /* 맵 섹션 위에서 10px */
+/*   position: absolute;
+  top: 100px; 맵 섹션 위에서 10px */
 /*   right: 0; 맵 섹션 오른쪽에서 20px */
   font-size: 14px;
   color: #555;
   background-color: rgba(255, 255, 255, 0.8); /* 배경 추가 */
-  padding: 5px 10px; /* 내부 여백 */
+  padding: 5px 30px; /* 내부 여백 */
   border-radius: 5px;
-  width: 1200px;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 1260px;
   text-align: right;
+  box-sizing: border-box;
+  margin: 100px auto 0;
 }
+  
+ .breadcrumb a {
+   text-decoration: none;
+ }
  
-
+ .breadcrumb a:hover {
+   text-decoration: underline;
+ }
 
 
  /* 풋터 스타일 */
  .footer {
   color: #999999; /* 텍스트 색상 */
   text-align: center;
-  padding: 20px 0;
+  padding: 50px 0;
   font-family: 'Jeju Gothic', sans-serif;
   font-size: 16px;
   line-height: 1.6;
+  min-width: 1260px;
 }
 
 /* 내용 정렬 */

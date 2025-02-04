@@ -31,5 +31,5 @@
                 <span class="bar"></span>
             </button>
         </div>
- </section>      
-    </header>
+ </section>
+  </header> 
