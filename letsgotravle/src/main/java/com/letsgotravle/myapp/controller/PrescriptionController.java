@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,26 @@ public class PrescriptionController {
 	
 	
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(PrescriptionController.class);
+	
+	@RequestMapping(value = "/prescriptionList.do")
+	public String travelConditions() {
+		logger.info("prescriptionList들어옴");
+		return "WEB-INF/prescription/prescriptionList";	
+	}
+	
+
+	@RequestMapping(value = "/prescriptionDetail.do")
+	public String prescriptionDetail(Model model) {
+		logger.info("prescriptionDetail들어옴");				
+		return "WEB-INF/prescription/prescriptionDetail";
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	//png file 유효성검사메서드 
 	

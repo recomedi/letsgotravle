@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RECOTRIP</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main.css">
+  <script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
 </head>
 <body>
     <!-- 해더 -->
@@ -19,7 +20,7 @@
     <section class="parallax__header">
       <div class="parallax__visuals">
         <!-- Black line at the bottom -->
-        <div class="parallax__black-line-overf`low"></div>
+        <div class="parallax__black-line-overflow"></div>
 
         <!-- Parallax Layers -->
         <div data-parallax-layers class="parallax__layers">
@@ -120,8 +121,17 @@
     </div>
 </section>
 <section class="button-section">
-    <button class="button-transparent">여행조건 입력</button>
-    <button class="button-solid">여행지 입력</button>
+    <a href="${pageContext.request.contextPath}/travel/travelConditions.do" class="button-transparent">여행조건 입력</button>
+    <a href="${pageContext.request.contextPath}/travel/travelInput.do" class="button-solid">여행지 입력</a>
+    <a href="${pageContext.request.contextPath}/travel/travelSelect.do">도시선택</a>
+    <a href="${pageContext.request.contextPath}/travel/travelSights.do">장소선택</a>
+    <a href="${pageContext.request.contextPath}/travel/travelModify.do">일정수정</a>
+    <a href="${pageContext.request.contextPath}/travel/travelDetails.do">일정상세</a>
+    
+    <a href="${pageContext.request.contextPath}/scrap/scrapList.do">스크랩목록</a>
+    <a href="${pageContext.request.contextPath}/prescription/prescriptionList.do">처방전목록</a>
+    <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do">처방전상세</a>
+    <a href="${pageContext.request.contextPath}/member/memberFind.do">아이디/비밀번호찾기</a>
   </section>
   </div>
 
@@ -130,7 +140,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
   <!-- 풋터 -->
-       <%@ include file="/WEB-INF/footer.jsp" %>
-  <script src="${pageContext.request.contextPath}/resources/js/script.js"></script>
+  <%@ include file="/WEB-INF/footer.jsp" %>
 </body>
 </html>

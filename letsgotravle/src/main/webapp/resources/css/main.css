@@ -2,6 +2,10 @@
 @import url('//fonts.googleapis.com/earlyaccess/jejugothic.css');
 
 /* 기본 초기화 */
+body {
+	background: #F8F8FF;
+}
+
 body, ul, li {
     margin: 0;
     padding: 0;
@@ -101,7 +105,7 @@ a {
 .side-menu ul li a {
     color: white;
     font-size: 16px;
-    font-weight: bold;
+    /* font-weight: bold; */
     white-space: nowrap;
 }
 
@@ -193,7 +197,6 @@ a {
     margin: 0 auto;
     max-width: 1200px;
     text-align: center;
-    background-color: #fff; /* Contrast background */
     color: #ddd; /* Light text */
     font-size: 1.2rem;
   }

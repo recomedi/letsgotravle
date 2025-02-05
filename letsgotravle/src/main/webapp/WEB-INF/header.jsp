@@ -32,3 +32,5 @@
             
         </div>
     </header>
+
+  <script src="${pageContext.request.contextPath}/resources/js/common.js"></script>

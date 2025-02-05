@@ -10,7 +10,8 @@ input, .badge-label { border: 1px solid #333; border-radius: 5px; font-family: "
 input:focus-visible { outline: none; border-color: #3B8EEF; }
 button { background: transparent; cursor: pointer; font-family: "Jeju Gothic", serif; }
 
-.inner { width: 1280px; padding: 0 40px; margin: 0 auto; }
+body, html, .wrap { height: 100%; }
+.inner { width: 1260px; padding: 50px 30px 0; flex: 1 1 auto; margin: 0 auto; }
 
 .flex { display: flex; }
 .relative { position: relative; }
@@ -71,11 +72,11 @@ button { background: transparent; cursor: pointer; font-family: "Jeju Gothic", s
 .travle .step-item.finished { color: #2ECC71; border-color: #2ECC71; }
 .travle .step-item.on:before, .travle .step-item.finished:before { background: #2ECC71; }
 
-.travle .main-title { font-size: 32px; }
+.travle .main-title { font-size: 32px; font-weight: normal; }
 
 
 /* 여행 조건 입력 */
-#travle-conditions .title { font-size: 26px; }
+#travle-conditions .title { font-size: 26px; font-weight: normal; }
 #travle-conditions .row, #travle-input input { font-size: 20px; }
 #travle-conditions .badge-label-box { gap: 1rem; }
 #travle-conditions input, #travle-conditions .badge-label { width: 142px; font-size: 20px; }
@@ -104,11 +105,11 @@ button { background: transparent; cursor: pointer; font-family: "Jeju Gothic", s
 
 /* 도시 선택 */
 #travle-select { gap: 1rem; }
-#travle-select .title { font-size: 28px; }
+#travle-select .title { font-size: 28px; font-weight: normal; }
 #travle-select .select-item { width: 33.3333%; }
 #travle-select .select-item img { border-radius: 10px; box-shadow: 4px 2px 10px rgba(0,0,0,.4); }
 #travle-select .border { border-top: 2px dotted #ccc; }
-#travle-select .sub-title { font-size: 26px; font-weight: bold; }
+#travle-select .sub-title { font-size: 26px; }
 #travle-select .text { font-size: 20px; text-indent: 2.8rem; line-height: 1.5; }
 #travle-select .btn { display: inline-block; line-height: normal; cursor: pointer; }
 #travle-select input[type="radio"]:checked + .btn { background: #3B8EEF; color: #fff; }
@@ -137,5 +138,5 @@ button { background: transparent; cursor: pointer; font-family: "Jeju Gothic", s
 .fc .fc-toolbar { display: none; }
 .fc-day { width: 120px; }
 .fc .fc-scrollgrid-section-sticky > * { background: #F8F8FF; }
-.calendar-wrap { max-height: calc(100vh - 430px); overflow: auto; }
+.calendar-wrap { max-height: calc(100vh - 530px); overflow: auto; }
 .fc .fc-scrollgrid-section > * { border-top: 1px solid var(--fc-border-color); }

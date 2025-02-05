@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>일정을 확정해주세요.</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
 
     <!-- 폰트어썸 불러오기 -->
@@ -16,11 +18,15 @@
 
 </head>
 <body>
-    <div class="wrap">
-        <%@ include file="/WEB-INF/header1.jsp" %>
+    <div class="wrap flex flex-column">
+      <%@ include file="/WEB-INF/header1.jsp" %>
+	    <nav class="breadcrumb">
+	      <span>홈</span> &gt; <span>여행일정</span> &gt; <span>일정확정</span>
+	    </nav>
+		  
         <div class="inner travle" id="travle-modify">
             
-            <section class="contents pt-30">
+            <section class="contents">
                 <ul class="step flex justify-content-between">
                     <li class="step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
                     <li class="relative step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
@@ -37,7 +43,7 @@
                 </div>
 
                 <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-                    <button class="btn blue">다음</button>
+                    <a href="${pageContext.request.contextPath}/travel/travel-details.do" class="btn blue">다음</a>
                     <button class="btn">뒤로</button>
                 </div>
             </section>

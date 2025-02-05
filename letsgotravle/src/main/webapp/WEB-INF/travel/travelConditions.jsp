@@ -1,27 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>여행조건을 입력해주세요.</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
 
-    <!-- 폰트 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
     <!-- 폰트어썸 불러오기 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
 <body>
-    <div class="wrap">
-    
-        <%@ include file="/WEB-INF/header1.jsp" %>
+    <div class="wrap flex flex-column">
+      <%@ include file="/WEB-INF/header1.jsp" %>
+	    <nav class="breadcrumb">
+	      <span>홈</span> &gt; <span>여행일정</span> &gt; <span>조건입력</span>
+	    </nav>
         
         <div class="inner travle" id="travle-conditions">
             
-            <section class="contents pt-30">
+            <section class="contents">
                 <ul class="step flex justify-content-between">
                     <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
@@ -33,22 +33,28 @@
 
                 <div class="row flex justify-content-between mb-2">
                     <div class="col">
-                        <label><span class="title bold">👥 인원</span><br>
-                        <div class="input-box ml-3 mt-1">
-                            <input type="text" name="peopleCount" class="center"> 명</label>
-                        </div>
+                        <label>
+                        	<span class="title bold">👥 인원</span><br>
+                        	<div class="input-box ml-3 mt-1">
+	                            <input type="text" name="peopleCount" class="center"> 명
+	                        </div>
+                        </label>
                     </div>
                     <div class="col" style="margin-left: -43px;">
-                        <label><span class="title bold">✈️️ 출발일</span><br>
-                        <div class="input-box ml-3 mt-1">
-                            <input type="month" name="departureMonth" class="center"></label>
-                        </div>
+                        <label>
+                        	<span class="title bold">✈️️ 출발일</span><br>
+	                        <div class="input-box ml-3 mt-1">
+	                            <input type="month" name="departureMonth" class="center">
+	                        </div>
+                        </label>
                     </div>
                     <div class="col mr-20">
-                        <label><span class="title bold">📅 기간</span><br>
-                        <div class="input-box ml-3 mt-1">
-                            <input type="text" name="duration" class="center"> 일</label>
-                        </div>
+                        <label>
+                        	<span class="title bold">📅 기간</span><br>
+	                        <div class="input-box ml-3 mt-1">
+	                            <input type="text" name="duration" class="center"> 일
+	                        </div>
+                        </label>
                     </div>
                 </div>
                 <div class="row flex justify-content-between mb-2">
@@ -66,10 +72,12 @@
                         </div>
                     </div>
                     <div class="col">
-                        <label><span class="title bold">💰 예산</span><br>
-                        <div class="input-box ml-3 mt-1">
-                            <input type="text" name="budgetMin" class="center"> 만원 ~ <input type="text" name="budgetMax" class="center"> 만원</label>
-                        </div>
+                        <label>
+                        	<span class="title bold">💰 예산</span><br>
+	                        <div class="input-box ml-3 mt-1">
+	                            <input type="text" name="budgetMin" class="center"> 만원 ~ <input type="text" name="budgetMax" class="center"> 만원
+	                        </div>
+	                    </label>
                     </div>
                 </div>
                 <div class="row">
@@ -99,7 +107,7 @@
                 </div>
 
                 <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-                    <button class="btn blue">다음</button>
+                    <a href="${pageContext.request.contextPath}/travel/travel-select.do" class="btn blue">다음</a>
                     <button class="btn">뒤로</button>
                 </div>
             </section>
