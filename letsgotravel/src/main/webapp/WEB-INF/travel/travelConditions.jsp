@@ -23,16 +23,16 @@
         <div class="inner travel" id="travel-conditions">
             
             <section class="contents">
+                <ul class="step flex justify-content-between">
+                    <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
+                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                </ul>
+            
+                <h3 class="main-title center mb-70">🤔 여행 조건을 입력해주세요.</h3>
+
             	<form name="frm">
-	                <ul class="step flex justify-content-between">
-	                    <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
-	                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
-	                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
-	                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
-	                </ul>
-	            
-	                <h3 class="main-title center mb-70">🤔 여행 조건을 입력해주세요.</h3>
-	
 	                <div class="row flex justify-content-between mb-2">
 	                    <div class="col">
 	                        <label>

@@ -31,59 +31,61 @@
             
                 <h3 class="main-title center mb-70">🤔 "일본 / 도쿄"의 관광지와 음식점을 선택해주세요.</h3>
 
-                <div class="flex">
-                    <div class="col">
-                        <div class="flex justify-content-between">                    
-                            <div class="btn-box flex">
-                                <label class="btn green" for="sights">관광지</label> <label class="btn btn2" for="restaurant">음식점</label>
-                            </div>
-                            <button class="btn blue">추가</button>
-                        </div>
+            	<form name="frm">
+	               <div class="flex">
+	                   <div class="col">
+	                       <div class="flex justify-content-between">                    
+	                           <div class="btn-box flex">
+	                               <label class="btn green" for="sights">관광지</label> <label class="btn btn2" for="restaurant">음식점</label>
+	                           </div>
+	                           <button class="btn blue">추가</button>
+	                       </div>
 						
-					 	<input type="radio" name="sights" id="sights" class="none" checked>
-                        <div class="check-box pt-10 sights">
-                            <input type="checkbox" id="ck1" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck1"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck2" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck2"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck3" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck3"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck4" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck4"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck5" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck5"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck6" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck6"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck7" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck7"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck8" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck8"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck9" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck9"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck10" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck10"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                        </div>
-                        
-                        <input type="radio" name="sights" id="restaurant" class="none">
-                        <div class="check-box pt-10 none restaurant">
-                            <input type="checkbox" id="ck1" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck1"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck2" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck2"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck3" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck3"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck4" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck4"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck5" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck5"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck6" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck6"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck7" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck7"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck8" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck8"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck9" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck9"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                            <input type="checkbox" id="ck10" class="none"><label class="relative mt-20 pl-35 inline-block" for="ck10"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-                        </div>
-                    </div>
-
-                    <p class="border-vertical ml-25 mr-25"></p>
-    
-                    <div class="col info">
-                        <div class="flex mb-20 justify-content-between">
-                            <img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관">
-                            <img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도">
-                        </div>
-                        <p>에펠탑(프랑스어: Tour Eiffel, [tuʁ ɛfɛl], 영어: Eiffel Tower)은 프랑스 파리 마르스 광장에 위치한 격자형 철골 타워이다. 1889년에 프랑스 혁명 100주년을 맞이하여 파리 만국 박람회를 개최하였는데 이 박람회를 상징할만한 기념물로 에펠탑을 건축하였다.[1] 박람회가 열린 마르스 광장 출입 관문에 위치해있다. 프랑스의 대표 건축물인 에펠탑은 격자 구조로 이루어져 파리에서 가장 높은 건축물이며, 매년 수백만 명이 방문할 정도로 파리에서 빼놓을 수 없는 세계적으로 유명한 관광명소이다. 이 탑은 공모전을 통해 선정된 프랑스 공학자 귀스타브 에펠의 작품으로 이를 디자인한 그의 이름을 따서 명명했다.</p>
-                    </div>
-                </div>
-                
-                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-                    <a href="${pageContext.request.contextPath}/travel/travelModify.do" class="btn blue">다음</a>
-                    <button class="btn">뒤로</button>
-                </div>
+					 	<input type="radio" name="sights-radio" id="sights" class="none" checked>
+	                       <div class="check-box pt-10 sights">
+	                           <input type="checkbox" id="ck1" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck1"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck2" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck2"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck3" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck3"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck4" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck4"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck5" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck5"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck6" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck6"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck7" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck7"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck8" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck8"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck9" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck9"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck10" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck10"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                       </div>
+	                       
+	                       <input type="radio" name="sights-radio" id="restaurant" class="none">
+	                       <div class="check-box pt-10 none restaurant">
+	                           <input type="checkbox" id="ck101" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck101"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck102" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck102"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck103" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck103"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck104" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck104"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck105" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck105"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck106" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck106"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck107" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck107"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck108" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck108"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck109" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck109"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck110" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck110"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                       </div>
+	                   </div>
+	
+	                   <p class="border-vertical ml-25 mr-25"></p>
+	   
+	                   <div class="col info">
+	                       <div class="flex mb-20 justify-content-between">
+	                           <img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관">
+	                           <img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도">
+	                       </div>
+	                       <p>에펠탑(프랑스어: Tour Eiffel, [tuʁ ɛfɛl], 영어: Eiffel Tower)은 프랑스 파리 마르스 광장에 위치한 격자형 철골 타워이다. 1889년에 프랑스 혁명 100주년을 맞이하여 파리 만국 박람회를 개최하였는데 이 박람회를 상징할만한 기념물로 에펠탑을 건축하였다.[1] 박람회가 열린 마르스 광장 출입 관문에 위치해있다. 프랑스의 대표 건축물인 에펠탑은 격자 구조로 이루어져 파리에서 가장 높은 건축물이며, 매년 수백만 명이 방문할 정도로 파리에서 빼놓을 수 없는 세계적으로 유명한 관광명소이다. 이 탑은 공모전을 통해 선정된 프랑스 공학자 귀스타브 에펠의 작품으로 이를 디자인한 그의 이름을 따서 명명했다.</p>
+	                   </div>
+	               </div>
+	               
+	               <div class="btn-box center mb-70 mt-50 flex justify-content-center">
+	                   <button type="button" onClick="goTravelModify()" class="btn blue">다음</button>
+	                   <button class="btn">뒤로</button>
+	               </div>
+	            </form>
             </section>
         </div>
         <%@ include file="/WEB-INF/footer.jsp" %>
@@ -92,50 +94,47 @@
     <script>
     function goTravelModify() { 
     	
-		// 선택된 목록 가져오기
-    	const sightsChecked = 'input[name="sights"]:checked';    	
-    	const restaurantChecked = 'input[name="restaurant"]:checked';
-    	
-		const sightsCheckeds = document.querySelectorAll(sightsChecked);
-		const restaurantCheckeds = document.querySelectorAll(restaurantChecked);
-		
+    	// 선택된 목록 가져오기
+    	function findChecked(sights) {
+    		const checked = 'input[name="' + sights + '"]:checked';
+    		const Checkeds = document.querySelectorAll(checked);
+    		return Checkeds;
+    	}		
+
 		// 선택된 목록에서 value 찾기
-		let sightsValue = function () {
-			let value = "";
-			checkeds.forEach((el) => {
-				value += el.value + ', ';
-			});
-			// 마지막 문자 자르기
-			return value.slice(0, -2);
-		}
-		let restaurantValue = function () {
-			let value = "";
-			checkeds.forEach((el) => {
-				value += el.value + ', ';
-			});
-			// 마지막 문자 자르기
-			return value.slice(0, -2);
-		}
+    	function findCheckedValue(Checkeds) {
+    		let Value = function () {
+    			let value = "";
+    			checkeds.forEach((el) => {
+    				value += el.value + ', ';
+    			});
+    			
+    			// 마지막 문자 자르기
+    			return value.slice(0, -2);
+    		}
+    	}
 
 	    // 유효성 검사하기
 		let fm = document.frm;	
 		
-		if (sightsChecked.length == 0) {
+		/* if (findChecked("sights").length == 0) {
 			alert("관광지를 선택해주세요");
-			document.querySelector(".sights").focus();
+			document.querySelector("#sights").checked = true;
+			window.scrollTo({top: 0, behavior: 'smooth'});
 			return;
-		} else if (restaurantCheckeds.length == 0) {
+		} else if (findChecked("restaurant").length == 0) {
 			alert("음식점을 선택해주세요");
-			document.querySelector(".restaurant").focus();
+			document.querySelector("#restaurant").checked = true;
+			window.scrollTo({top: 0, behavior: 'smooth'});
 			return;
-		}
+		} */
 		
 		let ans = confirm("다음페이지로 이동합니다.");
 		if (ans == true) {
 
 			// sessionStorage에 저장
-		    sessionStorage.setItem('sights', sightsValue());
-		    sessionStorage.setItem('restaurant', restaurantValue());
+		    sessionStorage.setItem('sights', findCheckedValue(findChecked(sights)));
+		    sessionStorage.setItem('restaurant', findCheckedValue(findChecked(restaurant)));
 		    
 			fm.action="${pageContext.request.contextPath}/travel/travelModify.do";
 			fm.method="post";

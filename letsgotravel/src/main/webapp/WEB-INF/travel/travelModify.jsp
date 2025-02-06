@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-                    <a href="${pageContext.request.contextPath}/travel/travel-details.do" class="btn blue">다음</a>
+                    <button type="button" onClick="goTravelDetails()" class="btn blue">다음</button>
                     <button class="btn">뒤로</button>
                 </div>
             </section>
@@ -68,12 +68,6 @@
     //     calendar.render();
     // });
 
-    
-    const calendarBox = document.querySelector(".calendar-box");
-    const num = 18;
-    calendarBox.style.width = 121 * num + 47 + "px";
-
-
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -88,31 +82,14 @@
                 right: ''
             },
             titleRangeSeparator : ' ~ ',
-            events: [ 
-         		<c:if test="${!empty requestScope.clist}">
-            	<c:forEach items="${requestScope.clist}" var="cv" varStatus="status">
-                    {
-                    	start : "${cv.startday}",
-            	   	 	display: 'list-item',
-            	   	 	backgroundColor: '#0d6efd;',
-            	   	 	extendedProps: {
-            	   	 		fromTo : "${cv.startday} ~ ${cv.endday}",
-            	   	 		adultprice: "${cv.adultprice}",
-            	        	childprice: "${cv.childprice}"
-            	        }
-                     },
-                </c:forEach>
-            	</c:if>
-        		]
-            }
+            events: 
             	
             	
-            	
-            	/* [
+            [
                 {
                     title: '해리포터 스튜디오',
-                    start: '2025-02-02T12:30:00',
-                    end: '2025-02-02T13:30:00',
+                    start: '1900-01-01T12:30:00',
+                    end: '1900-01-01T13:30:00',
                     backgroundColor: '#D8E8FC',
                     borderColor: '#3B8EEF',
                     // backgroundcolor: '#DCEDF3',
@@ -127,14 +104,14 @@
                 },
                 {
                     title: '라멘',
-                    start: '2025-02-03T16:30:00',
-                    end: '2025-02-03T17:30:00',
+                    start: '1900-01-02T16:30:00',
+                    end: '1900-01-02T17:30:00',
                     backgroundColor: '#DCEDF3',
                     borderColor: '#4FA3C4',
                     textColor: '#333'
                     // allDay : false
                 }
-            ], */
+            ],
             /* eventClick: function(e) { /* 일정 클릭 이벤트 */
     			/* var startDayStr = e.event.startStr;
     			var endDayStr = e.event.endStr;
@@ -152,13 +129,28 @@
 
     	    	fn_schedulePop(startDayStr, endDayStr, e.event.id); */
         });
-        calendar.render();
+        calendar.render();		
 
-        // 11월1일부터 11월20일까지 범위 지정
+        // 캘린더 크기조정
+        const calendarBox = document.querySelector(".calendar-box");
+        const duration = parseInt(sessionStorage.getItem("duration"));
+        calendarBox.style.width = 120 * duration + 46 +"px";
+                
+        // 일정 설정
+		let date = new Date('1900-01-01');
+		date.setDate(date.getDate() + duration);
+		const endDate = date.toISOString().split('T')[0];		
         calendar.changeView('timeGrid', {
-            start: '2025-02-02',
-            end: '2025-02-20'
+            start: '1900-01-01',
+            end: endDate
         });
+		
+        // 일차 텍스트 지정
+        const daysAll = document.querySelectorAll(".fc-col-header-cell-cushion");
+        daysAll.forEach(function(e, i) {
+        	e.innerText = `\${i+1}일차`;  // 백틱 안될 때 앞에 '\' 붙이기
+        })
+        
     });
 
 
@@ -220,26 +212,19 @@
     //     calendar.render();
     // });
 
+    function goTravelDetails() { 
+		
+		let ans = confirm("다음페이지로 이동합니다.");
+		if (ans == true) {
 
-
-
-
-    // document.addEventListener('DOMContentLoaded', function() {
-    // let draggableEl = document.getElementById('travel-list');
-    // let calendarEl = document.getElementById('mycalendar');
-
-    // let calendar = new Calendar(calendarEl, {
-    //     plugins: [ interactionPlugin ],
-    //     droppable: true
-    // });
-    // calendar.render();
-
-    // let draggable = new Draggable(draggableEl);
-
-    // // when you're done...
-    // // draggable.destroy();
-    // });
-
+			// sessionStorage에 저장
+		    // sessionStorage.setItem('city', fm.city.value);
+		    
+		    location.href = "${pageContext.request.contextPath}/travel/travelDetails.do";
+		}
+	  
+		return;
+	}
     </script>
     <%@ include file="/WEB-INF/footer.jsp" %>
 </body>

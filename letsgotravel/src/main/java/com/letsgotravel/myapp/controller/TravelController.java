@@ -30,7 +30,7 @@ public class TravelController {
 //	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@RequestMapping(value = "/travelInput.do")
-	public String travelInput(Model model) {
+	public String travelInput() {
 		logger.info("travelInputµé¾î¿È");				
 		return "WEB-INF/travel/travelInput";
 	}
@@ -41,8 +41,8 @@ public class TravelController {
 		return "WEB-INF/travel/travelConditions";	
 	}
 
-	@RequestMapping(value = "/travelSelect.do", method = RequestMethod.POST)
-	public String travelSelect(TravelConditionsVo tv) {
+	@RequestMapping(value = "/travelSelect.do")
+	public String travelSelect() {
 		logger.info("travelSelectµé¾î¿È");
 		return "WEB-INF/travel/travelSelect";
 	}
