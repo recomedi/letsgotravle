@@ -22,16 +22,16 @@
         <div class="inner travel" id="travel-select">
             
             <section class="contents">
-            	<form name="frm">
-	                <ul class="step flex justify-content-between">
-	                    <li class="step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
-	                    <li class="relative step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
-	                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
-	                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
-	                </ul>
-	            
-	                <h3 class="main-title center mb-70">🤔 도시를 선택해주세요.</h3>
+                <ul class="step flex justify-content-between">
+                    <li class="step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
+                    <li class="relative step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
+                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                </ul>
+            
+                <h3 class="main-title center mb-70">🤔 도시를 선택해주세요.</h3>
 	
+            	<form name="frm">
 	                <div class="row">
 	                    <h4 class="title mb-1">1. 프랑스 / 파리 &nbsp; <input type="radio" name="city" id="paris1" class="none"><label class="btn" for="paris1">선택</label></h4>
 	                    <div class="col flex mb-1">
@@ -230,9 +230,212 @@
 	                        </div>
 	                    </div>
 	                </div>
+	                
+	                <div class="addition none">		                
+		                <p class="border mt-2 mb-2"></p>
+		                
+		                <div class="row">
+		                    <h4 class="title mb-1">1. 프랑스 / 파리 &nbsp; <input type="radio" name="city" id="paris4" class="none"><label class="btn" for="paris4">선택</label></h4>
+		                    <div class="col flex mb-1">
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 175.png" alt="에펠탑"></div>
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관"></div>
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도"></div>
+		                    </div>                    
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🎡 대표관광지</p>
+		                            <p class="text">· 에펠탑</p>
+		                            <p class="text">· 루브르박물관</p>
+		                            <p class="text">· 개선문</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🍴 대표음식</p>
+		                            <p class="text">· 바게트</p>
+		                            <p class="text">· 꼬꼬뱅</p>
+		                            <p class="text">· 수플레</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">💰 환율</p>
+		                            <p class="text">· 1,480원</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🌞 평균날씨</p>
+		                            <p class="text">· 20˚C ~ 25˚C 선선한 날씨</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">💸 성수기여부</p>
+		                            <p class="text">· 성수기</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🍔 물가</p>
+		                            <p class="text">· 한국 대비 비슷</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">👮 치안</p>
+		                            <p class="text">· 좋음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">😷 위생</p>
+		                            <p class="text">· 좋음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🚌 교통</p>
+		                            <p class="text">· 지하철, 버스 등 편리한 편</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🚨 주의해야 하는 기간 </p>
+		                            <p class="text">· 없음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🎆 축제 & 행사</p>
+		                            <p class="text">· 벚꽃축제</p>
+		                        </div>
+		                    </div>
+		                </div>
+		                
+		                <p class="border mt-2 mb-2"></p>
+		
+		                <div class="row">
+		                    <h4 class="title mb-1">1. 프랑스 / 파리 &nbsp; <input type="radio" name="city" id="paris5" class="none"><label class="btn" for="paris5">선택</label></h4>
+		                    <div class="col flex mb-1">
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 175.png" alt="에펠탑"></div>
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관"></div>
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도"></div>
+		                    </div>                    
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🎡 대표관광지</p>
+		                            <p class="text">· 에펠탑</p>
+		                            <p class="text">· 루브르박물관</p>
+		                            <p class="text">· 개선문</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🍴 대표음식</p>
+		                            <p class="text">· 바게트</p>
+		                            <p class="text">· 꼬꼬뱅</p>
+		                            <p class="text">· 수플레</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">💰 환율</p>
+		                            <p class="text">· 1,480원</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🌞 평균날씨</p>
+		                            <p class="text">· 20˚C ~ 25˚C 선선한 날씨</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">💸 성수기여부</p>
+		                            <p class="text">· 성수기</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🍔 물가</p>
+		                            <p class="text">· 한국 대비 비슷</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">👮 치안</p>
+		                            <p class="text">· 좋음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">😷 위생</p>
+		                            <p class="text">· 좋음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🚌 교통</p>
+		                            <p class="text">· 지하철, 버스 등 편리한 편</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🚨 주의해야 하는 기간 </p>
+		                            <p class="text">· 없음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🎆 축제 & 행사</p>
+		                            <p class="text">· 벚꽃축제</p>
+		                        </div>
+		                    </div>
+		                </div>
+		
+		                <p class="border mt-2 mb-2"></p>
+		
+		                <div class="row">
+		                    <h4 class="title mb-1">1. 프랑스 / 파리 &nbsp; <input type="radio" name="city" id="paris6" class="none"><label class="btn" for="paris6">선택</label></h4>
+		                    <div class="col flex mb-1">
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 175.png" alt="에펠탑"></div>
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관"></div>
+		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도"></div>
+		                    </div>                    
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🎡 대표관광지</p>
+		                            <p class="text">· 에펠탑</p>
+		                            <p class="text">· 루브르박물관</p>
+		                            <p class="text">· 개선문</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🍴 대표음식</p>
+		                            <p class="text">· 바게트</p>
+		                            <p class="text">· 꼬꼬뱅</p>
+		                            <p class="text">· 수플레</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">💰 환율</p>
+		                            <p class="text">· 1,480원</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🌞 평균날씨</p>
+		                            <p class="text">· 20˚C ~ 25˚C 선선한 날씨</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">💸 성수기여부</p>
+		                            <p class="text">· 성수기</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🍔 물가</p>
+		                            <p class="text">· 한국 대비 비슷</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex mb-2">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">👮 치안</p>
+		                            <p class="text">· 좋음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">😷 위생</p>
+		                            <p class="text">· 좋음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🚌 교통</p>
+		                            <p class="text">· 지하철, 버스 등 편리한 편</p>
+		                        </div>
+		                    </div>
+		                    <div class="col flex">
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🚨 주의해야 하는 기간 </p>
+		                            <p class="text">· 없음</p>
+		                        </div>
+		                        <div class="select-item">
+		                            <p class="sub-title mb-1">🎆 축제 & 행사</p>
+		                            <p class="text">· 벚꽃축제</p>
+		                        </div>
+		                    </div>
+		                </div>
+	                </div>
 	
 	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-	                    <button class="btn green more">더보기</button>
+	                    <button class="btn green more" onClick="moreResult(this);" type="button">더보기</button>
 	                    <button class="btn blue" type="button" onClick="goTravelSights();">다음</button>
 	                    <button class="btn">뒤로</button>
 	                </div>
@@ -268,6 +471,12 @@
 	  
 		return;
 	}
+    
+    
+    function moreResult() {
+    	document.querySelector(".addition").style.display = "block";  
+    	document.querySelector(".more").style.display = "none";
+    }
  
     </script>
 </body>

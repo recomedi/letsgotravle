@@ -138,6 +138,7 @@ body, html, .wrap { height: 100%; }
 
 /* 풀캘린더 */
 #calendar * { line-height: 1.8; }
+.calendar-box { min-width: 100%; }
 #calendar tbody .fc-scrollgrid-section:not(:last-of-type),
 .fc .fc-toolbar { display: none; }
 .fc-day { width: 120px; }
