@@ -29,22 +29,48 @@
                 </ul>
             
                 <h3 class="main-title center mb-70">🤔 여행지를 입력해주세요.</h3>
-
-                <div class="mb-2 center">
-                    <input type="text" placeholder="여행지를 입력해주세요." name="keyword" class="w-200">
-                </div>
-
-                <div class="map">
-
-                </div>
-
-                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-                    <a href="${pageContext.request.contextPath}/travel/travel-sights.do" class="btn blue">다음</a>
-                    <button class="btn">뒤로</button>
-                </div>
+				<form name="frm">
+	                <div class="mb-2 center">
+	                    <input type="text" name="city" placeholder="여행지를 입력해주세요." class="w-200">
+	                </div>
+	
+	                <div class="map">
+	
+	                </div>
+	
+	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
+	                    <button class="btn blue" type="button" onClick="goTravelSights();">다음</button>
+	                    <button class="btn">뒤로</button>
+	                </div>
+	             </form>
             </section>
         </div>
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
+    <script>
+
+    function goTravelSights() { 
+		
+    	// 유효성 검사하기
+		let fm = document.frm;
+		
+		if (fm.city.value == "") {
+			alert("여행지를 입력해주세요");
+			fm.city.focus();
+			return;
+		}
+		
+		let ans = confirm("다음페이지로 이동합니다.");
+		if (ans == true) {
+
+			// sessionStorage에 저장
+		    sessionStorage.setItem('city', fm.city.value);
+		    
+		    location.href = "${pageContext.request.contextPath}/travel/travelSights.do";
+		}
+	  
+		return;
+	}
+    </script>
 </body>
 </html>
