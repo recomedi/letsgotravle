@@ -102,8 +102,7 @@
     	}		
 
 		// 선택된 목록에서 value 찾기
-    	function findCheckedValue(Checkeds) {
-    		let Value = function () {
+    	function findCheckedValue(checkeds) {
     			let value = "";
     			checkeds.forEach((el) => {
     				value += el.value + ', ';
@@ -111,7 +110,6 @@
     			
     			// 마지막 문자 자르기
     			return value.slice(0, -2);
-    		}
     	}
 
 	    // 유효성 검사하기
@@ -128,6 +126,16 @@
 			window.scrollTo({top: 0, behavior: 'smooth'});
 			return;
 		} */
+		const bbb = findChecked(sights);
+		console.log(bbb)
+		const abs = sessionStorage.getItem('sights', findCheckedValue(bbb));
+		console.log(abs);
+		
+		if (findChecked("sights").length == 0 && findChecked("restaurant").length == 0) {
+			alert("관광지나 음식점을 선택해주세요");
+			window.scrollTo({top: 0, behavior: 'smooth'});
+			return;
+		}
 		
 		let ans = confirm("다음페이지로 이동합니다.");
 		if (ans == true) {
