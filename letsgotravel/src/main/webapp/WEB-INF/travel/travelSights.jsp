@@ -43,30 +43,30 @@
 						
 					 	<input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
-	                           <input type="checkbox" id="ck1" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck1"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck2" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck2"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck3" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck3"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck4" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck4"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck5" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck5"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck6" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck6"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck7" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck7"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck8" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck8"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck9" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck9"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck10" class="none" name="sights"><label class="relative mt-20 pl-35 inline-block" for="ck10"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck1" class="none" name="sightsCk" value="디즈니랜드1"><label class="relative mt-20 pl-35 inline-block" for="ck1"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck2" class="none" name="sightsCk" value="디즈니랜드2"><label class="relative mt-20 pl-35 inline-block" for="ck2"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck3" class="none" name="sightsCk" value="디즈니랜드3"><label class="relative mt-20 pl-35 inline-block" for="ck3"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck4" class="none" name="sightsCk" value="디즈니랜드4"><label class="relative mt-20 pl-35 inline-block" for="ck4"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck5" class="none" name="sightsCk" value="디즈니랜드5"><label class="relative mt-20 pl-35 inline-block" for="ck5"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck6" class="none" name="sightsCk" value="디즈니랜드6"><label class="relative mt-20 pl-35 inline-block" for="ck6"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck7" class="none" name="sightsCk" value="디즈니랜드7"><label class="relative mt-20 pl-35 inline-block" for="ck7"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck8" class="none" name="sightsCk" value="디즈니랜드8"><label class="relative mt-20 pl-35 inline-block" for="ck8"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck9" class="none" name="sightsCk" value="디즈니랜드9"><label class="relative mt-20 pl-35 inline-block" for="ck9"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck10" class="none" name="sightsCk" value="디즈니랜드10"><label class="relative mt-20 pl-35 inline-block" for="ck10"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
 	                       </div>
 	                       
 	                       <input type="radio" name="sights-radio" id="restaurant" class="none">
 	                       <div class="check-box pt-10 none restaurant">
-	                           <input type="checkbox" id="ck101" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck101"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck102" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck102"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck103" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck103"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck104" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck104"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck105" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck105"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck106" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck106"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck107" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck107"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck108" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck108"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck109" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck109"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck110" class="none" name="restaurant"><label class="relative mt-20 pl-35 inline-block" for="ck110"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck101" class="none" name="restaurantCk" value="라멘1"><label class="relative mt-20 pl-35 inline-block" for="ck101"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck102" class="none" name="restaurantCk" value="라멘2"><label class="relative mt-20 pl-35 inline-block" for="ck102"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck103" class="none" name="restaurantCk" value="라멘3"><label class="relative mt-20 pl-35 inline-block" for="ck103"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck104" class="none" name="restaurantCk" value="라멘4"><label class="relative mt-20 pl-35 inline-block" for="ck104"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck105" class="none" name="restaurantCk" value="라멘5"><label class="relative mt-20 pl-35 inline-block" for="ck105"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck106" class="none" name="restaurantCk" value="라멘6"><label class="relative mt-20 pl-35 inline-block" for="ck106"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck107" class="none" name="restaurantCk" value="라멘7"><label class="relative mt-20 pl-35 inline-block" for="ck107"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck108" class="none" name="restaurantCk" value="라멘8"><label class="relative mt-20 pl-35 inline-block" for="ck108"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck109" class="none" name="restaurantCk" value="라멘9"><label class="relative mt-20 pl-35 inline-block" for="ck109"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                           <input type="checkbox" id="ck110" class="none" name="restaurantCk" value="라멘10"><label class="relative mt-20 pl-35 inline-block" for="ck110"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
 	                       </div>
 	                   </div>
 	
@@ -92,24 +92,30 @@
     </div>
     
     <script>
-    function goTravelModify() { 
+
+    console.log(sessionStorage.getItem('sights'));
+    console.log(sessionStorage.getItem('restaurant'));
+    
+    function goTravelModify() {
     	
+
     	// 선택된 목록 가져오기
     	function findChecked(sights) {
-    		const checked = 'input[name="' + sights + '"]:checked';
-    		const Checkeds = document.querySelectorAll(checked);
-    		return Checkeds;
-    	}		
-
-		// 선택된 목록에서 value 찾기
-    	function findCheckedValue(checkeds) {
-    			let value = "";
-    			checkeds.forEach((el) => {
-    				value += el.value + ', ';
-    			});
-    			
-    			// 마지막 문자 자르기
-    			return value.slice(0, -2);
+    		const checked = 'input[name="' + sights + 'Ck"]:checked';
+    		const checkeds = document.querySelectorAll(checked);
+    		return checkeds;
+    	}
+    	
+    	function findCheckedValue(sights) {
+    		
+			// 선택된 목록에서 value 찾기
+   			let value = "";
+   			findChecked(sights).forEach((el) => {
+   				value += el.value + ', ';
+   			});
+   			
+   			// 마지막 문자 자르기
+   			return value.slice(0, -2);
     	}
 
 	    // 유효성 검사하기
@@ -126,23 +132,19 @@
 			window.scrollTo({top: 0, behavior: 'smooth'});
 			return;
 		} */
-		const bbb = findChecked(sights);
-		console.log(bbb)
-		const abs = sessionStorage.getItem('sights', findCheckedValue(bbb));
-		console.log(abs);
 		
 		if (findChecked("sights").length == 0 && findChecked("restaurant").length == 0) {
 			alert("관광지나 음식점을 선택해주세요");
 			window.scrollTo({top: 0, behavior: 'smooth'});
 			return;
 		}
-		
+
 		let ans = confirm("다음페이지로 이동합니다.");
 		if (ans == true) {
 
 			// sessionStorage에 저장
-		    sessionStorage.setItem('sights', findCheckedValue(findChecked(sights)));
-		    sessionStorage.setItem('restaurant', findCheckedValue(findChecked(restaurant)));
+		    sessionStorage.setItem('sights', findCheckedValue("sights"));
+		    sessionStorage.setItem('restaurant', findCheckedValue("restaurant"));
 		    
 			fm.action="${pageContext.request.contextPath}/travel/travelModify.do";
 			fm.method="post";
