@@ -132,6 +132,8 @@
     <a href="${pageContext.request.contextPath}/prescription/prescriptionList.do">처방전목록</a>
     <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do">처방전상세</a>
     <a href="${pageContext.request.contextPath}/member/memberFind.do">아이디/비밀번호찾기</a>
+    <a href="${pageContext.request.contextPath}/prescription/certification.do">본인인증</a>
+    <a href="${pageContext.request.contextPath}/travel/openAiTest.do">테스트페이지</a>
   </section>
   </div>
 

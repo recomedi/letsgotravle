@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.letsgotravel.myapp.persistance.MemberMapper">
+	
+	<insert id="insertPrescription" parameterType="com.letsgotravel.myapp.domain.PrescriptionVo" useGeneratedKeys="true" keyProperty="pidx">
+    INSERT INTO PRESCRIPTION (
+        midx, resMenufactureDate, resPrescribeOrg, resTelNo, commBrandName, commTelNo, ip, delyn, date
+    ) VALUES (
+        #{midx}, #{resMenufactureDate}, #{resPrescribeOrg}, #{resTelNo}, #{commBrandName}, #{commTelNo}, #{ip}, #{delyn}, NOW()
+    )
+</insert>
+	
+	
+</mapper>

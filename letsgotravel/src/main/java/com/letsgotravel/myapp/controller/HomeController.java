@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.letsgotravel.myapp.api.EasyCodefToken;
 
@@ -12,31 +13,38 @@ import com.letsgotravel.myapp.api.EasyCodefToken;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	
+	// value.properties 파일에서 apikey 값 주입
+    @Value("${openAI_key}")
+    private String openAIKey;
 		
 	@RequestMapping(value = "/main.do")
 	public String mainPage(Model model) {
 		
-		logger.info("main����");
+		logger.info("main들어옴");
 		
 		
-		// CodefToken ����
-		String clientId = "fbbcf915-2395-4dfe-9316-a5ce610fab1a";
-		String clientSecret = "2b152335-b63a-4596-bf34-5b44f79b41b0";
+		// CodefToken 占쏙옙占쏙옙
+		String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
+		String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
 
-		// CodefTokenExample ��ü ����
+		// CodefTokenExample 占쏙옙체 占쏙옙占쏙옙
 		EasyCodefToken easyCodefToken = new EasyCodefToken();
         
-        // getAccessToken ȣ��
+        // getAccessToken 호占쏙옙
         String accessToken = easyCodefToken.getAccessToken(clientId, clientSecret);
         
-        // ��� ���
+        // 占쏙옙占� 占쏙옙占�
         System.out.println("Access Token: " + accessToken);
         
-        // CodefToken ���
+        // CodefToken 占쏙옙占�
 //		        HttpURLConnection con = (HttpURLConnection) url.openConnection();
 //		        con.setRequestProperty("Authorization", "Bearer " + token);
 
+        
+        // 주입된 accessToken 값을 출력
+        System.out.println("openAIKey : " + openAIKey);
 		
-		return "WEB-INF/main";
+        return "WEB-INF/main";
 	}
 }

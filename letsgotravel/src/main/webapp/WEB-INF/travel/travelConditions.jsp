@@ -86,24 +86,25 @@
 	                    <div class="col">
 	                        <p class="title bold thema">🎮 테마(중복선택가능)</p>
 	                        <div class="duplication badge-label-box ml-3 mt-1 flex flex-wrap">
-	                            <input type="checkbox" name="thema" id="filial-piety" class="none" value="효도">
+	                            <input type="checkbox" name="themaInput" id="filial-piety" class="none" value="효도">
 	                            <label class="badge-label" for="filial-piety"> 효도</label>
-	                            <input type="checkbox" name="thema" id="healing" class="none" value="힐링">
+	                            <input type="checkbox" name="themaInput" id="healing" class="none" value="힐링">
 	                            <label class="badge-label" for="healing"> 힐링</label>
-	                            <input type="checkbox" name="thema" id="cost-effectiveness" class="none" value="가성비">
+	                            <input type="checkbox" name="themaInput" id="cost-effectiveness" class="none" value="가성비">
 	                            <label class="badge-label" for="cost-effectiveness"> 가성비</label>
-	                            <input type="checkbox" name="thema" id="staycation" class="none" value="호캉스">
+	                            <input type="checkbox" name="themaInput" id="staycation" class="none" value="호캉스">
 	                            <label class="badge-label" for="staycation"> 호캉스</label>
-	                            <input type="checkbox" name="thema" id="epicurism" class="none" value="식도락">
+	                            <input type="checkbox" name="themaInput" id="epicurism" class="none" value="식도락">
 	                            <label class="badge-label" for="epicurism"> 식도락</label>
-	                            <input type="checkbox" name="thema" id="shopping" class="none" value="쇼핑">
+	                            <input type="checkbox" name="themaInput" id="shopping" class="none" value="쇼핑">
 	                            <label class="badge-label" for="shopping"> 쇼핑</label>
-	                            <input type="checkbox" name="thema" id="historic-site" class="none" value="유적지">
+	                            <input type="checkbox" name="themaInput" id="historic-site" class="none" value="유적지">
 	                            <label class="badge-label" for="historic-site"> 유적지</label>
-	                            <input type="checkbox" name="thema" id="landscape" class="none" value="자연경관">
+	                            <input type="checkbox" name="themaInput" id="landscape" class="none" value="자연경관">
 	                            <label class="badge-label" for="landscape"> 자연경관</label>
-	                            <input type="checkbox" name="thema" id="activity" class="none" value="액티비티">
+	                            <input type="checkbox" name="themaInput" id="activity" class="none" value="액티비티">
 	                            <label class="badge-label" for="activity"> 액티비티</label>
+	                        	<input type="hidden" name="thema" id="thema" class="none" value="">
 	                        </div>
 	                    </div>
 	                </div>
@@ -123,7 +124,7 @@
     function goTravelSelect() { 
 
 		// 선택된 목록 가져오기
-    	const checked = 'input[name="thema"]:checked';				  
+    	const checked = 'input[name="themaInput"]:checked';
 		const checkeds = document.querySelectorAll(checked);
 		
 		// 선택된 목록에서 value 찾기
@@ -132,6 +133,7 @@
 			checkeds.forEach((el) => {
 				value += el.value + ', ';
 			});
+			
 			// 마지막 문자 자르기
 			return value.slice(0, -2);
 		}
@@ -200,7 +202,8 @@
 		    sessionStorage.setItem('groupType', fm.groupType.value);
 		    sessionStorage.setItem('budgetMin', fm.budgetMin.value);
 		    sessionStorage.setItem('budgetMax', fm.budgetMax.value);
-		    sessionStorage.setItem('thema', themaValue());		    
+		    sessionStorage.setItem('thema', themaValue());
+		    document.querySelector('#thema').value = themaValue();
 		    
 			fm.action="${pageContext.request.contextPath}/travel/travelSelect.do";
 			fm.method="post";

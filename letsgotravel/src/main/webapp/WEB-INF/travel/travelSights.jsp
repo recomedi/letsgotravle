@@ -29,7 +29,7 @@
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                 </ul>
             
-                <h3 class="main-title center mb-70">🤔 "일본 / 도쿄"의 관광지와 음식점을 선택해주세요.</h3>
+                <h3 class="main-title center mb-70">🤔 "${requestScope.destination}"에서 방문할 장소를 선택해주세요.</h3>
 
             	<form name="frm">
 	               <div class="flex">

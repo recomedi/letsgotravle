@@ -1,17 +1,23 @@
 package com.letsgotravel.myapp.controller;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.System.Logger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,35 +27,35 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letsgotravel.myapp.api.EasyCodefConnector;
 import com.letsgotravel.myapp.api.EasyCodefToken;
+import com.letsgotravel.myapp.domain.DrugVo;
+import com.letsgotravel.myapp.domain.MemberVo;
+import com.letsgotravel.myapp.domain.PrescriptionVo;
+import com.letsgotravel.myapp.service.MemberService;
+import com.letsgotravel.myapp.service.PrescriptionService;
 
 @Controller
 @RequestMapping(value = "/prescription/")
 public class PrescriptionController {
 	
 	
+	 // CODEF API æ„¿ï¿½ï¿½ì ´ ï¿½ê¸½ï¿½ë‹”
+    private static final String CLIENT_ID = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
+    private static final String CLIENT_SECRET = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
+    private static final String API_URL = "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine";
+
+    private final PrescriptionService prescriptionService;
+    private final MemberService memberService;
+
+    @Autowired
+    public PrescriptionController(PrescriptionService prescriptionService,MemberService memberService) {
+        this.prescriptionService = prescriptionService;
+		this.memberService = memberService;
+    }
+	
+	 private HashMap<String, Object> requestData = new HashMap<>();
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(PrescriptionController.class);
-	
-	@RequestMapping(value = "/prescriptionList.do")
-	public String travelConditions() {
-		logger.info("prescriptionListµé¾î¿È");
-		return "WEB-INF/prescription/prescriptionList";	
-	}
-	
 
-	@RequestMapping(value = "/prescriptionDetail.do")
-	public String prescriptionDetail(Model model) {
-		logger.info("prescriptionDetailµé¾î¿È");				
-		return "WEB-INF/prescription/prescriptionDetail";
-	}
-	
-	
-	
-	
-	
-	
-	
-
-	//png file À¯È¿¼º°Ë»ç¸Ş¼­µå 
+	//png file ï¿½ì‘€ï¿½ìŠšï¿½ê½¦å¯ƒï¿½ï¿½ê¶—ï§ë¶¿ê½Œï¿½ë±¶ 
 	
 	private boolean isPng(byte[] data) {
 	    byte[] pngHeader = new byte[] {(byte) 0x89, 'P', 'N', 'G', (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A};
@@ -64,60 +70,110 @@ public class PrescriptionController {
 	    return true;
 	}
 	
+
+
+	
 	
 	
 	@RequestMapping(value = "refreshSecureNo.do", method = RequestMethod.POST)
 	@ResponseBody
-	
-	
 	public HashMap<String, Object> refreshSecureNo(HttpSession session) {
-		logger.info("refreshno enter?");
+	    logger.info("[DEBUG] refreshSecureNo enter?");
 	    HashMap<String, Object> response = new HashMap<>();
 	    try {
-	        // »õ·Î¿î º¸¾È¹®ÀÚ »ı¼º ·ÎÁ÷ (¿¹: CODEF API È£Ãâ)
+	        // ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ï¿½ê½Œ ï¿½ë¸˜ï¿½ë‹” ï¿½ëœ²ï¿½ì” ï¿½ê½£ åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½
+	        @SuppressWarnings("unchecked")
+	        HashMap<String, Object> requestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
+
+	        if (requestData == null) {
+	            response.put("error", "ï¿½ë¸˜ï¿½ë‹” ï¿½ì—¯ï¿½ì °åª›ë¯ªì”  ï¿½ëŠ»ï¿½ì”«ï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–. ï¿½ë–ï¿½ë–† ï¿½ì”¤ï§ì•¹ì“£ ï§ê¾ªë»¾ï¿½ë¸¯ï¿½ê½­ï¿½ìŠ‚.");
+	            return response;
+	        }
+
+	        // ï¿½ê¹‰æ¿¡ì’“í€¬ç§»ï¿½ ï¿½ëµ†ï¿½ì˜’æ´¹ï¿½ ç•°ë¶½ï¿½
+	        requestData.put("refresh", true);
+
+	        // CODEF API ï¿½ìƒ‡ç•°ï¿½ ä»¥ï¿½é®ï¿½
 	        EasyCodefToken tokenService = new EasyCodefToken();
-	        String clientId = "fbbcf915-2395-4dfe-9316-a5ce610fab1a";
-	        String clientSecret = "2b152335-b63a-4596-bf34-5b44f79b41b0";
+	        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
+	        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
 	        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
 
-	        // ¿äÃ» µ¥ÀÌÅÍ ±¸¼º
-	        HashMap<String, Object> requestData = new HashMap<>();
-	        requestData.put("refresh", true); // »õ·Î°íÄ§ ÇÃ·¡±×
+	        if (accessToken.isEmpty()) {
+	            response.put("error", "ï¿½ë„—ï¿½ê²™ è«›ì’“íˆ’ ï¿½ë–ï¿½ë™£");
+	            return response;
+	        }
 
+	        // CODEF API ï¿½ìƒ‡ç•°ï¿½
 	        EasyCodefConnector connector = new EasyCodefConnector();
 	        ObjectMapper objectMapper = new ObjectMapper();
+	        String requestBody = objectMapper.writeValueAsString(requestData);
+
 	        HashMap<String, Object> apiResponse = connector.getRequestProduct(
-	                "https://development.codef.io/v1/kr/public/hw/hira-list/my-prescription",
+	                "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine",
 	                accessToken,
-	                objectMapper.writeValueAsString(requestData)
+	                requestBody
 	        );
 
-	        System.out.println("»õ·Î¿î º¸¾È¹®ÀÚ ÀÀ´ä µ¥ÀÌÅÍ: " + apiResponse);
+	        System.out.println("[DEBUG] CODEF ï¿½ì“³ï¿½ë–Ÿ ï¿½ëœ²ï¿½ì” ï¿½ê½£: " + apiResponse);
 
-	        // ÀÀ´ä¿¡¼­ »õ·Î¿î º¸¾È¹®ÀÚ µ¥ÀÌÅÍ ÃßÃâ
+	        // ï¿½ì“³ï¿½ë–Ÿï¿½ë¿‰ï¿½ê½Œ ï¿½ê¹‰æ¿¡ì’–ìŠ« è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ç•°ë¶¿í…§
 	        if (apiResponse.containsKey("data")) {
 	            HashMap<String, Object> data = (HashMap<String, Object>) apiResponse.get("data");
 	            HashMap<String, Object> extraInfo = (HashMap<String, Object>) data.get("extraInfo");
 
 	            if (extraInfo != null && extraInfo.containsKey("reqSecureNo")) {
 	                String reqSecureNo = (String) extraInfo.get("reqSecureNo");
-	                response.put("reqSecureNoDecoded", reqSecureNo); // Base64 ÀÎÄÚµùµÈ ÀÌ¹ÌÁö µ¥ÀÌÅÍ ¹İÈ¯
+
+	                // ï¿½ë‹šï¿½ë‹” Base64 ï¿½ëœ²ï¿½ì” ï¿½ê½£ï§ï¿½ è«›ì„‘ì†š
+	                response.put("reqSecureNoDecoded", reqSecureNo);
+	                logger.info("[DEBUG] ï¿½ê¹‰æ¿¡ì’–ìŠ« è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ê¹®ï¿½ê½¦ ï¿½ê½¦æ€¨ï¿½.");
 	            } else {
-	                response.put("error", "»õ·Î¿î º¸¾È¹®ÀÚ¸¦ °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.");
+	                response.put("error", "ï¿½ê¹‰æ¿¡ì’–ìŠ« è¹‚ëŒë¸è‡¾ëª„ì˜„ç‘œï¿½ åª›ï¿½ï¿½ì¡‡ï¿½ì‚± ï¿½ë‹” ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+	                logger.error("[ERROR] ï¿½ê¹‰æ¿¡ì’–ìŠ« è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ê¹®ï¿½ê½¦ ï¿½ë–ï¿½ë™£.");
 	            }
+
+
 	        } else {
-	            response.put("error", "API ÀÀ´ä¿¡ µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù.");
+	            response.put("error", "API ï¿½ì“³ï¿½ë–Ÿï¿½ë¿‰ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª›ï¿½ ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+	            logger.error("[ERROR] API ï¿½ì“³ï¿½ë–Ÿï¿½ë¿‰ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª›ï¿½ ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
 	        }
 
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        response.put("error", "º¸¾È¹®ÀÚ »ı¼º Áß ¿À·ù ¹ß»ı");
+	        response.put("error", "è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ê¹®ï¿½ê½¦ ä»¥ï¿½ ï¿½ì‚¤ç‘œï¿½ è«›ì’–ê¹®");
 	    }
 	    return response;
 	}
 
 	
-	
+	private HashMap<String, Object> callCodefApi(String accessToken, HashMap<String, Object> requestData) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            EasyCodefConnector connector = new EasyCodefConnector();
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // CODEF API ï¿½ìƒ‡ç•°ï¿½
+            HashMap<String, Object> apiResponse = connector.getRequestProduct(
+                    API_URL,
+                    accessToken,
+                    objectMapper.writeValueAsString(requestData)
+            );
+
+            logger.info("[DEBUG] CODEF ï¿½ì“³ï¿½ë–Ÿ ï¿½ëœ²ï¿½ì” ï¿½ê½£: {}", apiResponse);
+
+            // ï¿½ì“³ï¿½ë–Ÿ ï§£ì„â”
+            if (apiResponse.containsKey("data")) {
+                response.putAll((HashMap<String, Object>) apiResponse.get("data"));
+            } else {
+                response.put("error", "API ï¿½ì“³ï¿½ë–Ÿï¿½ë¿‰ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª›ï¿½ ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+            }
+        } catch (Exception e) {
+            logger.error("CODEF API ï¿½ìƒ‡ç•°ï¿½ ä»¥ï¿½ ï¿½ì‚¤ç‘œï¿½ è«›ì’–ê¹®: {}", e.getMessage());
+            response.put("error", "CODEF API ï¿½ìƒ‡ç•°ï¿½ ä»¥ï¿½ ï¿½ì‚¤ç‘œï¿½ è«›ì’–ê¹®: " + e.getMessage());
+        }
+        return response;
+    }
 
 	
 	
@@ -127,6 +183,7 @@ public class PrescriptionController {
 	public String certification() {
 		return "WEB-INF/prescription/certification";
 	}
+	
 
 	@RequestMapping(value = "processCertification.do", method = RequestMethod.POST)
 	@ResponseBody
@@ -134,126 +191,106 @@ public class PrescriptionController {
 	        @RequestParam("idNumberFront") String idNumberFront,
 	        @RequestParam("idNumberBack") String idNumberBack,
 	        @RequestParam("name") String name,
-	        @RequestParam("phonePrefix") String phonePrefix,
 	        @RequestParam("phoneNumber") String phoneNumber,
 	        @RequestParam("telecom") String telecom,
 	        HttpSession session) throws JsonProcessingException {
 
 	    HashMap<String, Object> response = new HashMap<>();
 	    try {
-	        // ÁÖ¹Îµî·Ï¹øÈ£ ¹× ÈŞ´ëÆù ¹øÈ£ ÇÕÄ¡±â
+	    	
+	        // äºŒì‡°ï¿½ì‡°ë²‘æ¿¡ì•¸ì¾²ï¿½ìƒ‡ è«›ï¿½ ï¿½ì‘•ï¿½ï¿½ï¿½ë£¿ è¸°ëŠìƒ‡ ï¿½ë¹€ç§»ì„ë¦°
 	        String fullIdNumber = idNumberFront + idNumberBack;
-	        String fullPhoneNumber = phonePrefix + phoneNumber;
+	        String fullPhoneNumber = phoneNumber;
 
-	        // CODEF ¿äÃ» µ¥ÀÌÅÍ ±¸¼º
+	        // CODEF ï¿½ìŠ‚ï§£ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£ æ´ÑŠê½¦
 	        HashMap<String, Object> requestData = new HashMap<>();
-	        requestData.put("organization", "0020");
+	        requestData.put("organization", "0020"); // æ¹²ê³Œï¿½ è‚„ë¶¾ë±¶
 	        requestData.put("loginType", "2");
-	        requestData.put("identity", fullIdNumber);
+	        requestData.put("identity", fullIdNumber); // äºŒì‡°ï¿½ì‡°ë²‘æ¿¡ì•¸ì¾²ï¿½ìƒ‡
 	        requestData.put("loginTypeLevel", "1");
 	        requestData.put("userName", name);
 	        requestData.put("telecom", telecom);
 	        requestData.put("phoneNo", fullPhoneNumber);
-	        requestData.put("authMethod", "0"); // SMS ÀÎÁõ
+	        requestData.put("authMethod", "0"); // SMS ï¿½ì”¤ï§ï¿½
 
-	        // CODEF API È£Ãâ ÁØºñ
+	        // ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ ï¿½ë¸˜ï¿½ë‹” ï¿½ëœ²ï¿½ì” ï¿½ê½£ ï¿½ï¿½ï¿½ì˜£ (è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ê¹‰æ¿¡ì’“í€¬ç§»â‘¥ìŠœ)
+	        session.setAttribute("secureNoRequestData", requestData);
+	        session.setAttribute("phoneNumber", fullPhoneNumber);
+
+	        // CODEF API ï¿½ìƒ‡ç•°ï¿½ ä»¥ï¿½é®ï¿½
 	        EasyCodefToken tokenService = new EasyCodefToken();
-	        String clientId = "fbbcf915-2395-4dfe-9316-a5ce610fab1a";
-	        String clientSecret = "2b152335-b63a-4596-bf34-5b44f79b41b0";
-
+	        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
+	        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
 	        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
+	        
+	        
 
 	        if (accessToken.isEmpty()) {
-	            response.put("error", "ÅäÅ« ¹ß±Ş ½ÇÆĞ");
+	            response.put("error", "ï¿½ë„—ï¿½ê²™ è«›ì’“íˆ’ ï¿½ë–ï¿½ë™£");
 	            return response;
 	        }
 
-	        // API È£Ãâ
+	        // CODEF API ï¿½ìƒ‡ç•°ï¿½
 	        EasyCodefConnector connector = new EasyCodefConnector();
 	        ObjectMapper objectMapper = new ObjectMapper();
 
 	        String requestBody = objectMapper.writeValueAsString(requestData);
 
 	        HashMap<String, Object> apiResponse = connector.getRequestProduct(
-	                "https://development.codef.io/v1/kr/public/hw/hira-list/my-prescription",
+	                "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine",
 	                accessToken,
 	                requestBody
 	        );
 
-	        System.out.println("CODEF ÀÀ´ä µ¥ÀÌÅÍ: " + apiResponse);
+	        System.out.println("[DEBUG] CODEF ï¿½ì“³ï¿½ë–Ÿ ï¿½ëœ²ï¿½ì” ï¿½ê½£: " + apiResponse);
 
-	        // º¸¾È¹®ÀÚ Ã³¸®
+	        // è¹‚ëŒë¸è‡¾ëª„ì˜„ ï§£ì„â”
 	        if (apiResponse.containsKey("data")) {
 	            HashMap<String, Object> data = (HashMap<String, Object>) apiResponse.get("data");
 
 	            if (Boolean.TRUE.equals(data.get("continue2Way"))) {
-	                // extraInfo °´Ã¼ ÃßÃâ
+	                // ç•°ë¶½ï¿½ ï¿½ì”¤ï§ì•¹ì”  ï¿½ë¸˜ï¿½ìŠ‚ï¿½ë¸³ å¯ƒìŒìŠ¦
 	                HashMap<String, Object> extraInfo = (HashMap<String, Object>) data.get("extraInfo");
 
 	                if (extraInfo != null) {
-	                    System.out.println("[DEBUG] extraInfo °´Ã¼ È®ÀÎ: " + extraInfo);
+	                    System.out.println("[DEBUG] extraInfo åª›ì•¹ê»œ ï¿½ì†—ï¿½ì”¤: " + extraInfo);
 
-	                    String reqSecureNo = (String) extraInfo.get("reqSecureNo"); // reqSecureNo ÃßÃâ
-	                    System.out.println("[DEBUG] reqSecureNo °ª: " + reqSecureNo);
+	                    String reqSecureNo = (String) extraInfo.get("reqSecureNo"); // è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ç•°ë¶¿í…§
+	                    System.out.println("[DEBUG] reqSecureNo åª›ï¿½: " + reqSecureNo);
 
 	                    if (reqSecureNo != null && !reqSecureNo.isEmpty()) {
-	                        // Base64 Á¢µÎ»ç Á¦°Å
 	                        if (reqSecureNo.startsWith("data:image/png;base64,")) {
 	                            reqSecureNo = reqSecureNo.substring("data:image/png;base64,".length());
-	                            System.out.println("[DEBUG] Base64 Á¢µÎ»ç Á¦°Å ÈÄ reqSecureNo °ª: " + reqSecureNo);
 	                        }
 
-	                        // Base64 À¯È¿¼º °Ë»ç
-	                        if (!isBase64(reqSecureNo)) {
-	                            System.err.println("[ERROR] À¯È¿ÇÏÁö ¾ÊÀº Base64 ¹®ÀÚ¿­ÀÔ´Ï´Ù.");
-	                            response.put("error", "À¯È¿ÇÏÁö ¾ÊÀº Base64 µ¥ÀÌÅÍ");
-	                            return response; // JSON ÀÀ´ä ¹İÈ¯
+	                        byte[] decodedBytes = Base64.getDecoder().decode(reqSecureNo);
+
+	                        if (!isPng(decodedBytes)) {
+	                            response.put("error", "ï¿½ì‘€ï¿½ìŠšï¿½ë¸¯ï§ï¿½ ï¿½ë¸¡ï¿½ï¿½ PNG ï¿½ì” èª˜ëª„ï¿½");
+	                            return response;
 	                        }
 
-	                        try {
-	                            // Base64 µğÄÚµù
-	                            byte[] decodedBytes = Base64.getDecoder().decode(reqSecureNo);
-	                            System.out.println("[DEBUG] µğÄÚµùµÈ µ¥ÀÌÅÍ ±æÀÌ: " + decodedBytes.length);
+	                        String reEncodedBase64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(decodedBytes);
+	                        response.put("reqSecureNoDecoded", reEncodedBase64); // ï¿½ê²¢ï¿½ì”ªï¿½ì” ï¿½ë¼µï¿½ë“ƒæ¿¡ï¿½ è«›ì„‘ì†š
+	                        response.put("redirectToSecureInput", true); // ç•°ë¶½ï¿½ ï¿½ì”¤ï§ï¿½ ï¿½ëµ†ï¿½ì˜’æ´¹ï¿½ ï¿½ê½•ï¿½ì ™
 
-	                            // PNG Çì´õ °ËÁõ
-	                            if (!isPng(decodedBytes)) {
-	                                System.err.println("[ERROR] À¯È¿ÇÏÁö ¾ÊÀº PNG ÀÌ¹ÌÁöÀÔ´Ï´Ù.");
-	                                response.put("error", "À¯È¿ÇÏÁö ¾ÊÀº PNG ÀÌ¹ÌÁö");
-	                                return response;
-	                            }
-
-	                            // µğÄÚµùµÈ µ¥ÀÌÅÍ ÀúÀå Å×½ºÆ®
-	                            try (FileOutputStream fos = new FileOutputStream("decoded_image.png")) {
-	                                fos.write(decodedBytes);
-	                                System.out.println("[DEBUG] decoded_image.png ÆÄÀÏ ÀúÀå ¿Ï·á");
-	                            }
-
-	                            session.setAttribute("secureNoImage", reqSecureNo); // º¸¾È¹®ÀÚ ÀÌ¹ÌÁö ÀúÀå
-	                            response.put("redirectToSecureInput", true); // Å¬¶óÀÌ¾ğÆ®¿¡¼­ Ã³¸®ÇÏµµ·Ï ÇÃ·¡±× ¼³Á¤
-	                            response.put("reqSecureNoDecoded", decodedBytes); // µğÄÚµùµÈ ÀÌ¹ÌÁö µ¥ÀÌÅÍ ¹İÈ¯
-
-	                        } catch (IllegalArgumentException e) {
-	                            System.err.println("[ERROR] Base64 µğÄÚµù ½ÇÆĞ: " + e.getMessage());
-	                        } catch (IOException e) {
-	                            System.err.println("[ERROR] ÆÄÀÏ ¾²±â ½ÇÆĞ: " + e.getMessage());
-	                        }
+	                        // ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ ç•°ë¶½ï¿½ ï¿½ì”¤ï§ï¿½ æ„¿ï¿½ï¿½ì ´ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ï¿½ï¿½ï¿½ì˜£
+	                        session.setAttribute("jobIndex", data.get("jobIndex"));
+	                        session.setAttribute("threadIndex", data.get("threadIndex"));
+	                        session.setAttribute("jti", data.get("jti"));
+	                        session.setAttribute("twoWayTimestamp", data.get("twoWayTimestamp"));
 	                    } else {
-	                        System.err.println("[ERROR] º¸¾È¹®ÀÚ µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù.");
+	                        System.err.println("[ERROR] è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª›ï¿½ ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
 	                    }
 	                } else {
-	                    System.err.println("[ERROR] extraInfo °´Ã¼°¡ nullÀÔ´Ï´Ù.");
+	                    System.err.println("[ERROR] extraInfo åª›ì•¹ê»œåª›ï¿½ nullï¿½ì—¯ï¿½ë•²ï¿½ë–.");
 	                }
-
-
-	                session.setAttribute("jobIndex", data.get("jobIndex"));
-	                session.setAttribute("threadIndex", data.get("threadIndex"));
-	                session.setAttribute("jti", data.get("jti"));
-	                session.setAttribute("twoWayTimestamp", data.get("twoWayTimestamp"));
-
-	                return response; // JSON ÀÀ´ä ¹İÈ¯
+	            } else {
+	                // ç•°ë¶½ï¿½ ï¿½ì”¤ï§ì•¹ì”  ï¿½ë¸˜ï¿½ìŠ‚ï¿½ë¸¯ï§ï¿½ ï¿½ë¸¡ï¿½ï¿½ å¯ƒìŒìŠ¦
+	                response.put("redirectToSecureInput", false);
 	            }
 
-	            response.putAll(data); // ÇÊ¿äÇÑ Ãß°¡ µ¥ÀÌÅÍ Æ÷ÇÔ
+	            response.putAll(data); // ï¿½ë¸˜ï¿½ìŠ‚ï¿½ë¸³ ç•°ë¶½ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ï¿½ë£·ï¿½ë¸¿
 	            response.put("success", true);
 	            return response;
 	        }
@@ -262,207 +299,388 @@ public class PrescriptionController {
 	        e.printStackTrace();
 	    }
 
-	    response.put("error", "¿äÃ» Ã³¸® Áß ¿À·ù ¹ß»ı");
+	    response.put("error", "ï¿½ìŠ‚ï§£ï¿½ ï§£ì„â” ä»¥ï¿½ ï¿½ì‚¤ç‘œï¿½ è«›ì’–ê¹®");
 	    return response;
 	}
 
+
 	private boolean isBase64(String str) {
 	    try {
-	        Base64.getDecoder().decode(str); // µğÄÚµù ½Ãµµ
-	        return true; // µğÄÚµù ¼º°ø ½Ã À¯È¿ÇÑ Base64 ¹®ÀÚ¿­
+	        Base64.getDecoder().decode(str); // ï¿½ëµ’è‚„ë¶¾ëµ« ï¿½ë–†ï¿½ë£„
+	        return true; // ï¿½ëµ’è‚„ë¶¾ëµ« ï¿½ê½¦æ€¨ï¿½ ï¿½ë–† ï¿½ì‘€ï¿½ìŠšï¿½ë¸³ Base64 è‡¾ëª„ì˜„ï¿½ë¿´
 	    } catch (IllegalArgumentException e) {
-	        return false; // µğÄÚµù ½ÇÆĞ ½Ã À¯È¿ÇÏÁö ¾ÊÀº ¹®ÀÚ¿­
+	        return false; // ï¿½ëµ’è‚„ë¶¾ëµ« ï¿½ë–ï¿½ë™£ ï¿½ë–† ï¿½ì‘€ï¿½ìŠšï¿½ë¸¯ï§ï¿½ ï¿½ë¸¡ï¿½ï¿½ è‡¾ëª„ì˜„ï¿½ë¿´
 	    }
 	}
+	
+	
+
+	
+			@RequestMapping(value = "processSecureInput.do", method = RequestMethod.POST)
+			@ResponseBody
+			public HashMap<String, Object> processSecureInput(
+			        @RequestParam("secureNo") String secureNo,
+			        @RequestParam("secureNoRefresh") String secureNoRefresh,
+			        @RequestParam("is2Way") boolean is2Way,
+			        HttpSession session) throws JsonProcessingException {
+		
+			    HashMap<String, Object> response = new HashMap<>();
+		
+			    try {
+			        // ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ï¿½ê½Œ ï¿½ë¸˜ï¿½ë‹” ï¿½ëœ²ï¿½ì” ï¿½ê½£ åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½
+			        Integer jobIndex = (Integer) session.getAttribute("jobIndex");
+			        Integer threadIndex = (Integer) session.getAttribute("threadIndex");
+			        String jti = (String) session.getAttribute("jti");
+			        Long twoWayTimestamp = (Long) session.getAttribute("twoWayTimestamp");
+			        String phoneNumber = (String) session.getAttribute("phoneNumber");
+		
+			        if (phoneNumber == null) {
+			            response.put("error", "ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ ï¿½ìŸ¾ï¿½ì†•è¸°ëŠìƒ‡ ï¿½ì ™è¹‚ë‹¿ï¿½ ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–. ï¿½ë–ï¿½ë–† ï¿½ì”¤ï§ì•¹ì“£ ï§ê¾ªë»¾ï¿½ë¸¯ï¿½ê½­ï¿½ìŠ‚.");
+			            return response;
+			        }
+		
+			        if (jobIndex == null || threadIndex == null || jti == null || twoWayTimestamp == null) {
+			            response.put("error", "ï¿½ë¸˜ï¿½ë‹” ï¿½ì—¯ï¿½ì °åª›ë¯ªì”  ï¿½ëŠ»ï¿½ì”«ï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–. ï¿½ë–ï¿½ë–† ï¿½ì”¤ï§ì•¹ì“£ ï§ê¾ªë»¾ï¿½ë¸¯ï¿½ê½­ï¿½ìŠ‚.");
+			            return response;
+			        }
+		
+			        // ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ ï¿½ï¿½ï¿½ì˜£ï¿½ë§‚ ï¿½ìŠ‚ï§£ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£ åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½
+			        @SuppressWarnings("unchecked")
+			        HashMap<String, Object> requestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
+		
+			        if (requestData == null || !requestData.containsKey("organization")) {
+			            response.put("error", "ï¿½ë¸˜ï¿½ë‹” ï¿½ì—¯ï¿½ì °åª›ë¯ªì”  ï¿½ëŠ»ï¿½ì”«ï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+			            return response;
+			        }
+		
+			        // ç•°ë¶½ï¿½ ï¿½ì”¤ï§ï¿½ ï¿½ìŠ‚ï§£ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£ æ´ÑŠê½¦
+			        HashMap<String, Object> twoWayData = new HashMap<>();
+			        twoWayData.put("secureNo", secureNo); // è¹‚ëŒë¸è‡¾ëª„ì˜„ ï¿½ì ™è¹‚ï¿½
+			        twoWayData.put("secureNoRefresh", secureNoRefresh); // ï¿½ê¹‰æ¿¡ì’“í€¬ç§»ï¿½ ï¿½ì ™è¹‚ï¿½
+			        twoWayData.put("is2Way", true); // ç•°ë¶½ï¿½ ï¿½ìŠ‚ï§£ï¿½ ï¿½ë¿¬éºï¿½
+		
+			        // ï¿½ëª¢ï¿½ì¾ï¿½ì”  ï¿½ì ™è¹‚ï¿½ ï¿½ë£·ï¿½ë¸¿
+			        HashMap<String, Object> twoWayInfo = new HashMap<>();
+			        twoWayInfo.put("jobIndex", jobIndex);
+			        twoWayInfo.put("threadIndex", threadIndex);
+			        twoWayInfo.put("jti", jti);
+			        twoWayInfo.put("twoWayTimestamp", twoWayTimestamp);
+			        response.put("jti", jti);
+			        
+			        twoWayData.put("twoWayInfo", twoWayInfo);
+			        twoWayData.put("organization", requestData.get("organization"));
+		
+			        // CODEF API ï¿½ìƒ‡ç•°ï¿½ ä»¥ï¿½é®ï¿½
+			        EasyCodefToken tokenService = new EasyCodefToken();
+			        String accessToken = tokenService.getAccessToken(CLIENT_ID, CLIENT_SECRET);
+		
+			        if (accessToken.isEmpty()) {
+			            response.put("error", "ï¿½ë„—ï¿½ê²™ è«›ì’“íˆ’ ï¿½ë–ï¿½ë™£");
+			            return response;
+			        }
+		
+			        // CODEF API ï¿½ìƒ‡ç•°ï¿½
+			        EasyCodefConnector connector = new EasyCodefConnector();
+			        ObjectMapper objectMapper = new ObjectMapper();
+			        String requestBody = objectMapper.writeValueAsString(twoWayData);
+		
+			        HashMap<String, Object> apiResponse = connector.getRequestProduct(
+			                API_URL,
+			                accessToken,
+			                requestBody
+			        );
+		
+			        System.out.println("[DEBUG] ç•°ë¶½ï¿½ ï¿½ì”¤ï§ï¿½ ï¿½ì“³ï¿½ë–Ÿ ï¿½ëœ²ï¿½ì” ï¿½ê½£: " + apiResponse);
+		
+			        // ï¿½ì“³ï¿½ë–Ÿ ï§£ì„â”
+			        if (apiResponse.containsKey("data")) {
+			            HashMap<String, Object> data = (HashMap<String, Object>) apiResponse.get("data");
+		
+			            if (Boolean.TRUE.equals(data.get("continue2Way"))) {
+			                HashMap<String, Object> extraInfo = (HashMap<String, Object>) data.get("extraInfo");
+		
+			                String reqSMSAuthNo = "";
+			                if (extraInfo != null && extraInfo.containsKey("reqSMSAuthNo")) {
+			                    reqSMSAuthNo = (String) extraInfo.get("reqSMSAuthNo");
+			                }
+		
+			                if (reqSMSAuthNo == null || reqSMSAuthNo.isEmpty()) {
+			                    System.out.println("[WARN] SMS ï¿½ì”¤ï§ì•¸ì¾²ï¿½ìƒ‡åª›ï¿½ é®ê¾©ë¼± ï¿½ì—³ï§ï¿½ï§ï¿½, API ï¿½ìŠ‚ï§£ï¿½ï¿½ì”  ï¿½ì ™ï¿½ê¸½ï¿½ìŸ»ï¿½ì‘æ¿¡ï¿½ ï§£ì„â”ï¿½ë§–.");
+			                    response.put("success", true);
+			                    response.put("message", "SMS ï¿½ì”¤ï§ì•¸ì¾²ï¿½ìƒ‡åª›ï¿½ ï¿½ìŸ¾ï¿½ë„šï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–. ï¿½ì”¤ï§ì•¸ì¾²ï¿½ìƒ‡ç‘œï¿½ ï¿½ì—¯ï¿½ì °ï¿½ë¸¯ï¿½ê½­ï¿½ìŠ‚.");
+			                } else {
+			                    response.put("success", true);
+			                    response.put("reqSMSAuthNo", reqSMSAuthNo);
+			                    response.put("message", "SMS ï¿½ì”¤ï§ì•¸ì¾²ï¿½ìƒ‡åª›ï¿½ ï¿½ìŸ¾ï¿½ë„šï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+			                }
+			            }
+			            return response;
+			        } else {
+			            response.put("success", false);
+			            response.put("errorMessage", "API ï¿½ì“³ï¿½ë–Ÿï¿½ë¿‰ result ï¿½ëœ²ï¿½ì” ï¿½ê½£åª›ï¿½ ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+			            return response;
+			        }
+		
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			        response.put("success", false);
+			        response.put("errorMessage", "ç•°ë¶½ï¿½ ï¿½ì”¤ï§ï¿½ ä»¥ï¿½ ï¿½ì‚¤ç‘œï¿½ è«›ì’–ê¹®: " + e.getMessage());
+			    }
+		
+			    return response;
+			}
 
 	
 	
-	@RequestMapping(value = "processSecureInput.do", method = RequestMethod.POST)
-	public String processSecureInput(
-	        @RequestParam("jobIndex") String jobIndex,
-	        @RequestParam("threadIndex") String threadIndex,
-	        @RequestParam("jti") String jti,
-	        @RequestParam("twoWayTimestamp") String twoWayTimestamp,
-	        @RequestParam("secureNo") String secureNo,
-	        HttpSession session) throws JsonProcessingException {
+			@RequestMapping(value = "verifySmsCode.do", method = RequestMethod.POST)
+			@ResponseBody
+			public HashMap<String, Object> verifySmsCode(
+			        @RequestParam("smsAuthNo") String smsAuthNo,
+			        @RequestParam("is2Way") boolean is2Way,
+			        HttpSession session) {
+
+			    HashMap<String, Object> response = new HashMap<>();
+			    try {
+			    	// ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ï¿½ê½Œ ç•°ë¶½ï¿½ ï¿½ì”¤ï§ï¿½ ï¿½ì ™è¹‚ï¿½ åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½
+			        Integer jobIndex = (Integer) session.getAttribute("jobIndex");
+			        Integer threadIndex = (Integer) session.getAttribute("threadIndex");
+			        String jti = (String) session.getAttribute("jti");
+			        Long twoWayTimestamp = (Long) session.getAttribute("twoWayTimestamp");
+
+			        // ï¿½ëµ’è¸°ê¾§í‰­ æ¿¡ì’“ë ‡: ï¿½ê½­ï¿½ë€¡ åª›ï¿½ å¯ƒï¿½ï§ï¿½
+			        System.out.println("[DEBUG] ï¿½ê½­ï¿½ë€¡ åª›ï¿½ å¯ƒï¿½ï§ï¿½:");
+			        System.out.println("jobIndex: " + jobIndex);
+			        System.out.println("threadIndex: " + threadIndex);
+			        System.out.println("jti: " + jti);
+			        System.out.println("twoWayTimestamp: " + twoWayTimestamp);
+
+			        // ï¿½ê½­ï¿½ë€¡ åª›ï¿½ å¯ƒï¿½ï§ï¿½ ï¿½ë–ï¿½ë™£ ï¿½ë–† ï§£ì„â”
+			        if (jobIndex == null || threadIndex == null || jti == null || twoWayTimestamp == null) {
+			            response.put("verified", false);
+			            response.put("message", "ï¿½ë¸˜ï¿½ë‹” ï¿½ì”¤ï§ï¿½ ï¿½ì ™è¹‚ë‹¿ï¿½ ï¿½ëŠ»ï¿½ì”«ï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–. ï¿½ë–ï¿½ë–† ï¿½ë–†ï¿½ë£„ï¿½ë¸¯ï¿½ê½­ï¿½ìŠ‚.");
+			            System.err.println("[ERROR] ï¿½ê½­ï¿½ë€¡ åª›ë¯ªì”  ï¿½ëŠ»ï¿½ì”«ï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+			            return response;
+			        }
+			        
+				        // ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ï¿½ê½Œ secureNoRequestData åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½
+				        @SuppressWarnings("unchecked")
+				        HashMap<String, Object> requestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
+				        System.out.println("[DEBUG] ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ï¿½ê½Œ åª›ï¿½ï¿½ì¡‡ï¿½ì‚© requestData: " + requestData);
+			
+				        if (requestData == null || !requestData.containsKey("organization")) {
+				            response.put("verified", false);
+				            response.put("message", "ï¿½ë¸˜ï¿½ë‹” ï¿½ì—¯ï¿½ì °åª›ë¯ªì”  ï¿½ëŠ»ï¿½ì”«ï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–. ï¿½ë–ï¿½ë–† ï¿½ë–†ï¿½ë£„ï¿½ë¸¯ï¿½ê½­ï¿½ìŠ‚.");
+				            System.err.println("[ERROR] ï¿½ê½­ï¿½ë€¡ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ï¿½ëŠ»ï¿½ì”« ï¿½ì‚‰ï¿½ë’— organization ï¿½ê¶ ï¿½ë¾¾ï¿½ì“¬.");
+				            return response;
+				        }
+			
+				        // è‡¾ëª„ì˜„ è«›ì’–ë„š ï¿½ê½Œè¸°ê¾©ë¿‰ è¹‚ëŒ€ê¶ª ï¿½ëœ²ï¿½ì” ï¿½ê½£ æ´ÑŠê½¦
+				        HashMap<String, Object> verificationRequest = new HashMap<>();
+				        verificationRequest.put("smsAuthNo", smsAuthNo);
+				        verificationRequest.put("is2Way", is2Way);
+			
+				        HashMap<String, Object> twoWayInfo = new HashMap<>();
+				        twoWayInfo.put("jobIndex", jobIndex);
+				        twoWayInfo.put("threadIndex", threadIndex);
+				        twoWayInfo.put("jti", jti);
+				        twoWayInfo.put("twoWayTimestamp", twoWayTimestamp);
+			
+				        verificationRequest.put("twoWayInfo", twoWayInfo); // ï¿½ëª¢ï¿½ì¾ï¿½ì”  ï¿½ì ™è¹‚ï¿½ ï¿½ë£·ï¿½ë¸¿
+			
+				        // ï¿½ë¸˜ï¿½ë‹” ï¿½ë™†ï¿½ì”ªèª˜ëª…ê½£ ç•°ë¶½ï¿½
+				        verificationRequest.put("organization", requestData.get("organization")); // è­°ê³—ì­… ï¿½ì ™è¹‚ï¿½ ç•°ë¶½ï¿½
+			
+				        // ï¿½ëµ’è¸°ê¾§í‰­ æ¿¡ì’“ë ‡: CODEF API ï¿½ìŠ‚ï§£ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ç•°ì’•ì °
+				        System.out.println("[DEBUG] CODEF API ï¿½ìŠ‚ï§£ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£: " + verificationRequest);
+			
+				        // CODEF API ï¿½ìƒ‡ç•°ï¿½ ä»¥ï¿½é®ï¿½
+				        EasyCodefToken tokenService = new EasyCodefToken();
+				        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
+				        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
+				        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
+				        
+				        
+				        if (accessToken.isEmpty()) {
+				            response.put("error", "ï¿½ë„—ï¿½ê²™ è«›ì’“íˆ’ ï¿½ë–ï¿½ë™£");
+				            return response;
+				        }
+
+				        // CODEF API ï¿½ìƒ‡ç•°ï¿½
+				        EasyCodefConnector connector = new EasyCodefConnector();
+				        ObjectMapper objectMapper = new ObjectMapper();
+				        
+				        String requestBody = objectMapper.writeValueAsString(verificationRequest);
+
+				        HashMap<String, Object> apiResponse = connector.getRequestProduct(
+				                "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine",
+				                accessToken,
+				                requestBody
+				        );
+
+				        // ï¿½ëµ’è¸°ê¾§í‰­ æ¿¡ì’“ë ‡: CODEF API ï¿½ì“³ï¿½ë–Ÿ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ç•°ì’•ì °
+				        System.out.println("[DEBUG] CODEF API ï¿½ì“³ï¿½ë–Ÿ ï¿½ëœ²ï¿½ì” ï¿½ê½£: " + apiResponse);
+
+			        // CODEF API ï¿½ì“³ï¿½ë–Ÿ ï§£ì„â”
+			        HashMap<String, Object> result = (HashMap<String, Object>) apiResponse.get("result");
+			        if (result != null && "CF-00000".equals(result.get("code"))) { // ï¿½ê½¦æ€¨ï¿½ è‚„ë¶¾ë±¶ ï¿½ì†—ï¿½ì”¤
+			            List<HashMap<String, Object>> data = (List<HashMap<String, Object>>) apiResponse.get("data");
+
+			            if (data != null && !data.isEmpty()) {
+			                List<PrescriptionVo> prescriptions = new ArrayList<>();
+
+			                for (HashMap<String, Object> item : data) {
+			                    PrescriptionVo prescription = new PrescriptionVo();
+			                    prescription.setResMenufactureDate((String) item.get("resManufactureDate"));
+			                    prescription.setResPrescribeOrg((String) item.get("resPrescribeOrg"));
+			                    prescription.setResTelNo((String) item.get("resTelNo"));
+			                    prescription.setCommBrandName((String) item.get("commBrandName"));
+			                    prescription.setCommTelNo((String) item.get("resTelNo1"));
+
+			                    // ï¿½ë¹Ÿè‡¾ï¿½ ç”±ÑŠë’ªï¿½ë“ƒ ï§ã…½ë¸¨
+			                    List<HashMap<String, Object>> drugList = (List<HashMap<String, Object>>) item.get("resDrugList");
+			                    List<DrugVo> drugs = new ArrayList<>();
+			                    for (HashMap<String, Object> drugItem : drugList) {
+			                        DrugVo drug = new DrugVo();
+			                        drug.setResNumber((String) drugItem.get("resNumber"));
+			                        drug.setResDrugName((String) drugItem.get("resDrugName"));
+			                        drug.setResDrugCode((String) drugItem.get("resDrugCode"));
+			                        drug.setResIngredients((String) drugItem.get("resIngredients"));
+			                        drug.setResPrescribeDrugEffect((String) drugItem.get("resPrescribeDrugEffect"));
+			                        drug.setResContent((String) drugItem.get("resContent"));
+			                        drug.setResOneDose((String) drugItem.get("resOneDose"));
+			                        drug.setResDailyDosesNumber((String) drugItem.get("resDailyDosesNumber"));
+			                        drug.setResTotalDosingdays((String) drugItem.get("resTotalDosingdays"));
+
+			                        drugs.add(drug);
+			                    }
+			                    prescription.setDrugs(drugs); // ï¿½ë¹Ÿè‡¾ï¿½ ç”±ÑŠë’ªï¿½ë“ƒ ç•°ë¶½ï¿½
+			                    prescriptions.add(prescription);
+			                }
+
+			                session.setAttribute("finalResultData", prescriptions); // ï¿½ê½­ï¿½ë€¡ï¿½ë¿‰ ï¿½ï¿½ï¿½ì˜£
+			                response.put("verified", true);
+			                response.put("message", "SMS ï¿½ì”¤ï§ï¿½ ï¿½ê½¦æ€¨ï¿½");
+			            } else {
+			                response.put("verified", false);
+			                response.put("message", "CODEF API ï¿½ì“³ï¿½ë–Ÿ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª›ï¿½ ï¿½ë¾¾ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+			            }
+			        } else {
+			            response.put("verified", false);
+			            response.put("message", "CODEF API ï¿½ìŠ‚ï§£ï¿½ ï¿½ë–ï¿½ë™£");
+			        }
+
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			        response.put("verified", false);
+			        response.put("message", "SMS ï¿½ì”¤ï§ï¿½ ï§£ì„â” ä»¥ï¿½ ï¿½ì‚¤ç‘œï¿½ è«›ì’–ê¹®: " + e.getMessage());
+			    }
+
+			    return response;
+			}
+
+
 	
-	    // Ãß°¡ ÀÎÁõ ¿äÃ» µ¥ÀÌÅÍ ±¸¼º
-	    HashMap<String, Object> twoWayData = new HashMap<>();
-	    twoWayData.put("jobIndex", jobIndex);
-	    twoWayData.put("threadIndex", threadIndex);
-	    twoWayData.put("jti", jti);
-	    twoWayData.put("twoWayTimestamp", twoWayTimestamp);
-	    twoWayData.put("secureNo", secureNo);
+	
+	
+	@RequestMapping(value = "prescriptionList.do", method = RequestMethod.GET)
+	public String prescriptionList(HttpSession session, Model model) {
+	    List<PrescriptionVo> prescriptions = (List<PrescriptionVo>) session.getAttribute("finalResultData");
+	    if (prescriptions == null || prescriptions.isEmpty()) {
+	        return "redirect:/prescription/certification.do"; // ï¿½ëœ²ï¿½ì” ï¿½ê½£åª›ï¿½ ï¿½ë¾¾ï¿½ì“£ å¯ƒìŒìŠ¦ ï¿½ì”¤ï§ï¿½ ï¿½ëŸ¹ï¿½ì” ï§ï¿½æ¿¡ï¿½ ç”±Ñ‰ë–ï¿½ì” ï¿½ì †ï¿½ë“ƒ
+	    }
+	    model.addAttribute("prescriptions", prescriptions); // ï¿½ëœ²ï¿½ì” ï¿½ê½£ç‘œï¿½ ï§â‘¤ëœ½ï¿½ë¿‰ ç•°ë¶½ï¿½
+	    return "WEB-INF/prescription/prescriptionList";
+	}
 
-	    // CODEF API È£Ãâ
-	    EasyCodefToken tokenService = new EasyCodefToken();
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    String clientId = "fbbcf915-2395-4dfe-9316-a5ce610fab1a"; 
-	    String clientSecret = "2b152335-b63a-4596-bf34-5b44f79b41b0"; 
-	    EasyCodefConnector connector = new EasyCodefConnector();
-	    String accessToken = tokenService.getAccessToken(clientId, clientSecret);
-	    
-	    
-	    
-	    HashMap<String, Object> response = connector.getRequestProduct(
-	        "https://development.codef.io/v1/kr/public/hw/hira-list/my-prescription",
-	        accessToken,
-	        objectMapper.writeValueAsString(twoWayData)
-	    );
 
-	    System.out.println("Ãß°¡ ÀÎÁõ ÀÀ´ä µ¥ÀÌÅÍ: " + response);
 
-	    session.setAttribute("response", response);
 
-	    return "WEB-INF/prescription/finalResult"; // ÃÖÁ¾ °á°ú ÆäÀÌÁö·Î ÀÌµ¿
+
+
+
+	
+	@RequestMapping(value = "prescriptionDetail.do", method = RequestMethod.GET)
+	public String getPrescriptionDetail(@RequestParam("id") int pidx, HttpSession session, Model model) {
+	    System.out.println("ï¿½ìœ‹ï¿½ è«›ì†ï¿½ ï§£ì„ê°‘ï¿½ìŸ¾ ID åª›ï¿½: " + pidx); // ï¿½ìŠ‚ï§£ï¿½ï¿½ë§‚ ID ï¿½ì†—ï¿½ì”¤
+
+	    List<PrescriptionVo> prescriptions = (List<PrescriptionVo>) session.getAttribute("finalResultData");
+
+	    if (prescriptions == null || prescriptions.isEmpty()) {
+	        return "redirect:/prescription/prescriptionList.do";
+	    }
+
+	    PrescriptionVo selectedPrescription = null;
+
+	    for (PrescriptionVo prescription : prescriptions) {
+	        if (prescription.getPidx() == pidx) {  // ï¿½ë–ï¿½ì £ pidx åª›ë¯ªì‘æ¿¡ï¿½ è­°ê³ ì‰¶
+	            selectedPrescription = prescription;
+	            break;
+	        }
+	    }
+
+	    if (selectedPrescription == null) {
+	        return "redirect:/prescription/prescriptionList.do";
+	    }
+
+	    model.addAttribute("prescription", selectedPrescription);
+	    model.addAttribute("drugs", selectedPrescription.getDrugs());
+
+	    return "WEB-INF/prescription/prescriptionDetail";
 	}
 	
-	
-	
-	@RequestMapping(value = "verifySmsCode.do", method = RequestMethod.POST)
+	// ï¿½ì—«ï¿½ë–† ï¿½ì‰¶ï¿½ì ï¿½ï¿½ï¿½ì˜£
+	@RequestMapping(value = "savePrescriptionWithoutMember.do", method = RequestMethod.POST)
 	@ResponseBody
-	public HashMap<String, Object> verifySmsCode(
-	        @RequestParam("smsAuthNumber") String smsAuthNumber,
-	        HttpSession session) {
+	public HashMap<String, Object> savePrescriptionWithoutMember(
+	        @RequestParam("name") String name,
+	        @RequestParam("phoneNumber") String phoneNumber,
+	        @RequestBody List<PrescriptionVo> prescriptions) {
 
-	   HashMap<String, Object> response = new HashMap<>();
-	   String expectedCode = (String) session.getAttribute("smsCode"); 
-
-	   if (expectedCode != null && expectedCode.equals(smsAuthNumber)) {
-	       response.put("verified", true); 
-	   } else {
-	       response.put("verified", false); 
-	   }
-
-	   return response; 
-	}
-	
-	
-	@RequestMapping(value = "/decodeSecureNo", method = RequestMethod.POST, produces = "image/png")
-	@ResponseBody
-	public byte[] decodeSecureNo(@RequestParam("base64Image") String base64Image) {
+	    HashMap<String, Object> response = new HashMap<>();
 	    try {
-	        // Base64 µğÄÚµù
-	        byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
+	        // ï¿½ì—«ï¿½ë–† ï¿½ê¶—ï¿½ìŠœï¿½ì˜„ ID ï¿½ê¹®ï¿½ê½¦
+	        String tempId = "TEMP_" + java.util.UUID.randomUUID().toString();
 
-	        // µğÄÚµùµÈ ÀÌ¹ÌÁö µ¥ÀÌÅÍ¸¦ ¹İÈ¯
-	        return decodedBytes;
+	        // ï¿½ì—«ï¿½ë–† ï¿½ê¶—ï¿½ìŠœï¿½ì˜„ ï¿½ì ™è¹‚ï¿½ DB ï¿½ï¿½ï¿½ì˜£
+	        MemberVo tempMember = new MemberVo();
+	        tempMember.setId(tempId);
+	        tempMember.setName(name);
+	        tempMember.setPhone(phoneNumber);
+	        
+	        tempMember.setDelyn("N");
+	        
+	        
+
+	        int midx = memberService.saveMemberInfo(tempMember); // ï¿½ê¶«ï¿½ì—¯ï¿½ë§‚ midx åª›ï¿½ï¿½ì¡‡ï¿½ì‚¤æ¹²ï¿½
+
+	        // ï¿½ê¶—ï¿½ìŠœï¿½ì˜„ ï¿½ì ™è¹‚ï¿½ ï¿½ï¿½ï¿½ì˜£ ï¿½ê½¦æ€¨ï¿½ ï¿½ë–† ï§£ì„ê°‘ï¿½ìŸ¾ ï¿½ï¿½ï¿½ì˜£
+	        if (midx > 0) {
+	            for (PrescriptionVo prescription : prescriptions) {
+	                prescription.setMidx(midx); // midxç‘œï¿½ PrescriptionVoï¿½ï¿½ ï¿½ë¿°å¯ƒï¿½
+	                
+	                prescriptionService.savePrescription(prescription);
+	            }
+	            response.put("success", true);
+	            response.put("message", "ï¿½ì—«ï¿½ë–† ï¿½ê¶—ï¿½ìŠœï¿½ì˜„ è«›ï¿½ ï§£ì„ê°‘ï¿½ìŸ¾ ï¿½ì ™è¹‚ë‹¿ï¿½ ï¿½ï¿½ï¿½ì˜£ï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+	        } else {
+	            response.put("success", false);
+	            response.put("message", "ï¿½ì—«ï¿½ë–† ï¿½ê¶—ï¿½ìŠœï¿½ì˜„ ï¿½ì ™è¹‚ëŒ€ï¿½ï¿½ ï¿½ï¿½ï¿½ì˜£ï¿½ë¸¯ï¿½ë’— ï¿½ëœ² ï¿½ë–ï¿½ë™£ï¿½ë»½ï¿½ë’¿ï¿½ë•²ï¿½ë–.");
+	        }
+
 	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return null; // ¿À·ù ¹ß»ı ½Ã null ¹İÈ¯
+	        response.put("success", false);
+	        response.put("error", "ï¿½ëœ²ï¿½ì” ï¿½ê½£ ï¿½ï¿½ï¿½ì˜£ ä»¥ï¿½ ï¿½ì‚¤ç‘œï¿½ è«›ì’–ê¹®: " + e.getMessage());
 	    }
+
+	    return response;
 	}
 
 
-	@RequestMapping(value = "additionalCertification.do", method = RequestMethod.GET)
-    public String additionalCertification(HttpSession session) {
-		 System.out.println("additionalCertification.do enter?");
-        // ¼¼¼Ç¿¡ ÀúÀåµÈ ÀÀ´ä µ¥ÀÌÅÍ È®ÀÎ (ÇÊ¿ä ½Ã µğ¹ö±ë¿ë)
-        Object response = session.getAttribute("response");
-        System.out.println("Ãß°¡ ÀÎÁõ ¿Ï·á ÀÀ´ä µ¥ÀÌÅÍ: " + response);
 
-        // Ãß°¡ ÀÎÁõ ¿Ï·á ÆäÀÌÁö·Î ÀÌµ¿
-        return "WEB-INF/prescription/additionalCertification";
-    }
-	
-	@RequestMapping(value = "finalResult.do", method = RequestMethod.GET)
-    public String finalResult(HttpSession session) {
-        // ¼¼¼Ç¿¡ ÀúÀåµÈ ÀÀ´ä µ¥ÀÌÅÍ È®ÀÎ (µğ¹ö±ë¿ë)
-        Object response = session.getAttribute("response");
-        System.out.println("ÃÖÁ¾ °á°ú ÀÀ´ä µ¥ÀÌÅÍ: " + response);
 
-        // ÃÖÁ¾ °á°ú ÆäÀÌÁö·Î ÀÌµ¿
-        return "WEB-INF/prescription/finalResult";
-    }
+
+
+
+
 	
 }
-
-
-
-
-// ±âÁ¸ÄÚµå
-
-//@RequestMapping(value = "processCertification.do", method = RequestMethod.POST)
-//public String processCertification(
-//        @RequestParam("idNumberFront") String idNumberFront,
-//        @RequestParam("idNumberBack") String idNumberBack,
-//        @RequestParam("name") String name,
-//        @RequestParam("phonePrefix") String phonePrefix,
-//        @RequestParam("phoneNumber") String phoneNumber,
-//        @RequestParam("telecom") String telecom,
-//        HttpSession session) throws JsonProcessingException {
-//	
-//	try {
-//        // ÀÔ·Â µ¥ÀÌÅÍ È®ÀÎ
-//        System.out.println("ÀÔ·Â µ¥ÀÌÅÍ:");
-//        System.out.println("ÁÖ¹Î¹øÈ£ ¾ÕÀÚ¸®: " + idNumberFront);
-//        System.out.println("ÁÖ¹Î¹øÈ£ µŞÀÚ¸®: " + idNumberBack);
-//        System.out.println("ÀÌ¸§: " + name);
-//        System.out.println("ÈŞ´ëÆù ¹øÈ£: " + phonePrefix + phoneNumber);
-//
-//        // CODEF API È£Ãâ ·ÎÁ÷ ½ÇÇà...
-//    } catch (Exception e) {
-//        System.err.println("¿¹¿Ü ¹ß»ı:");
-//        e.printStackTrace();
-//    }
-//
-//
-//    // ÁÖ¹Îµî·Ï¹øÈ£ ¹× ÈŞ´ëÆù ¹øÈ£ ÇÕÄ¡±â
-//    String fullIdNumber = idNumberFront + idNumberBack; 
-//    String fullPhoneNumber = phonePrefix + phoneNumber;
-//
-//    // CODEF ¿äÃ» µ¥ÀÌÅÍ ±¸¼º
-//    HashMap<String, Object> requestData = new HashMap<>();
-//    requestData.put("organization", "0020");
-//    requestData.put("loginType", "2");
-//    requestData.put("identity", fullIdNumber);
-//    requestData.put("loginTypeLevel", "1");
-//    requestData.put("userName", name);
-//    requestData.put("telecom", telecom);
-//    requestData.put("phoneNo", fullPhoneNumber);
-//    requestData.put("authMethod", "0"); // SMS ÀÎÁõ
-//
-//    // CODEF API È£Ãâ ÁØºñ
-//    EasyCodefToken tokenService = new EasyCodefToken();
-//    String clientId = "fbbcf915-2395-4dfe-9316-a5ce610fab1a"; 
-//    String clientSecret = "2b152335-b63a-4596-bf34-5b44f79b41b0"; 
-//    
-//    String accessToken = tokenService.getAccessToken(clientId, clientSecret);
-//    
-//    if (accessToken.isEmpty()) {
-//        System.out.println("ÅäÅ« ¹ß±Ş ½ÇÆĞ");
-//        return "WEB-INF/prescription/error";
-//    }
-//
-//    // API È£Ãâ
-//    EasyCodefConnector connector = new EasyCodefConnector();
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    
-//    String requestBody = objectMapper.writeValueAsString(requestData);
-//
-//    HashMap<String, Object> response = connector.getRequestProduct(
-//        "https://development.codef.io/v1/kr/public/hw/hira-list/my-prescription",
-//        accessToken,
-//        requestBody
-//    );
-//
-//    System.out.println("CODEF ÀÀ´ä µ¥ÀÌÅÍ: " + response);
-//
-//    // º¸¾È¹®ÀÚ Ã³¸®
-//    if (response.containsKey("data")) {
-//        HashMap<String, Object> data = (HashMap<String, Object>) response.get("data");
-//        if (data != null && data.containsKey("reqSecureNo") && data.get("reqSecureNo") != null) {
-//            session.setAttribute("secureNoImage", data.get("reqSecureNo")); // º¸¾È¹®ÀÚ ÀÌ¹ÌÁö ÀúÀå
-//            session.setAttribute("jobIndex", data.get("jobIndex"));
-//            session.setAttribute("threadIndex", data.get("threadIndex"));
-//            session.setAttribute("jti", data.get("jti"));
-//            session.setAttribute("twoWayTimestamp", data.get("twoWayTimestamp"));
-//            return "WEB-INF/prescription/secureInput"; // º¸¾È¹®ÀÚ ÀÔ·Â ÆäÀÌÁö·Î ÀÌµ¿
-//        }
-//    }
-//
-//    // Ãß°¡ ÀÎÁõÀÌ ÇÊ¿äÇÏÁö ¾ÊÀº °æ¿ì
-//    session.setAttribute("response", response);
-//    
-//    return "WEB-INF/prescription/additionalCertification";
-//}

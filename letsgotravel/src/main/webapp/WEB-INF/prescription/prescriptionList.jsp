@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>처방받은약</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
+    <!-- jQuery를 CDN에서 로드 -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
 
       /* 노말라이즈 */
@@ -571,63 +573,29 @@ margin-right:50px;
             <th>조제기관</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>8</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-          <tr>
-            <td>9</td>
-            <td>2024-11-11</td>
-            <td><a href="#">병원 이름</a></td>
-            <td>약국 이름</td>
-          </tr>
-        </tbody>
-      </table>
+		     <tbody>
+				      <<c:forEach var="prescription" items="${prescriptions}" varStatus="status">
+					    <tr onclick="window.location.href='${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}'">
+					        <td>${status.index + 1}</td>
+					        <td>
+					            <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}">
+					                ${prescription.resMenufactureDate}
+					            </a>
+					        </td>
+					        <td>${prescription.resPrescribeOrg}</td>
+					        <td>${prescription.commBrandName}</td>
+					    </tr>
+					</c:forEach>
+				
+				        <!-- 데이터가 없는 경우 -->
+				        <c:if test="${empty prescriptions}">
+				            <tr>
+				                <td colspan="4">조회된 처방 정보가 없습니다.</td>
+				            </tr>
+				        </c:if>
+				    </tbody>
+
+				</table>
       <section>
 	      ※처방기관명을 클릭하시면 처방받으신 내용을 확인하실 수 있습니다.
 	    </section>
@@ -690,6 +658,40 @@ margin-right:50px;
 
       // 초기 업데이트 실행
       // updatePagination();
+      
+      
+     document.addEventListener("DOMContentLoaded", function () {
+    var contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf("/", 2));
+    console.log("contextPath 확인:", contextPath); // 🛠 디버깅용
+
+    fetch(`${contextPath}/prescription/prescriptionList.do`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            updatePrescriptionTable(data.prescriptions);
+        } else {
+            alert("처방 내역이 없습니다.");
+        }
+    })
+    .catch(error => {
+        console.error("❌ 처방 데이터 불러오기 오류:", error);
+    });
+});
+
+
+
+      
+      
+      
+      
     </script>
   </body>
 </html>
