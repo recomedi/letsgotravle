@@ -133,6 +133,9 @@ public class TravelController {
 	public String travelSights(TravelConditionsVo tv, Model model) {
 		logger.info("travelSights 들어옴");
 		
+		// 너는 혼자 여행전문가야. 내가 말하는 조건에 맞는 관광지 15개와 음식점 15개를 추천해줘. 도시는 일본/도쿄이고 총 인원은 3명이고 예산은 4만원 ~ 4만원이야. 키워드는 식도락이고 2025-03에 방문하기 좋은 장소로 추천해줬으면 좋겠어. 설명 없이 명칭만 알려줘. 위의 내용을 json 형식으로 부탁해. 예시를 보여줄게.{"추천관광지": ["시부야 스크램블 교차로", "도쿄 스카이트리"],  "추천음식점": ["이치란라멘", "멘야 무사시"]}
+		// 도쿄 스카이트리에 대해 String 형식으로 설명해줘
+		
 		String destination = tv.getDestination();
 		
 		

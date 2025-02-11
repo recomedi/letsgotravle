@@ -6,7 +6,7 @@ import com.letsgotravel.myapp.domain.MemberVo;
 
 public interface MemberService {
 
-	 @Select("SELECT NOW()")
+	
 	    String getCurrentTime();
 	 
 	 
