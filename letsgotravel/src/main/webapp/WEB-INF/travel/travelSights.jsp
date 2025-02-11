@@ -43,15 +43,15 @@
 						
 					 	<input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
-	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]}" varStatus="status">
-	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight.value[status.index]}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight.value[status.index]}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
+	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
+	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
 	                       <input type="radio" name="sights-radio" id="restaurant" class="none">
 	                       <div class="check-box pt-10 none restaurant">
-	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]}" varStatus="status">${requestScope.openAIResult1Array[0]}
-	                            <input type="checkbox" id="ck1${status.index+1}" class="none" name="restaurantCk" value="${restaurant.value[status.index]}"><label class="relative mt-20 pl-35 inline-block" for="ck1${status.index+1}"> ${restaurant.value[status.index]}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
+	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
+	                            <input type="checkbox" id="ck1${status.index+1}" class="none" name="restaurantCk" value="${restaurant}"><label class="relative mt-20 pl-35 inline-block" for="ck1${status.index+1}"> ${restaurant}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
