@@ -38,7 +38,7 @@ import com.letsgotravel.myapp.service.PrescriptionService;
 public class PrescriptionController {
 	
 	
-	 // CODEF API 愿��젴 �긽�닔
+	 // CODEF API 관련 상수
     private static final String CLIENT_ID = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
     private static final String CLIENT_SECRET = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
     private static final String API_URL = "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine";
@@ -55,7 +55,7 @@ public class PrescriptionController {
 	 private HashMap<String, Object> requestData = new HashMap<>();
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(PrescriptionController.class);
 
-	//png file �쑀�슚�꽦寃��궗硫붿꽌�뱶 
+	//png file 유효성검사메서드 
 	
 	private boolean isPng(byte[] data) {
 	    byte[] pngHeader = new byte[] {(byte) 0x89, 'P', 'N', 'G', (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A};
@@ -75,36 +75,40 @@ public class PrescriptionController {
 	
 	
 	
+	
+	
+	
+	
 	@RequestMapping(value = "refreshSecureNo.do", method = RequestMethod.POST)
 	@ResponseBody
 	public HashMap<String, Object> refreshSecureNo(HttpSession session) {
 	    logger.info("[DEBUG] refreshSecureNo enter?");
 	    HashMap<String, Object> response = new HashMap<>();
 	    try {
-	        // �꽭�뀡�뿉�꽌 �븘�닔 �뜲�씠�꽣 媛��졇�삤湲�
+	        // 세션에서 필수 데이터 가져오기
 	        @SuppressWarnings("unchecked")
 	        HashMap<String, Object> requestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
 
 	        if (requestData == null) {
-	            response.put("error", "�븘�닔 �엯�젰媛믪씠 �늻�씫�릺�뿀�뒿�땲�떎. �떎�떆 �씤利앹쓣 吏꾪뻾�븯�꽭�슂.");
+	            response.put("error", "필수 입력값이 누락되었습니다. 다시 인증을 진행하세요.");
 	            return response;
 	        }
 
-	        // �깉濡쒓퀬移� �뵆�옒洹� 異붽�
+	        // 새로고침 플래그 추가
 	        requestData.put("refresh", true);
 
-	        // CODEF API �샇異� 以�鍮�
+	        // CODEF API 호출 준비
 	        EasyCodefToken tokenService = new EasyCodefToken();
 	        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
 	        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
 	        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
 
 	        if (accessToken.isEmpty()) {
-	            response.put("error", "�넗�겙 諛쒓툒 �떎�뙣");
+	            response.put("error", "토큰 발급 실패");
 	            return response;
 	        }
 
-	        // CODEF API �샇異�
+	        // CODEF API 호출
 	        EasyCodefConnector connector = new EasyCodefConnector();
 	        ObjectMapper objectMapper = new ObjectMapper();
 	        String requestBody = objectMapper.writeValueAsString(requestData);
@@ -115,9 +119,9 @@ public class PrescriptionController {
 	                requestBody
 	        );
 
-	        System.out.println("[DEBUG] CODEF �쓳�떟 �뜲�씠�꽣: " + apiResponse);
+	        System.out.println("[DEBUG] CODEF 응답 데이터: " + apiResponse);
 
-	        // �쓳�떟�뿉�꽌 �깉濡쒖슫 蹂댁븞臾몄옄 �뜲�씠�꽣 異붿텧
+	        // 응답에서 새로운 보안문자 데이터 추출
 	        if (apiResponse.containsKey("data")) {
 	            HashMap<String, Object> data = (HashMap<String, Object>) apiResponse.get("data");
 	            HashMap<String, Object> extraInfo = (HashMap<String, Object>) data.get("extraInfo");
@@ -125,23 +129,23 @@ public class PrescriptionController {
 	            if (extraInfo != null && extraInfo.containsKey("reqSecureNo")) {
 	                String reqSecureNo = (String) extraInfo.get("reqSecureNo");
 
-	                // �닚�닔 Base64 �뜲�씠�꽣留� 諛섑솚
+	                // 순수 Base64 데이터만 반환
 	                response.put("reqSecureNoDecoded", reqSecureNo);
-	                logger.info("[DEBUG] �깉濡쒖슫 蹂댁븞臾몄옄 �깮�꽦 �꽦怨�.");
+	                logger.info("[DEBUG] 새로운 보안문자 생성 성공.");
 	            } else {
-	                response.put("error", "�깉濡쒖슫 蹂댁븞臾몄옄瑜� 媛��졇�삱 �닔 �뾾�뒿�땲�떎.");
-	                logger.error("[ERROR] �깉濡쒖슫 蹂댁븞臾몄옄 �깮�꽦 �떎�뙣.");
+	                response.put("error", "새로운 보안문자를 가져올 수 없습니다.");
+	                logger.error("[ERROR] 새로운 보안문자 생성 실패.");
 	            }
 
 
 	        } else {
-	            response.put("error", "API �쓳�떟�뿉 �뜲�씠�꽣媛� �뾾�뒿�땲�떎.");
-	            logger.error("[ERROR] API �쓳�떟�뿉 �뜲�씠�꽣媛� �뾾�뒿�땲�떎.");
+	            response.put("error", "API 응답에 데이터가 없습니다.");
+	            logger.error("[ERROR] API 응답에 데이터가 없습니다.");
 	        }
 
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        response.put("error", "蹂댁븞臾몄옄 �깮�꽦 以� �삤瑜� 諛쒖깮");
+	        response.put("error", "보안문자 생성 중 오류 발생");
 	    }
 	    return response;
 	}
@@ -153,24 +157,24 @@ public class PrescriptionController {
             EasyCodefConnector connector = new EasyCodefConnector();
             ObjectMapper objectMapper = new ObjectMapper();
 
-            // CODEF API �샇異�
+            // CODEF API 호출
             HashMap<String, Object> apiResponse = connector.getRequestProduct(
                     API_URL,
                     accessToken,
                     objectMapper.writeValueAsString(requestData)
             );
 
-            logger.info("[DEBUG] CODEF �쓳�떟 �뜲�씠�꽣: {}", apiResponse);
+            logger.info("[DEBUG] CODEF 응답 데이터: {}", apiResponse);
 
-            // �쓳�떟 泥섎━
+            // 응답 처리
             if (apiResponse.containsKey("data")) {
                 response.putAll((HashMap<String, Object>) apiResponse.get("data"));
             } else {
-                response.put("error", "API �쓳�떟�뿉 �뜲�씠�꽣媛� �뾾�뒿�땲�떎.");
+                response.put("error", "API 응답에 데이터가 없습니다.");
             }
         } catch (Exception e) {
-            logger.error("CODEF API �샇異� 以� �삤瑜� 諛쒖깮: {}", e.getMessage());
-            response.put("error", "CODEF API �샇異� 以� �삤瑜� 諛쒖깮: " + e.getMessage());
+            logger.error("CODEF API 호출 중 오류 발생: {}", e.getMessage());
+            response.put("error", "CODEF API 호출 중 오류 발생: " + e.getMessage());
         }
         return response;
     }
@@ -187,6 +191,74 @@ public class PrescriptionController {
 
 	@RequestMapping(value = "processCertification.do", method = RequestMethod.POST)
 	@ResponseBody
+	public HashMap<String, Object> savePrescription(
+	        @RequestBody List<PrescriptionVo> prescriptions,@RequestParam("phoneNumber") String phoneNumber,
+	        HttpSession session) {
+
+	    HashMap<String, Object> response = new HashMap<>();
+//	    
+//	    try {
+//	        // 📌 인증된 사용자의 midx 가져오기 (DB에서 phoneNumber로 조회)
+//	        Integer midx = 6;  
+//
+////	        if (midx == null) {
+////	            response.put("error", "회원 정보가 존재하지 않습니다. 회원가입이 필요합니다.");
+////	            return response;
+////	        }
+//
+//	        // ✅ 세션에 midx 저장 (회원 인증 완료)
+//	        session.setAttribute("midx", midx);
+//	        response.put("success", true);
+//	        response.put("midx", midx);
+//	        response.put("message", "본인 인증 성공, 세션에 midx 저장 완료");
+//
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	        response.put("error", "본인 인증 중 오류 발생: " + e.getMessage());
+//	    }
+	    
+	    
+	    try {
+	        //Integer midx = (Integer) session.getAttribute("midx"); // 현재 로그인한 회원 ID
+	        Integer midx = 6; // 현재 로그인한 회원 ID
+	        if (midx == null) {
+	            response.put("error", "로그인이 필요합니다.");
+	            return response;
+	        }
+
+	        for (PrescriptionVo prescription : prescriptions) {
+	            prescription.setMidx(midx); // 로그인한 회원과 연결
+
+	            // PRESCRIPTION 데이터 저장
+	            int pidx = prescriptionService.savePrescription(prescription);
+	            if (pidx <= 0) {
+	                response.put("error", "처방전 저장 실패");
+	                return response;
+	            }
+
+	            // DRUG 데이터 저장
+	            for (DrugVo drug : prescription.getDrugs()) {
+	                drug.setPidx(pidx); // 처방전과 연결
+	                prescriptionService.saveDrug(drug);
+	            }
+	        }
+
+	        response.put("success", true);
+	        response.put("message", "처방전 및 약 정보 저장 완료");
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        response.put("error", "저장 중 오류 발생: " + e.getMessage());
+	    }
+	    logger.info("[processCertification] phoneNumber: {}", phoneNumber);
+	    Integer midx = memberService.getMemberByPhone(phoneNumber);
+	    logger.info("[processCertification] 조회된 midx: {}", midx);
+
+	    return response;
+	}
+	
+	
+	
 	public HashMap<String, Object> processCertification(
 	        @RequestParam("idNumberFront") String idNumberFront,
 	        @RequestParam("idNumberBack") String idNumberBack,
@@ -194,30 +266,32 @@ public class PrescriptionController {
 	        @RequestParam("phoneNumber") String phoneNumber,
 	        @RequestParam("telecom") String telecom,
 	        HttpSession session) throws JsonProcessingException {
+		
+		
 
 	    HashMap<String, Object> response = new HashMap<>();
 	    try {
 	    	
-	        // 二쇰�쇰벑濡앸쾲�샇 諛� �쑕���룿 踰덊샇 �빀移섍린
+	        // 주민등록번호 및 휴대폰 번호 합치기
 	        String fullIdNumber = idNumberFront + idNumberBack;
 	        String fullPhoneNumber = phoneNumber;
 
-	        // CODEF �슂泥� �뜲�씠�꽣 援ъ꽦
+	        // CODEF 요청 데이터 구성
 	        HashMap<String, Object> requestData = new HashMap<>();
-	        requestData.put("organization", "0020"); // 湲곌� 肄붾뱶
+	        requestData.put("organization", "0020"); // 기관 코드
 	        requestData.put("loginType", "2");
-	        requestData.put("identity", fullIdNumber); // 二쇰�쇰벑濡앸쾲�샇
+	        requestData.put("identity", fullIdNumber); // 주민등록번호
 	        requestData.put("loginTypeLevel", "1");
 	        requestData.put("userName", name);
 	        requestData.put("telecom", telecom);
 	        requestData.put("phoneNo", fullPhoneNumber);
-	        requestData.put("authMethod", "0"); // SMS �씤利�
+	        requestData.put("authMethod", "0"); // SMS 인증
 
-	        // �꽭�뀡�뿉 �븘�닔 �뜲�씠�꽣 ���옣 (蹂댁븞臾몄옄 �깉濡쒓퀬移⑥슜)
+	        // 세션에 필수 데이터 저장 (보안문자 새로고침용)
 	        session.setAttribute("secureNoRequestData", requestData);
 	        session.setAttribute("phoneNumber", fullPhoneNumber);
 
-	        // CODEF API �샇異� 以�鍮�
+	        // CODEF API 호출 준비
 	        EasyCodefToken tokenService = new EasyCodefToken();
 	        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
 	        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
@@ -226,11 +300,11 @@ public class PrescriptionController {
 	        
 
 	        if (accessToken.isEmpty()) {
-	            response.put("error", "�넗�겙 諛쒓툒 �떎�뙣");
+	            response.put("error", "토큰 발급 실패");
 	            return response;
 	        }
 
-	        // CODEF API �샇異�
+	        // CODEF API 호출
 	        EasyCodefConnector connector = new EasyCodefConnector();
 	        ObjectMapper objectMapper = new ObjectMapper();
 
@@ -242,21 +316,21 @@ public class PrescriptionController {
 	                requestBody
 	        );
 
-	        System.out.println("[DEBUG] CODEF �쓳�떟 �뜲�씠�꽣: " + apiResponse);
+	        System.out.println("[DEBUG] CODEF 응답 데이터: " + apiResponse);
 
-	        // 蹂댁븞臾몄옄 泥섎━
+	        // 보안문자 처리
 	        if (apiResponse.containsKey("data")) {
 	            HashMap<String, Object> data = (HashMap<String, Object>) apiResponse.get("data");
 
 	            if (Boolean.TRUE.equals(data.get("continue2Way"))) {
-	                // 異붽� �씤利앹씠 �븘�슂�븳 寃쎌슦
+	                // 추가 인증이 필요한 경우
 	                HashMap<String, Object> extraInfo = (HashMap<String, Object>) data.get("extraInfo");
 
 	                if (extraInfo != null) {
-	                    System.out.println("[DEBUG] extraInfo 媛앹껜 �솗�씤: " + extraInfo);
+	                    System.out.println("[DEBUG] extraInfo 객체 확인: " + extraInfo);
 
-	                    String reqSecureNo = (String) extraInfo.get("reqSecureNo"); // 蹂댁븞臾몄옄 �뜲�씠�꽣 異붿텧
-	                    System.out.println("[DEBUG] reqSecureNo 媛�: " + reqSecureNo);
+	                    String reqSecureNo = (String) extraInfo.get("reqSecureNo"); // 보안문자 데이터 추출
+	                    System.out.println("[DEBUG] reqSecureNo 값: " + reqSecureNo);
 
 	                    if (reqSecureNo != null && !reqSecureNo.isEmpty()) {
 	                        if (reqSecureNo.startsWith("data:image/png;base64,")) {
@@ -266,31 +340,31 @@ public class PrescriptionController {
 	                        byte[] decodedBytes = Base64.getDecoder().decode(reqSecureNo);
 
 	                        if (!isPng(decodedBytes)) {
-	                            response.put("error", "�쑀�슚�븯吏� �븡�� PNG �씠誘몄�");
+	                            response.put("error", "유효하지 않은 PNG 이미지");
 	                            return response;
 	                        }
 
 	                        String reEncodedBase64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(decodedBytes);
-	                        response.put("reqSecureNoDecoded", reEncodedBase64); // �겢�씪�씠�뼵�듃濡� 諛섑솚
-	                        response.put("redirectToSecureInput", true); // 異붽� �씤利� �뵆�옒洹� �꽕�젙
+	                        response.put("reqSecureNoDecoded", reEncodedBase64); // 클라이언트로 반환
+	                        response.put("redirectToSecureInput", true); // 추가 인증 플래그 설정
 
-	                        // �꽭�뀡�뿉 異붽� �씤利� 愿��젴 �뜲�씠�꽣 ���옣
+	                        // 세션에 추가 인증 관련 데이터 저장
 	                        session.setAttribute("jobIndex", data.get("jobIndex"));
 	                        session.setAttribute("threadIndex", data.get("threadIndex"));
 	                        session.setAttribute("jti", data.get("jti"));
 	                        session.setAttribute("twoWayTimestamp", data.get("twoWayTimestamp"));
 	                    } else {
-	                        System.err.println("[ERROR] 蹂댁븞臾몄옄 �뜲�씠�꽣媛� �뾾�뒿�땲�떎.");
+	                        System.err.println("[ERROR] 보안문자 데이터가 없습니다.");
 	                    }
 	                } else {
-	                    System.err.println("[ERROR] extraInfo 媛앹껜媛� null�엯�땲�떎.");
+	                    System.err.println("[ERROR] extraInfo 객체가 null입니다.");
 	                }
 	            } else {
-	                // 異붽� �씤利앹씠 �븘�슂�븯吏� �븡�� 寃쎌슦
+	                // 추가 인증이 필요하지 않은 경우
 	                response.put("redirectToSecureInput", false);
 	            }
 
-	            response.putAll(data); // �븘�슂�븳 異붽� �뜲�씠�꽣 �룷�븿
+	            response.putAll(data); // 필요한 추가 데이터 포함
 	            response.put("success", true);
 	            return response;
 	        }
@@ -299,19 +373,74 @@ public class PrescriptionController {
 	        e.printStackTrace();
 	    }
 
-	    response.put("error", "�슂泥� 泥섎━ 以� �삤瑜� 諛쒖깮");
+	    response.put("error", "요청 처리 중 오류 발생");
 	    return response;
 	}
 
 
 	private boolean isBase64(String str) {
 	    try {
-	        Base64.getDecoder().decode(str); // �뵒肄붾뵫 �떆�룄
-	        return true; // �뵒肄붾뵫 �꽦怨� �떆 �쑀�슚�븳 Base64 臾몄옄�뿴
+	        Base64.getDecoder().decode(str); // 디코딩 시도
+	        return true; // 디코딩 성공 시 유효한 Base64 문자열
 	    } catch (IllegalArgumentException e) {
-	        return false; // �뵒肄붾뵫 �떎�뙣 �떆 �쑀�슚�븯吏� �븡�� 臾몄옄�뿴
+	        return false; // 디코딩 실패 시 유효하지 않은 문자열
 	    }
 	}
+	
+	
+	
+	@RequestMapping(value = "savePrescriptionData.do", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> savePrescriptionData(@RequestBody HashMap<String, Object> requestData, HttpSession session) {
+	    HashMap<String, Object> response = new HashMap<>();
+	    try {
+	        // 세션에서 회원 midx 가져오기
+	        Integer midx = (Integer) session.getAttribute("midx");
+	        if (midx == null) {
+	            response.put("success", false);
+	            response.put("message", "회원 인증이 필요합니다.");
+	            return response;
+	        }
+
+	        // JSON 데이터에서 처방전 정보 추출
+	        PrescriptionVo prescription = new PrescriptionVo();
+	        prescription.setMidx(midx);
+	        prescription.setResMenufactureDate((String) requestData.get("resMenufactureDate"));
+	        prescription.setResPrescribeOrg((String) requestData.get("resPrescribeOrg"));
+	        prescription.setResTelNo((String) requestData.get("resTelNo"));
+	        prescription.setCommBrandName((String) requestData.get("commBrandName"));
+	        prescription.setCommTelNo((String) requestData.get("commTelNo"));
+
+	        // JSON 데이터에서 약물 목록 추출
+	        List<HashMap<String, Object>> drugList = (List<HashMap<String, Object>>) requestData.get("drugs");
+	        List<DrugVo> drugs = new ArrayList<>();
+	        for (HashMap<String, Object> drugItem : drugList) {
+	            DrugVo drug = new DrugVo();
+	            drug.setResDrugName((String) drugItem.get("resDrugName"));
+	            drug.setResPrescribeDrugEffect((String) drugItem.get("resPrescribeDrugEffect"));
+	            drug.setResIngredients((String) drugItem.get("resIngredients"));
+	            drug.setResDrugCode((String) drugItem.get("resDrugCode"));
+	            drug.setResContent((String) drugItem.get("resContent"));
+	            drug.setResOneDose((String) drugItem.get("resOneDose"));
+	            drug.setResDailyDosesNumber((String) drugItem.get("resDailyDosesNumber"));
+	            drug.setResTotalDosingdays((String) drugItem.get("resTotalDosingdays"));
+	            drugs.add(drug);
+	        }
+
+	        // 처방전 및 약물 저장
+	        int pidx = prescriptionService.savePrescriptionAndDrugs(prescription, drugs);
+
+	        response.put("success", true);
+	        response.put("message", "처방전 및 약물 정보가 저장되었습니다.");
+	        response.put("pidx", pidx);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        response.put("success", false);
+	        response.put("error", "데이터 저장 중 오류 발생: " + e.getMessage());
+	    }
+	    return response;
+	}
+
 	
 	
 
@@ -327,7 +456,7 @@ public class PrescriptionController {
 			    HashMap<String, Object> response = new HashMap<>();
 		
 			    try {
-			        // �꽭�뀡�뿉�꽌 �븘�닔 �뜲�씠�꽣 媛��졇�삤湲�
+			        // 세션에서 필수 데이터 가져오기
 			        Integer jobIndex = (Integer) session.getAttribute("jobIndex");
 			        Integer threadIndex = (Integer) session.getAttribute("threadIndex");
 			        String jti = (String) session.getAttribute("jti");
@@ -335,31 +464,31 @@ public class PrescriptionController {
 			        String phoneNumber = (String) session.getAttribute("phoneNumber");
 		
 			        if (phoneNumber == null) {
-			            response.put("error", "�꽭�뀡�뿉 �쟾�솕踰덊샇 �젙蹂닿� �뾾�뒿�땲�떎. �떎�떆 �씤利앹쓣 吏꾪뻾�븯�꽭�슂.");
+			            response.put("error", "세션에 전화번호 정보가 없습니다. 다시 인증을 진행하세요.");
 			            return response;
 			        }
 		
 			        if (jobIndex == null || threadIndex == null || jti == null || twoWayTimestamp == null) {
-			            response.put("error", "�븘�닔 �엯�젰媛믪씠 �늻�씫�릺�뿀�뒿�땲�떎. �떎�떆 �씤利앹쓣 吏꾪뻾�븯�꽭�슂.");
+			            response.put("error", "필수 입력값이 누락되었습니다. 다시 인증을 진행하세요.");
 			            return response;
 			        }
 		
-			        // �꽭�뀡�뿉 ���옣�맂 �슂泥� �뜲�씠�꽣 媛��졇�삤湲�
+			        // 세션에 저장된 요청 데이터 가져오기
 			        @SuppressWarnings("unchecked")
 			        HashMap<String, Object> requestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
 		
 			        if (requestData == null || !requestData.containsKey("organization")) {
-			            response.put("error", "�븘�닔 �엯�젰媛믪씠 �늻�씫�릺�뿀�뒿�땲�떎.");
+			            response.put("error", "필수 입력값이 누락되었습니다.");
 			            return response;
 			        }
 		
-			        // 異붽� �씤利� �슂泥� �뜲�씠�꽣 援ъ꽦
+			        // 추가 인증 요청 데이터 구성
 			        HashMap<String, Object> twoWayData = new HashMap<>();
-			        twoWayData.put("secureNo", secureNo); // 蹂댁븞臾몄옄 �젙蹂�
-			        twoWayData.put("secureNoRefresh", secureNoRefresh); // �깉濡쒓퀬移� �젙蹂�
-			        twoWayData.put("is2Way", true); // 異붽� �슂泥� �뿬遺�
+			        twoWayData.put("secureNo", secureNo); // 보안문자 정보
+			        twoWayData.put("secureNoRefresh", secureNoRefresh); // 새로고침 정보
+			        twoWayData.put("is2Way", true); // 추가 요청 여부
 		
-			        // �몢�썾�씠 �젙蹂� �룷�븿
+			        // 두웨이 정보 포함
 			        HashMap<String, Object> twoWayInfo = new HashMap<>();
 			        twoWayInfo.put("jobIndex", jobIndex);
 			        twoWayInfo.put("threadIndex", threadIndex);
@@ -370,16 +499,16 @@ public class PrescriptionController {
 			        twoWayData.put("twoWayInfo", twoWayInfo);
 			        twoWayData.put("organization", requestData.get("organization"));
 		
-			        // CODEF API �샇異� 以�鍮�
+			        // CODEF API 호출 준비
 			        EasyCodefToken tokenService = new EasyCodefToken();
 			        String accessToken = tokenService.getAccessToken(CLIENT_ID, CLIENT_SECRET);
 		
 			        if (accessToken.isEmpty()) {
-			            response.put("error", "�넗�겙 諛쒓툒 �떎�뙣");
+			            response.put("error", "토큰 발급 실패");
 			            return response;
 			        }
 		
-			        // CODEF API �샇異�
+			        // CODEF API 호출
 			        EasyCodefConnector connector = new EasyCodefConnector();
 			        ObjectMapper objectMapper = new ObjectMapper();
 			        String requestBody = objectMapper.writeValueAsString(twoWayData);
@@ -390,9 +519,9 @@ public class PrescriptionController {
 			                requestBody
 			        );
 		
-			        System.out.println("[DEBUG] 異붽� �씤利� �쓳�떟 �뜲�씠�꽣: " + apiResponse);
+			        System.out.println("[DEBUG] 추가 인증 응답 데이터: " + apiResponse);
 		
-			        // �쓳�떟 泥섎━
+			        // 응답 처리
 			        if (apiResponse.containsKey("data")) {
 			            HashMap<String, Object> data = (HashMap<String, Object>) apiResponse.get("data");
 		
@@ -405,26 +534,26 @@ public class PrescriptionController {
 			                }
 		
 			                if (reqSMSAuthNo == null || reqSMSAuthNo.isEmpty()) {
-			                    System.out.println("[WARN] SMS �씤利앸쾲�샇媛� 鍮꾩뼱 �엳吏�留�, API �슂泥��씠 �젙�긽�쟻�쑝濡� 泥섎━�맖.");
+			                    System.out.println("[WARN] SMS 인증번호가 비어 있지만, API 요청이 정상적으로 처리됨.");
 			                    response.put("success", true);
-			                    response.put("message", "SMS �씤利앸쾲�샇媛� �쟾�넚�릺�뿀�뒿�땲�떎. �씤利앸쾲�샇瑜� �엯�젰�븯�꽭�슂.");
+			                    response.put("message", "SMS 인증번호가 전송되었습니다. 인증번호를 입력하세요.");
 			                } else {
 			                    response.put("success", true);
 			                    response.put("reqSMSAuthNo", reqSMSAuthNo);
-			                    response.put("message", "SMS �씤利앸쾲�샇媛� �쟾�넚�릺�뿀�뒿�땲�떎.");
+			                    response.put("message", "SMS 인증번호가 전송되었습니다.");
 			                }
 			            }
 			            return response;
 			        } else {
 			            response.put("success", false);
-			            response.put("errorMessage", "API �쓳�떟�뿉 result �뜲�씠�꽣媛� �뾾�뒿�땲�떎.");
+			            response.put("errorMessage", "API 응답에 result 데이터가 없습니다.");
 			            return response;
 			        }
 		
 			    } catch (Exception e) {
 			        e.printStackTrace();
 			        response.put("success", false);
-			        response.put("errorMessage", "異붽� �씤利� 以� �삤瑜� 諛쒖깮: " + e.getMessage());
+			        response.put("errorMessage", "추가 인증 중 오류 발생: " + e.getMessage());
 			    }
 		
 			    return response;
@@ -441,40 +570,40 @@ public class PrescriptionController {
 
 			    HashMap<String, Object> response = new HashMap<>();
 			    try {
-			    	// �꽭�뀡�뿉�꽌 異붽� �씤利� �젙蹂� 媛��졇�삤湲�
+			    	// 세션에서 추가 인증 정보 가져오기
 			        Integer jobIndex = (Integer) session.getAttribute("jobIndex");
 			        Integer threadIndex = (Integer) session.getAttribute("threadIndex");
 			        String jti = (String) session.getAttribute("jti");
 			        Long twoWayTimestamp = (Long) session.getAttribute("twoWayTimestamp");
 
-			        // �뵒踰꾧퉭 濡쒓렇: �꽭�뀡 媛� 寃�利�
-			        System.out.println("[DEBUG] �꽭�뀡 媛� 寃�利�:");
+			        // 디버깅 로그: 세션 값 검증
+			        System.out.println("[DEBUG] 세션 값 검증:");
 			        System.out.println("jobIndex: " + jobIndex);
 			        System.out.println("threadIndex: " + threadIndex);
 			        System.out.println("jti: " + jti);
 			        System.out.println("twoWayTimestamp: " + twoWayTimestamp);
 
-			        // �꽭�뀡 媛� 寃�利� �떎�뙣 �떆 泥섎━
+			        // 세션 값 검증 실패 시 처리
 			        if (jobIndex == null || threadIndex == null || jti == null || twoWayTimestamp == null) {
 			            response.put("verified", false);
-			            response.put("message", "�븘�닔 �씤利� �젙蹂닿� �늻�씫�릺�뿀�뒿�땲�떎. �떎�떆 �떆�룄�븯�꽭�슂.");
-			            System.err.println("[ERROR] �꽭�뀡 媛믪씠 �늻�씫�릺�뿀�뒿�땲�떎.");
+			            response.put("message", "필수 인증 정보가 누락되었습니다. 다시 시도하세요.");
+			            System.err.println("[ERROR] 세션 값이 누락되었습니다.");
 			            return response;
 			        }
 			        
-				        // �꽭�뀡�뿉�꽌 secureNoRequestData 媛��졇�삤湲�
+				        // 세션에서 secureNoRequestData 가져오기
 				        @SuppressWarnings("unchecked")
 				        HashMap<String, Object> requestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
-				        System.out.println("[DEBUG] �꽭�뀡�뿉�꽌 媛��졇�삩 requestData: " + requestData);
+				        System.out.println("[DEBUG] 세션에서 가져온 requestData: " + requestData);
 			
 				        if (requestData == null || !requestData.containsKey("organization")) {
 				            response.put("verified", false);
-				            response.put("message", "�븘�닔 �엯�젰媛믪씠 �늻�씫�릺�뿀�뒿�땲�떎. �떎�떆 �떆�룄�븯�꽭�슂.");
-				            System.err.println("[ERROR] �꽭�뀡 �뜲�씠�꽣 �늻�씫 �삉�뒗 organization �궎 �뾾�쓬.");
+				            response.put("message", "필수 입력값이 누락되었습니다. 다시 시도하세요.");
+				            System.err.println("[ERROR] 세션 데이터 누락 또는 organization 키 없음.");
 				            return response;
 				        }
 			
-				        // 臾몄옄 諛쒖넚 �꽌踰꾩뿉 蹂대궪 �뜲�씠�꽣 援ъ꽦
+				        // 문자 발송 서버에 보낼 데이터 구성
 				        HashMap<String, Object> verificationRequest = new HashMap<>();
 				        verificationRequest.put("smsAuthNo", smsAuthNo);
 				        verificationRequest.put("is2Way", is2Way);
@@ -485,15 +614,15 @@ public class PrescriptionController {
 				        twoWayInfo.put("jti", jti);
 				        twoWayInfo.put("twoWayTimestamp", twoWayTimestamp);
 			
-				        verificationRequest.put("twoWayInfo", twoWayInfo); // �몢�썾�씠 �젙蹂� �룷�븿
+				        verificationRequest.put("twoWayInfo", twoWayInfo); // 두웨이 정보 포함
 			
-				        // �븘�닔 �뙆�씪誘명꽣 異붽�
-				        verificationRequest.put("organization", requestData.get("organization")); // 議곗쭅 �젙蹂� 異붽�
+				        // 필수 파라미터 추가
+				        verificationRequest.put("organization", requestData.get("organization")); // 조직 정보 추가
 			
-				        // �뵒踰꾧퉭 濡쒓렇: CODEF API �슂泥� �뜲�씠�꽣 異쒕젰
-				        System.out.println("[DEBUG] CODEF API �슂泥� �뜲�씠�꽣: " + verificationRequest);
+				        // 디버깅 로그: CODEF API 요청 데이터 출력
+				        System.out.println("[DEBUG] CODEF API 요청 데이터: " + verificationRequest);
 			
-				        // CODEF API �샇異� 以�鍮�
+				        // CODEF API 호출 준비
 				        EasyCodefToken tokenService = new EasyCodefToken();
 				        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
 				        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
@@ -501,11 +630,11 @@ public class PrescriptionController {
 				        
 				        
 				        if (accessToken.isEmpty()) {
-				            response.put("error", "�넗�겙 諛쒓툒 �떎�뙣");
+				            response.put("error", "토큰 발급 실패");
 				            return response;
 				        }
 
-				        // CODEF API �샇異�
+				        // CODEF API 호출
 				        EasyCodefConnector connector = new EasyCodefConnector();
 				        ObjectMapper objectMapper = new ObjectMapper();
 				        
@@ -517,12 +646,12 @@ public class PrescriptionController {
 				                requestBody
 				        );
 
-				        // �뵒踰꾧퉭 濡쒓렇: CODEF API �쓳�떟 �뜲�씠�꽣 異쒕젰
-				        System.out.println("[DEBUG] CODEF API �쓳�떟 �뜲�씠�꽣: " + apiResponse);
+				        // 디버깅 로그: CODEF API 응답 데이터 출력
+				        System.out.println("[DEBUG] CODEF API 응답 데이터: " + apiResponse);
 
-			        // CODEF API �쓳�떟 泥섎━
+			        // CODEF API 응답 처리
 			        HashMap<String, Object> result = (HashMap<String, Object>) apiResponse.get("result");
-			        if (result != null && "CF-00000".equals(result.get("code"))) { // �꽦怨� 肄붾뱶 �솗�씤
+			        if (result != null && "CF-00000".equals(result.get("code"))) { // 성공 코드 확인
 			            List<HashMap<String, Object>> data = (List<HashMap<String, Object>>) apiResponse.get("data");
 
 			            if (data != null && !data.isEmpty()) {
@@ -536,7 +665,7 @@ public class PrescriptionController {
 			                    prescription.setCommBrandName((String) item.get("commBrandName"));
 			                    prescription.setCommTelNo((String) item.get("resTelNo1"));
 
-			                    // �빟臾� 由ъ뒪�듃 留ㅽ븨
+			                    // 약물 리스트 매핑
 			                    List<HashMap<String, Object>> drugList = (List<HashMap<String, Object>>) item.get("resDrugList");
 			                    List<DrugVo> drugs = new ArrayList<>();
 			                    for (HashMap<String, Object> drugItem : drugList) {
@@ -553,26 +682,26 @@ public class PrescriptionController {
 
 			                        drugs.add(drug);
 			                    }
-			                    prescription.setDrugs(drugs); // �빟臾� 由ъ뒪�듃 異붽�
+			                    prescription.setDrugs(drugs); // 약물 리스트 추가
 			                    prescriptions.add(prescription);
 			                }
 
-			                session.setAttribute("finalResultData", prescriptions); // �꽭�뀡�뿉 ���옣
+			                session.setAttribute("finalResultData", prescriptions); // 세션에 저장
 			                response.put("verified", true);
-			                response.put("message", "SMS �씤利� �꽦怨�");
+			                response.put("message", "SMS 인증 성공");
 			            } else {
 			                response.put("verified", false);
-			                response.put("message", "CODEF API �쓳�떟 �뜲�씠�꽣媛� �뾾�뒿�땲�떎.");
+			                response.put("message", "CODEF API 응답 데이터가 없습니다.");
 			            }
 			        } else {
 			            response.put("verified", false);
-			            response.put("message", "CODEF API �슂泥� �떎�뙣");
+			            response.put("message", "CODEF API 요청 실패");
 			        }
 
 			    } catch (Exception e) {
 			        e.printStackTrace();
 			        response.put("verified", false);
-			        response.put("message", "SMS �씤利� 泥섎━ 以� �삤瑜� 諛쒖깮: " + e.getMessage());
+			        response.put("message", "SMS 인증 처리 중 오류 발생: " + e.getMessage());
 			    }
 
 			    return response;
@@ -584,11 +713,22 @@ public class PrescriptionController {
 	
 	@RequestMapping(value = "prescriptionList.do", method = RequestMethod.GET)
 	public String prescriptionList(HttpSession session, Model model) {
+		
+		// 세션값(prescriptions)이 있으면 세션값을 저장해야됨 
 	    List<PrescriptionVo> prescriptions = (List<PrescriptionVo>) session.getAttribute("finalResultData");
+	    // db에 prescriptions 저장
+	   // prescription Vo setMidx(6)
+	    
+	    
+	    
 	    if (prescriptions == null || prescriptions.isEmpty()) {
-	        return "redirect:/prescription/certification.do"; // �뜲�씠�꽣媛� �뾾�쓣 寃쎌슦 �씤利� �럹�씠吏�濡� 由щ떎�씠�젆�듃
+	        return "redirect:/prescription/certification.do"; // 데이터가 없을 경우 인증 페이지로 리다이렉트
 	    }
-	    model.addAttribute("prescriptions", prescriptions); // �뜲�씠�꽣瑜� 紐⑤뜽�뿉 異붽�
+	    
+	   
+	    
+	    
+	    model.addAttribute("prescriptions", prescriptions); // DB에서 가져온 데이터를 모델에 추가. mapper 갔다와야
 	    return "WEB-INF/prescription/prescriptionList";
 	}
 
@@ -601,7 +741,7 @@ public class PrescriptionController {
 	
 	@RequestMapping(value = "prescriptionDetail.do", method = RequestMethod.GET)
 	public String getPrescriptionDetail(@RequestParam("id") int pidx, HttpSession session, Model model) {
-	    System.out.println("�윋� 諛쏆� 泥섎갑�쟾 ID 媛�: " + pidx); // �슂泥��맂 ID �솗�씤
+	    System.out.println("📌 받은 처방전 ID 값: " + pidx); // 요청된 ID 확인
 
 	    List<PrescriptionVo> prescriptions = (List<PrescriptionVo>) session.getAttribute("finalResultData");
 
@@ -612,7 +752,7 @@ public class PrescriptionController {
 	    PrescriptionVo selectedPrescription = null;
 
 	    for (PrescriptionVo prescription : prescriptions) {
-	        if (prescription.getPidx() == pidx) {  // �떎�젣 pidx 媛믪쑝濡� 議고쉶
+	        if (prescription.getPidx() == pidx) {  // 실제 pidx 값으로 조회
 	            selectedPrescription = prescription;
 	            break;
 	        }
@@ -628,7 +768,7 @@ public class PrescriptionController {
 	    return "WEB-INF/prescription/prescriptionDetail";
 	}
 	
-	// �엫�떆 �쉶�썝 ���옣
+	// 임시 회원 저장
 	@RequestMapping(value = "savePrescriptionWithoutMember.do", method = RequestMethod.POST)
 	@ResponseBody
 	public HashMap<String, Object> savePrescriptionWithoutMember(
@@ -637,11 +777,17 @@ public class PrescriptionController {
 	        @RequestBody List<PrescriptionVo> prescriptions) {
 
 	    HashMap<String, Object> response = new HashMap<>();
+	    Integer existingMidx = memberService.getMemberByPhone(phoneNumber);
+	    if (existingMidx != null) {
+	        response.put("success", false);
+	        response.put("message", "이미 가입된 사용자입니다.");
+	        return response;
+	    }
 	    try {
-	        // �엫�떆 �궗�슜�옄 ID �깮�꽦
+	        // 임시 사용자 ID 생성
 	        String tempId = "TEMP_" + java.util.UUID.randomUUID().toString();
 
-	        // �엫�떆 �궗�슜�옄 �젙蹂� DB ���옣
+	        // 임시 사용자 정보 DB 저장
 	        MemberVo tempMember = new MemberVo();
 	        tempMember.setId(tempId);
 	        tempMember.setName(name);
@@ -651,35 +797,29 @@ public class PrescriptionController {
 	        
 	        
 
-	        int midx = memberService.saveMemberInfo(tempMember); // �궫�엯�맂 midx 媛��졇�삤湲�
+	        int midx = memberService.saveMemberInfo(tempMember); // 삽입된 midx 가져오기
 
-	        // �궗�슜�옄 �젙蹂� ���옣 �꽦怨� �떆 泥섎갑�쟾 ���옣
+	        // 사용자 정보 저장 성공 시 처방전 저장
 	        if (midx > 0) {
 	            for (PrescriptionVo prescription : prescriptions) {
-	                prescription.setMidx(midx); // midx瑜� PrescriptionVo�� �뿰寃�
+	                prescription.setMidx(midx); // midx를 PrescriptionVo와 연결
 	                
 	                prescriptionService.savePrescription(prescription);
 	            }
 	            response.put("success", true);
-	            response.put("message", "�엫�떆 �궗�슜�옄 諛� 泥섎갑�쟾 �젙蹂닿� ���옣�릺�뿀�뒿�땲�떎.");
+	            response.put("message", "임시 사용자 및 처방전 정보가 저장되었습니다.");
 	        } else {
 	            response.put("success", false);
-	            response.put("message", "�엫�떆 �궗�슜�옄 �젙蹂대�� ���옣�븯�뒗 �뜲 �떎�뙣�뻽�뒿�땲�떎.");
+	            response.put("message", "임시 사용자 정보를 저장하는 데 실패했습니다.");
 	        }
 
 	    } catch (Exception e) {
 	        response.put("success", false);
-	        response.put("error", "�뜲�씠�꽣 ���옣 以� �삤瑜� 諛쒖깮: " + e.getMessage());
+	        response.put("error", "데이터 저장 중 오류 발생: " + e.getMessage());
 	    }
 
 	    return response;
 	}
-
-
-
-
-
-
 
 
 	

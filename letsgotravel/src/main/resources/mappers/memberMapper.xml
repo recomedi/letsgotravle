@@ -3,18 +3,31 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.letsgotravel.myapp.persistance.MemberMapper">
-	<select id="getCurrentTime" resultType="string">
+
+  <!-- 현재 시간 조회 -->
+    <select id="getCurrentTime" resultType="string">
         SELECT NOW()
     </select>
-    
-    
-   <insert id="insertMember" parameterType="com.letsgotravel.myapp.domain.MemberVo" useGeneratedKeys="true" keyProperty="midx">
-    INSERT INTO MEMBER (
-        id, name, phone, ip, delyn, date
-    ) VALUES (
-        #{id}, #{name}, #{phone}, #{ip}, #{delyn}, NOW()
-    )
-</insert>
 
-	
+    <!-- 회원 정보 추가 -->
+    <insert id="insertMember" parameterType="com.letsgotravel.myapp.domain.MemberVo" useGeneratedKeys="true" keyProperty="midx">
+        INSERT INTO MEMBER (id, name, phone, ip, delyn, date, password)
+        VALUES (#{id}, #{name}, #{phone}, #{ip}, #{delyn}, NOW(), #{password})
+    </insert>
+
+    <!-- 전화번호로 회원 midx 조회 -->
+    <select id="findMidxByPhone" resultType="int" parameterType="string">
+        SELECT midx FROM MEMBER WHERE phone = #{phone} LIMIT 1
+    </select>
+
+    <!-- 아이디로 회원 조회 -->
+    <select id="findById" resultType="com.letsgotravel.myapp.domain.MemberVo" parameterType="string">
+        SELECT * FROM MEMBER WHERE id = #{id} LIMIT 1
+    </select>
+
+    <!-- 📌 로그인 처리 -->
+    <select id="memberlogin" resultType="com.letsgotravel.myapp.domain.MemberVo" parameterType="string">
+        SELECT * FROM MEMBER WHERE id = #{id} LIMIT 1
+    </select>
+
 </mapper>

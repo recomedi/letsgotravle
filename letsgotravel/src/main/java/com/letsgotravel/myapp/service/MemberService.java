@@ -7,10 +7,15 @@ import com.letsgotravel.myapp.domain.MemberVo;
 public interface MemberService {
 
 	
-	    String getCurrentTime();
+	 String getCurrentTime();
 	 
 	 
 	 int saveMemberInfo(MemberVo member);
+
+
+	 Integer getMemberByPhone(String phoneNumber);
+		
+	 MemberVo memberlogin(String id, String password);
 
 		
 }

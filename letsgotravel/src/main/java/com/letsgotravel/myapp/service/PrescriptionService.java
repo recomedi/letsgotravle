@@ -2,22 +2,30 @@ package com.letsgotravel.myapp.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.letsgotravel.myapp.domain.DrugVo;
 import com.letsgotravel.myapp.domain.PrescriptionVo;
+import com.letsgotravel.myapp.persistance.PrescriptionMapper;
 
 
 @Service
 public interface PrescriptionService {
 
 
-	// �쉶�썝蹂� 泥섎갑 紐⑸줉 議고쉶
+	// 회원별 처방 목록 조회
     List<PrescriptionVo> getPrescriptionsByMember(int midx);
 
-    // �듅�젙 泥섎갑�쟾 �긽�꽭 �젙蹂� 議고쉶
+    // 특정 처방전 상세 정보 조회
     PrescriptionVo getPrescriptionDetail(int pidx);
 
 	int savePrescription(PrescriptionVo prescription);
+	
+	void saveDrug(DrugVo drug);
+
+	int savePrescriptionAndDrugs(PrescriptionVo prescription, List<DrugVo> drugs);
+	
 
 	
     

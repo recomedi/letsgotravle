@@ -32,6 +32,12 @@
                 <h3 class="main-title center mb-70">🤔 도시를 선택해주세요.</h3>
 	
             	<form name="frm">
+	            	<input type="hidden" name="peopleCount" id="peopleCount">
+	            	<input type="hidden" name="departureMonth" id="departureMonth">
+	            	<input type="hidden" name="groupType" id="groupType">
+	            	<input type="hidden" name="budgetMin" id="budgetMin">
+	            	<input type="hidden" name="budgetMax" id="budgetMax">
+	            	<input type="hidden" name="thema" id="thema">
 	                <c:forEach var="city" items="${requestScope.cityList}" end="2" varStatus="status">
 	                <p class="border mt-2 mb-2"></p>
 	                
@@ -45,15 +51,15 @@
 	                    <div class="col flex mb-2">
 	                        <div class="select-item">
 	                            <p class="sub-title mb-1">🎡 대표관광지</p>
-	                            <p class="text">· ${city.get("대표관광지(3개)")[0]}</p>
-	                            <p class="text">· ${city.get("대표관광지(3개)")[1]}</p>
-	                            <p class="text">· ${city.get("대표관광지(3개)")[2]}</p>
+	                            <p class="text">· ${city.get("대표관광지")[0]}</p>
+	                            <p class="text">· ${city.get("대표관광지")[1]}</p>
+	                            <p class="text">· ${city.get("대표관광지")[2]}</p>
 	                        </div>
 	                        <div class="select-item">
 	                            <p class="sub-title mb-1">🍴 대표음식</p>
-	                            <p class="text">· ${city.get("대표음식(3개)")[0]}</p>
-	                            <p class="text">· ${city.get("대표음식(3개)")[1]}</p>
-	                            <p class="text">· ${city.get("대표음식(3개)")[2]}</p>
+	                            <p class="text">· ${city.get("대표음식")[0]}</p>
+	                            <p class="text">· ${city.get("대표음식")[1]}</p>
+	                            <p class="text">· ${city.get("대표음식")[2]}</p>
 	                        </div>
 	                        <div class="select-item">
 	                            <p class="sub-title mb-1">💰 환율</p>
@@ -91,7 +97,9 @@
 	                    <div class="col flex">
 	                        <div class="select-item">
 	                            <p class="sub-title mb-1">🎆 축제 & 행사</p>
-	                            <p class="text">· ${city.get("축제, 이벤트")}</p>
+	                            <c:forEach var="festival" items="${city.get('축제, 이벤트')}">
+	                            <p class="text">· ${festival}</p>
+	                            </c:forEach>
 	                        </div>
 	                        <div class="select-item">
 	                            <p class="sub-title mb-1">🚨 주의해야 하는 기간 </p>
@@ -116,15 +124,15 @@
 		                    <div class="col flex mb-2">
 		                        <div class="select-item">
 		                            <p class="sub-title mb-1">🎡 대표관광지</p>
-		                            <p class="text">· ${city.get("대표관광지(3개)")[0]}</p>
-		                            <p class="text">· ${city.get("대표관광지(3개)")[1]}</p>
-		                            <p class="text">· ${city.get("대표관광지(3개)")[2]}</p>
+		                            <p class="text">· ${city.get("대표관광지")[0]}</p>
+		                            <p class="text">· ${city.get("대표관광지")[1]}</p>
+		                            <p class="text">· ${city.get("대표관광지")[2]}</p>
 		                        </div>
 		                        <div class="select-item">
 		                            <p class="sub-title mb-1">🍴 대표음식</p>
-		                            <p class="text">· ${city.get("대표음식(3개)")[0]}</p>
-		                            <p class="text">· ${city.get("대표음식(3개)")[1]}</p>
-		                            <p class="text">· ${city.get("대표음식(3개)")[2]}</p>
+		                            <p class="text">· ${city.get("대표음식")[0]}</p>
+		                            <p class="text">· ${city.get("대표음식")[1]}</p>
+		                            <p class="text">· ${city.get("대표음식")[2]}</p>
 		                        </div>
 		                        <div class="select-item">
 		                            <p class="sub-title mb-1">💰 환율</p>
@@ -162,7 +170,9 @@
 		                    <div class="col flex">
 		                        <div class="select-item">
 		                            <p class="sub-title mb-1">🎆 축제 & 행사</p>
-		                            <p class="text">· ${city.get("축제, 이벤트")}</p>
+		                            <c:forEach var="festival" items="${city.get('축제, 이벤트')}">
+		                            <p class="text">· ${festival}</p>
+		                            </c:forEach>
 		                        </div>
 		                        <div class="select-item">
 		                            <p class="sub-title mb-1">🚨 주의해야 하는 기간 </p>
@@ -176,7 +186,7 @@
 	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
 	                    <button class="btn green more" onClick="moreResult(this);" type="button">더보기</button>
 	                    <button class="btn blue" type="button" onClick="goTravelSights();">다음</button>
-	                    <button class="btn">뒤로</button>
+	                    <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	                </div>
 	            </form>
             </section>
@@ -202,6 +212,14 @@
 
 			// sessionStorage에 저장
 		    sessionStorage.setItem('destination', fm.destination.value);
+			
+			// sessionStorage에서 불러오기
+		    document.querySelector('#peopleCount').value = sessionStorage.getItem('peopleCount');
+		    document.querySelector('#departureMonth').value = sessionStorage.getItem('departureMonth');
+		    document.querySelector('#groupType').value = sessionStorage.getItem('groupType');
+		    document.querySelector('#budgetMin').value = sessionStorage.getItem('budgetMin');
+		    document.querySelector('#budgetMax').value = sessionStorage.getItem('budgetMax');
+		    document.querySelector('#thema').value = sessionStorage.getItem('thema');
 		    
 			fm.action="${pageContext.request.contextPath}/travel/travelSights.do";
 			fm.method="post";

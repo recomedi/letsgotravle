@@ -16,7 +16,7 @@ public class PrescriptionVo {
 	public String delyn;
 	
 	
-	// �빟臾� �젙蹂� 由ъ뒪�듃 �븘�뱶 異붽�
+	// 약물 정보 리스트 필드 추가
     private List<DrugVo> drugs;
 	
 	public List<DrugVo> getDrugs() {

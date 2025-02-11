@@ -43,30 +43,16 @@
 						
 					 	<input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
-	                           <input type="checkbox" id="ck1" class="none" name="sightsCk" value="디즈니랜드1"><label class="relative mt-20 pl-35 inline-block" for="ck1"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck2" class="none" name="sightsCk" value="디즈니랜드2"><label class="relative mt-20 pl-35 inline-block" for="ck2"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck3" class="none" name="sightsCk" value="디즈니랜드3"><label class="relative mt-20 pl-35 inline-block" for="ck3"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck4" class="none" name="sightsCk" value="디즈니랜드4"><label class="relative mt-20 pl-35 inline-block" for="ck4"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck5" class="none" name="sightsCk" value="디즈니랜드5"><label class="relative mt-20 pl-35 inline-block" for="ck5"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck6" class="none" name="sightsCk" value="디즈니랜드6"><label class="relative mt-20 pl-35 inline-block" for="ck6"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck7" class="none" name="sightsCk" value="디즈니랜드7"><label class="relative mt-20 pl-35 inline-block" for="ck7"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck8" class="none" name="sightsCk" value="디즈니랜드8"><label class="relative mt-20 pl-35 inline-block" for="ck8"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck9" class="none" name="sightsCk" value="디즈니랜드9"><label class="relative mt-20 pl-35 inline-block" for="ck9"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck10" class="none" name="sightsCk" value="디즈니랜드10"><label class="relative mt-20 pl-35 inline-block" for="ck10"> 디즈니랜드</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]}" varStatus="status">
+	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight.value[status.index]}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight.value[status.index]}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
+	                       		</c:forEach>
 	                       </div>
 	                       
 	                       <input type="radio" name="sights-radio" id="restaurant" class="none">
 	                       <div class="check-box pt-10 none restaurant">
-	                           <input type="checkbox" id="ck101" class="none" name="restaurantCk" value="라멘1"><label class="relative mt-20 pl-35 inline-block" for="ck101"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck102" class="none" name="restaurantCk" value="라멘2"><label class="relative mt-20 pl-35 inline-block" for="ck102"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck103" class="none" name="restaurantCk" value="라멘3"><label class="relative mt-20 pl-35 inline-block" for="ck103"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck104" class="none" name="restaurantCk" value="라멘4"><label class="relative mt-20 pl-35 inline-block" for="ck104"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck105" class="none" name="restaurantCk" value="라멘5"><label class="relative mt-20 pl-35 inline-block" for="ck105"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck106" class="none" name="restaurantCk" value="라멘6"><label class="relative mt-20 pl-35 inline-block" for="ck106"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck107" class="none" name="restaurantCk" value="라멘7"><label class="relative mt-20 pl-35 inline-block" for="ck107"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck108" class="none" name="restaurantCk" value="라멘8"><label class="relative mt-20 pl-35 inline-block" for="ck108"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck109" class="none" name="restaurantCk" value="라멘9"><label class="relative mt-20 pl-35 inline-block" for="ck109"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
-	                           <input type="checkbox" id="ck110" class="none" name="restaurantCk" value="라멘10"><label class="relative mt-20 pl-35 inline-block" for="ck110"> 라멘</label><button class="ml-10 center plus-icon inline-block"><i class="fa-solid fa-plus"></i></button><br>
+	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]}" varStatus="status">${requestScope.openAIResult1Array[0]}
+	                            <input type="checkbox" id="ck1${status.index+1}" class="none" name="restaurantCk" value="${restaurant.value[status.index]}"><label class="relative mt-20 pl-35 inline-block" for="ck1${status.index+1}"> ${restaurant.value[status.index]}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
+	                       		</c:forEach>
 	                       </div>
 	                   </div>
 	
@@ -83,7 +69,7 @@
 	               
 	               <div class="btn-box center mb-70 mt-50 flex justify-content-center">
 	                   <button type="button" onClick="goTravelModify()" class="btn blue">다음</button>
-	                   <button class="btn">뒤로</button>
+	                   <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	               </div>
 	            </form>
             </section>
@@ -92,9 +78,6 @@
     </div>
     
     <script>
-
-    console.log(sessionStorage.getItem('sights'));
-    console.log(sessionStorage.getItem('restaurant'));
     
     function goTravelModify() {
     	
@@ -144,8 +127,8 @@
 
 			// sessionStorage에 저장
 		    sessionStorage.setItem('sights', findCheckedValue("sights"));
-		    sessionStorage.setItem('restaurant', findCheckedValue("restaurant"));
-		    
+		    sessionStorage.setItem('restaurants', findCheckedValue("restaurants"));
+		    		    
 			fm.action="${pageContext.request.contextPath}/travel/travelModify.do";
 			fm.method="post";
 			fm.submit();
@@ -153,6 +136,12 @@
 	  
 		return;
 	}
+    
+    function viewDetail(this) {
+    	
+    		console.dir(this);
+    	
+    }
  
     </script>
 </body>
