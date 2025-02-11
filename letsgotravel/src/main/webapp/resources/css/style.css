@@ -27,6 +27,7 @@ body, html, .wrap { height: 100%; }
 .justify-content-center { justify-content: center; }
 .align-items-center { align-items: center; }
 .bold { font-weight: bold; }
+.no-wrap { white-space: nowrap; }
 
 .btn-box { gap: 15px; }
 .btn { border-radius: 20px; padding: 6px 30px; font-size: 24px; color: #3B8EEF; border: 1px solid #3B8EEF; }
@@ -109,10 +110,12 @@ body, html, .wrap { height: 100%; }
 #travel-select .select-item { width: 33.3333%; }
 #travel-select .select-item img { border-radius: 10px; box-shadow: 4px 2px 10px rgba(0,0,0,.4); }
 #travel-select .border { border-top: 2px dotted #ccc; }
+#travel-select .border:first-of-type { display: none; }
 #travel-select .sub-title { font-size: 26px; }
 #travel-select .text { font-size: 20px; text-indent: 2.8rem; line-height: 1.5; }
 #travel-select .btn { display: inline-block; line-height: normal; cursor: pointer; }
 #travel-select input[type="radio"]:checked + .btn { background: #3B8EEF; color: #fff; }
+#travel-select .addition .border { display: block; }
 
 
 /* 여행지 선택 */
@@ -145,3 +148,44 @@ body, html, .wrap { height: 100%; }
 .fc .fc-scrollgrid-section-sticky > * { background: #F8F8FF; }
 .calendar-wrap { max-height: calc(100vh - 530px); overflow: auto; }
 .fc .fc-scrollgrid-section > * { border-top: 1px solid var(--fc-border-color); }
+
+
+/* 장소 추가 팝업 */
+.popup {
+        background: #F8F8FF;
+        width: 423px;
+        height: 423px;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .popup h3 {
+        font-size: 16px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 20px;
+        font-weight: normal;
+    }
+    .popup .search-box {
+        width: 45%;
+        padding: 8px;
+        border: 3px solid #3B8EEF;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .popup .map-container {
+        width: 80%;
+        height: 228px;
+        background: #F8F8FF;
+        border-radius: 10px;
+        box-shadow: 5px 5px 10px rgba(0, 1, 1, 0.2);
+        margin-bottom: 15px;
+    }

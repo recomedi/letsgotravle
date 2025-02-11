@@ -527,156 +527,89 @@ table {
      <span>홈</span> &gt; <span>처방받은약</span> &gt; <span>처방전 상세</span>
    </nav>
    
-   <article class="title">처방전 상세 조회</article>
+<article class="title">처방전 상세 조회</article>
 
-<!-- 테이블 컨테이너 추가 -->
-<div class="table-container">
-  <table class="table-header">
-    <colgroup>
-      <col style="width:134px">
-      <col style="width:164px">
-      <col style="width:134px">
-      <col style="width:320px">
-      <col style="width:134px">
-      <col style="width:314px">
-    </colgroup>
-    <thead>
-      <tr class="header-row">
-        <th class="ht1">조제일자</th>
-        <th class="ht2">2024-11-11</th>
-        <th class="ht1">처방기관</th>
-        <th>병원 이름: 프로젝트 이비인후과<br>병원 전화번호: 000-032-0822</th>
-        <th class="ht1">조제기관</th>
-        <th>약국 이름: 프로젝트 약국<br>약국 전화번호: 000-032-0822</th>
-      </tr>
-    </thead>
-  </table>
+   <!-- 테이블 컨테이너 -->
+   <div class="table-container">
+      <table class="table-header">
+        <colgroup>
+          <col style="width:134px">
+          <col style="width:164px">
+          <col style="width:134px">
+          <col style="width:320px">
+          <col style="width:134px">
+          <col style="width:314px">
+        </colgroup>
+        <thead>
+          <tr class="header-row">
+            <th class="ht1">조제일자</th>
+            <th class="ht2">${prescription.resMenufactureDate}</th>
+            <th class="ht1">처방기관</th>
+            <th>
+              병원 이름: ${prescription.resPrescribeOrg}<br>
+              병원 전화번호: ${prescription.resTelNo}
+            </th>
+            <th class="ht1">조제기관</th>
+            <th>
+              약국 이름: ${prescription.commBrandName}<br>
+              약국 전화번호: ${prescription.commTelNo}
+            </th>
+          </tr>
+        </thead>
+      </table>
 
-  <table class="table-body">
-    <colgroup>
-      <col style="width: 66px;">
-      <col style="width: 136px;">
-      <col style="width: 165px;">
-      <col style="width: 152px;">
-      <col style="width: 171px;">
-      <col style="width: 91px;">
-      <col style="width: 128px;">
-      <col style="width: 139px;">
-      <col style="width: 149px;">
-    </colgroup>
-    <tbody>
-      <tr class="sub-header-row">
-        <th>번호</th>
-        <th>제품명</th>
-        <th>약효분류</th>
-        <th>성분명</th>
-        <th>약품코드</th>
-        <th>단위</th>
-        <th>1회 투약량</th>
-        <th>1회 투여횟수</th>
-        <th>총 투약일수</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>6</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>7</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>8</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-      <tr>
-        <td>9</td>
-        <td>닥스펜정</td>
-        <td>해열 진통</td>
-        <td>dexibuprofen</td>
-        <td>643100080</td>
-        <td>1정</td>
-        <td>1</td>
-        <td>3</td>
-        <td>3</td>
-      </tr>
-    </tbody>
-  </table>
+      <!-- 약 목록 테이블 -->
+      <table class="table-body">
+        <colgroup>
+          <col style="width: 66px;">
+          <col style="width: 136px;">
+          <col style="width: 165px;">
+          <col style="width: 152px;">
+          <col style="width: 171px;">
+          <col style="width: 91px;">
+          <col style="width: 128px;">
+          <col style="width: 139px;">
+          <col style="width: 149px;">
+        </colgroup>
+        <thead>
+          <tr class="sub-header-row">
+            <th>번호</th>
+            <th>제품명</th>
+            <th>약효분류</th>
+            <th>성분명</th>
+            <th>약품코드</th>
+            <th>단위</th>
+            <th>1회 투약량</th>
+            <th>1회 투여횟수</th>
+            <th>총 투약일수</th>
+          </tr>
+        </thead>
+        <tbody>
+          <c:forEach var="drug" items="${prescription.drugs}" varStatus="status">
+		    <tr>
+		        <td>${status.index + 1}</td>
+		        <td>
+		            <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${drug.didx}">
+		                ${drug.resDrugName} (ID: ${drug.didx})
+		            </a>
+		        </td>
+		        <td>${drug.resPrescribeDrugEffect}</td>
+		        <td>${drug.resIngredients}</td>
+		        <td>${drug.resDrugCode}</td>
+		        <td>${drug.resContent}</td>
+		        <td>${drug.resOneDose}</td>
+		        <td>${drug.resDailyDosesNumber}</td>
+		        <td>${drug.resTotalDosingdays}</td>
+		    </tr>
+		</c:forEach>
+
+          <c:if test="${empty drugs}">
+            <tr>
+              <td colspan="9">처방된 약이 없습니다.</td>
+            </tr>
+          </c:if>
+        </tbody>
+       </table>
 
   <!-- 목록 버튼을 테이블 아래에 위치 -->
   <div class="btn-box">

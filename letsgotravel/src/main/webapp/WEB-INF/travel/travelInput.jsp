@@ -40,7 +40,7 @@
 	
 	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
 	                    <button class="btn blue" type="button" onClick="goTravelSights();">다음</button>
-	                    <button class="btn">뒤로</button>
+	                    <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	                </div>
 	             </form>
             </section>
