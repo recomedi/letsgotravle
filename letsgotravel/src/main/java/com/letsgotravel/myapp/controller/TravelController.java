@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.letsgotravel.myapp.api.TravelRecommendation;
@@ -151,7 +152,7 @@ public class TravelController {
 	    StringBuilder prompt1 = new StringBuilder();
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개 이상과 음식점 2개 이상 추천해줘. 도시는 ");  // 20개씩
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 10개 이상과 음식점 2개 이상 추천해줘. 도시는 ");  // 20개씩
 	    prompt1.append(destination);
 	    prompt1.append("이고 총 인원은 ");
 	    prompt1.append(peopleCount);
@@ -183,11 +184,71 @@ public class TravelController {
 
 	@RequestMapping(value = "/travelModify.do")
 	public String travelModify(
-			HttpServletRequest request,
-			// @PathVariable("bidx") int bidx,
-			Model model) {
+			TravelConditionsVo tv, 
+			@RequestParam("sights") String signts, 
+			@RequestParam("restaurants") String restaurants, 
+			Model model) throws Exception {
 		
 		logger.info("travelModify 들어옴");
+		
+		String destination = tv.getDestination();
+		int peopleCount = tv.getPeopleCount();
+	    String departureMonth = tv.getDepartureMonth();
+	    String groupType = tv.getGroupType();
+	    int budgetMin = tv.getBudgetMin();
+	    int budgetMax = tv.getBudgetMax();
+	    String thema = tv.getThema();
+	    
+	    // 추천 장소 prompt
+	    StringBuilder prompt1 = new StringBuilder();
+	    prompt1.append("너는 ");
+	    prompt1.append(groupType);
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 여행 일정을 추천해줘. 총 인원은 ");  // 20개씩
+	    prompt1.append(peopleCount);
+	    prompt1.append("명이고 여행 기간은 ");
+	    prompt1.append(destination);
+	    prompt1.append("일, 예산은 ");	    
+	    prompt1.append(budgetMin + "만원 ~ " + budgetMax + "만원");
+	    prompt1.append("이야. 키워드는 ");
+	    prompt1.append(thema);
+	    prompt1.append("이고 여행 장소는 ");
+	    prompt1.append(thema);
+	    prompt1.append("야. ");
+	    prompt1.append(departureMonth);
+	    prompt1.append(" 기준의 일정을 추천해줬으면 좋겠어. 방문할 장소는 ");
+	    prompt1.append(signts);
+	    prompt1.append(" 이고 방문할 음식점은 ");
+	    prompt1.append(restaurants);
+	    prompt1.append("이야. 대중교통을 이용할 경우걸리는 소요시간까지 반영해서 알려줘. 한번 갔던 장소는 다시 방문하지 않을래. 위의 내용을 json 형식으로 알려줘. 예시를 보여줄게.");
+	    prompt1.append("[{" + 
+	    				"title: \"도쿄 디즈니랜드\", " +
+		                "start: \"1900-01-01T12:30:00\", " +
+		                "end: \"1900-01-01T13:30:00\", " +
+						    "extendedProps: {\" " +
+			                    "category: \"sight\" " +
+			                "}" +
+						"},{" + 
+					    "title: \"라멘 츠케멘\"," +
+		                "start: \"1900-01-01T12:30:00\"," +
+		                "end: \"1900-01-01T13:30:00\"," +
+		                	"extendedProps: {" +
+		                    	"category: \"restaurant\"" +
+		                    "}" +
+	    				"}]");
+	    System.out.println(prompt1);
+	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
+	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray4(openAIResult1);
+		System.out.println("openAIResult1 : " + openAIResult1);
+		System.out.println("openAIResult1Array : " + openAIResult1Array);
+		
+		model.addAttribute("openAIResult1Array", openAIResult1Array);
+		
+		return "WEB-INF/travel/travelModify";
+	}
+
+	@RequestMapping(value = "/travelDetails.do")
+	public String travelDetails() {
+		logger.info("travelDetails 들어옴");
 		
 //		//占쏙옙占쏙옙 占쏙옙占쏙옙
 //		sessionStorage.setItem("key", value);
@@ -199,28 +260,8 @@ public class TravelController {
 //		sessionStorage.removeItem("key");
 //
 //		//占쏙옙占쏙옙 占쏙옙체 占쏙옙占쏙옙
-//		sessionStorage.clear();
-//		
-		/*
-		 * BoardVo bv = scrapService.boardSelectOne(bidx); // 占쌔댐옙풔占� bidx占쏙옙 占쌉시뱄옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙
-		 * ArrayList<CalendarVo> clist = calendarService.calendarSelectAll(bidx);
-		 * 
-		 * String id = request.getSession().getAttribute("id").toString(); MemberVo mv =
-		 * memberService.memberSelect(id);
-		 * 
-		 * String adminyn = request.getSession().getAttribute("adminyn").toString();
-		 */
-//		
-//		model.addAttribute("bv", bv);
-//		model.addAttribute("clist", clist);	
-//		model.addAttribute("mv", mv);		
+//		sessionStorage.clear();		
 		
-		return "WEB-INF/travel/travelModify";
-	}
-
-	@RequestMapping(value = "/travelDetails.do")
-	public String travelDetails() {
-		logger.info("travelDetails 들어옴");
 		return "WEB-INF/travel/travelDetails";
 	}
 	
@@ -254,7 +295,7 @@ public class TravelController {
 	    	// 상세설명 prompt
 		    StringBuilder prompt2 = new StringBuilder();
 		    prompt2.append(sight);
-		    prompt2.append("에 대해 String 형식으로 설명해줘. \"물론입니다\"나 \"알겠습니다\" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해");
+		    prompt2.append("에 대해 String 형식으로 설명해줘. \"물론입니다\"나 \"알겠습니다\" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해. 존댓말로 해줘.");
 		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
 			

@@ -34,24 +34,34 @@
             	<form name="frm">
 	               <div class="flex">
 	                   <div class="col">
+	                   	   <input type="hidden" name="peopleCount" id="peopleCount">
+	                   	   <input type="hidden" name="departureMonth" id="departureMonth">
+	                   	   <input type="hidden" name="groupType" id="groupType">
+	                   	   <input type="hidden" name="budgetMin" id="budgetMin">
+	                   	   <input type="hidden" name="budgetMax" id="budgetMax">
+	                   	   <input type="hidden" name="destination" id="destination">
+	                   	   <input type="hidden" name="thema" id="thema">
+	                   	   <input type="hidden" name="sights" id="sights">
+	                   	   <input type="hidden" name="restaurants" id="restaurants">
+	                   	   <input type="hidden" name="placeName" id="placeName">
 	                       <div class="flex justify-content-between">                    
 	                           <div class="btn-box flex">
-	                               <label class="btn btn2" for="sights">관광지</label> <label class="btn btn2" for="restaurant">음식점</label>
+	                               <label class="btn btn2 green" for="sights" onClick="btnClick(this);">관광지</label> <label class="btn btn2" for="restaurant" onClick="btnClick(this);">음식점</label>
 	                           </div>
 	                           <button class="btn blue">추가</button>
 	                       </div>
 						
-					 	<input type="radio" name="sights-radio" id="sights" class="none" checked>
+					 	   <input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
 	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
-		                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);" data-value="${requestScope.sightListArray[sight]}"><i class="fa-solid fa-plus"></i></button><br>
+		                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i><textarea class="none">${requestScope.sightListArray[sight]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
 	                       <input type="radio" name="sights-radio" id="restaurant" class="none">
 	                       <div class="check-box pt-10 none restaurant">
 	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
-	                            <input type="checkbox" id="ck1${status.index+1}" class="none" name="restaurantCk" value="${restaurant}"><label class="relative mt-20 pl-35 inline-block" for="ck1${status.index+1}"> ${restaurant}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);" data-value="${requestScope.restaurantListArray[restaurant]}"><i class="fa-solid fa-plus"></i></button><br>
+	                            <input type="checkbox" id="ck10${status.index+1}" class="none" name="restaurantCk" value="${restaurant}"><label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i><textarea class="none">${requestScope.restaurantListArray[restaurant]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
@@ -63,7 +73,7 @@
 	                           <img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관">
 	                           <img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도">
 	                       </div>
-	                       <p class="text">에펠탑(프랑스어: Tour Eiffel, [tuʁ ɛfɛl], 영어: Eiffel Tower)은 프랑스 파리 마르스 광장에 위치한 격자형 철골 타워이다. 1889년에 프랑스 혁명 100주년을 맞이하여 파리 만국 박람회를 개최하였는데 이 박람회를 상징할만한 기념물로 에펠탑을 건축하였다.[1] 박람회가 열린 마르스 광장 출입 관문에 위치해있다. 프랑스의 대표 건축물인 에펠탑은 격자 구조로 이루어져 파리에서 가장 높은 건축물이며, 매년 수백만 명이 방문할 정도로 파리에서 빼놓을 수 없는 세계적으로 유명한 관광명소이다. 이 탑은 공모전을 통해 선정된 프랑스 공학자 귀스타브 에펠의 작품으로 이를 디자인한 그의 이름을 따서 명명했다.</p>
+	                       <p class="text"></p>
 	                   </div>
 	               </div>
 	               
@@ -78,6 +88,10 @@
     </div>
     
     <script>
+	// 최초 상세설명 입력
+	let infoArea = document.querySelector(".info .text");
+	let textValue = document.querySelector(".check-box .plus-icon textarea").value;
+    infoArea.innerText = textValue;
     
     function goTravelModify() {
     	
@@ -87,18 +101,6 @@
     		const checked = 'input[name="' + sights + 'Ck"]:checked';
     		const checkeds = document.querySelectorAll(checked);
     		return checkeds;
-    	}
-    	
-    	function findCheckedValue(sights) {
-    		
-			// 선택된 목록에서 value 찾기
-   			let value = "";
-   			findChecked(sights).forEach((el) => {
-   				value += el.value + ', ';
-   			});
-   			
-   			// 마지막 문자 자르기
-   			return value.slice(0, -2);
     	}
 
 	    // 유효성 검사하기
@@ -123,25 +125,79 @@
 		}
 
 		let ans = confirm("다음페이지로 이동합니다.");
-		if (ans == true) {
+		
+		if (ans == true) {		    		    
+
+	    	var chkArray = {};
+	    	
+		    function getCheckedValues(name) {
+
+		    	$(`input:checkbox[name="{name}"]:checked`).each(function() {
+		    	    // 'this'는 체크된 체크박스를 가리킴
+		    	    const button = $(this).siblings("button")[0]; // 배열로 반환되므로 첫 번째 요소를 가져온다.
+		    	    const textarea = button.querySelector("textarea");
+		    	    const value = textarea.value;
+		    	    
+		    	    chkArray[this.value] = value;
+		    	});
+
+		    }
+		    
+		    getCheckedValues(sightsCk);
+		    getCheckedValues(restaurantCk);
+	    	$('#placeName').val(JSON.stringify(chkArray));  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
+		    
+	    	function findCheckedValue(sights) {
+	    		
+				// 선택된 목록에서 value 찾기
+	   			let value = "";
+	   			findChecked(sights).forEach((el) => {
+	   				value += el.value + ', ';
+	   			});
+	   			
+	   			// 마지막 문자 자르기
+	   			return value.slice(0, -2);
+	    	}
 
 			// sessionStorage에 저장
 		    sessionStorage.setItem('sights', findCheckedValue("sights"));
 		    sessionStorage.setItem('restaurants', findCheckedValue("restaurants"));
-		    		    
+		    
+			// sessionStorage에서 불러오기
+		    document.querySelector('#peopleCount').value = sessionStorage.getItem('peopleCount');
+		    document.querySelector('#departureMonth').value = sessionStorage.getItem('departureMonth');
+		    document.querySelector('#groupType').value = sessionStorage.getItem('groupType');
+		    document.querySelector('#budgetMin').value = sessionStorage.getItem('budgetMin');
+		    document.querySelector('#budgetMax').value = sessionStorage.getItem('budgetMax');
+		    document.querySelector('#destination').value = sessionStorage.getItem('destination');
+		    document.querySelector('#thema').value = sessionStorage.getItem('thema');
+		    
+		    document.querySelector('#sights').value = findCheckedValue("sights");
+		    document.querySelector('#restaurants').value = findCheckedValue("restaurants");
+	        		    
 			fm.action="${pageContext.request.contextPath}/travel/travelModify.do";
 			fm.method="post";
 			fm.submit();
 		}
 	  
 		return;
-	}
+	}    
     
+    // 상세 설명
+    function viewDetail(button) {
+    	infoArea = document.querySelector(".info .text");
+    	textValue = button.querySelector("textarea").value;
+        infoArea.innerText = textValue;
+    }
     
-    function viewDetail(button, type) {
-    			
-    	const info = document.querySelector(".info .text");
-        	
+    // 버튼이벤트
+    function btnClick(button) {
+    	const buttons = document.querySelectorAll(".btn-box .btn2");
+    	buttons.forEach((btn) => {
+    		btn.classList.remove('green');
+    	});
+    	
+    	button.classList.add('green');
     }
  
     </script>
