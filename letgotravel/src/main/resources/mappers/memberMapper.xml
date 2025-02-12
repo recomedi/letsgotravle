@@ -26,4 +26,28 @@
 	<select id="findId" parameterType="map" resultType="mv">
     	SELECT id, name FROM MEMBER WHERE name = #{name} AND phone = #{phone}
 	</select>
+	
+	
+	<select id="getUserById" parameterType="String" resultType="mv">
+        SELECT * FROM MEMBER WHERE id = #{id}
+    </select>
+
+    <update id="changePassword" parameterType="map">
+    	UPDATE MEMBER SET password = #{password} WHERE id = #{id}
+	</update>
+
+	 <update id="updateUserProfile" parameterType="map">
+	    UPDATE MEMBER
+	    <set>
+	        <if test="nickname != null and nickname != ''"> nickname = #{nickname}, </if>
+	        <if test="email != null and email != ''"> email = #{email}, </if>
+	        <if test="phone != null and phone != ''"> phone = #{phone}, </if>
+	    </set>
+	    WHERE id = #{id}
+	</update>
+	
+	<update id="updateDelyn" parameterType="map">
+	    UPDATE MEMBER SET delyn = #{delyn} WHERE id = #{id}
+	</update>
+	    
 </mapper>

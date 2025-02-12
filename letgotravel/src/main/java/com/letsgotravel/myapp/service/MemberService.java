@@ -8,4 +8,8 @@ public interface MemberService {
 	public int nicknameCheck(String nickname);
 	public MemberVo LoginCheck(String id);
 	public MemberVo findId(String name, String phone);
+	public boolean updateProfile(String id, String currentPassword, String newPassword, String nickname, String email,
+			String phone);
+	public boolean deleteAccount(String id);
+
 }

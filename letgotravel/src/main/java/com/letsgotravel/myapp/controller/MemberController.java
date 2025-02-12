@@ -74,48 +74,90 @@ public class MemberController {
 			RedirectAttributes rttr, HttpSession session) {
 			System.out.println("아이디" + id);
 			System.out.println("비번" + password);
+			  MemberVo mv = memberService.LoginCheck(id);
 
-		MemberVo mv = memberService.LoginCheck(id);
-		// 저장된 비밀번호를 가져온다
+			    if (mv == null) { // 회원 정보가 없을 때
+			        rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요.");
+			        return "redirect:/member/memberLogin.do";
+			    }
 
-		String path = "";
-		if (mv != null) { // 객체값이 있으면
-			String reservedPassword = mv.getPassword();
-			if (bCryptPasswordEncoder.matches(password, reservedPassword)) {
-				System.out.println("비밀번호 일치");
-//				rttr.addAttribute("midx", mv.getMidx());
-//				rttr.addAttribute("memberId", mv.getId());
-//				rttr.addAttribute("memberNickName", mv.getNickname());
-				
-	            session.setAttribute("midx", mv.getMidx());
-	            session.setAttribute("memberId", mv.getId());
-	            session.setAttribute("memberNickName", mv.getNickname());
-	            
-				logger.info("로그인 성공 midx 번호" + mv.getMidx());
-				
-				logger.info("saveUrl : "  + session.getAttribute("saveUrl"));
+			    if ("Y".equals(mv.getDelyn())) { 
+			        rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요.");
+			        return "redirect:/member/memberLogin.do";
+			    }
 
-				if (session.getAttribute("saveUrl") != null) {
-					path = "redirect:" + session.getAttribute("saveUrl").toString();
-				} else
-					path = "redirect:/";
+			    String reservedPassword = mv.getPassword();
 
-			} else {
-				rttr.addAttribute("midx","");
-				rttr.addAttribute("id", "");
-				rttr.addAttribute("nickName", "");	
-				rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요");
-				path = "redirect:/member/memberLogin.do";
-			}
-		} else {
-			rttr.addAttribute("midx","");
-			rttr.addAttribute("id", "");
-			rttr.addAttribute("nickname", "");	
-			rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요");
-			path = "redirect:/member/memberLogin.do";
-		}
-		// 회원정보를 세션에 담는다
-		return path;
+			    if (bCryptPasswordEncoder.matches(password, reservedPassword)) {
+			        System.out.println("비밀번호 일치");
+
+			        session.setAttribute("midx", mv.getMidx());
+			        session.setAttribute("memberId", mv.getId());
+			        session.setAttribute("memberNickName", mv.getNickname());
+			        session.setAttribute("memberEmail", mv.getEmail());
+			        session.setAttribute("memberPhone", mv.getPhone());
+
+			        logger.info("로그인 성공 midx 번호: " + mv.getMidx());
+
+			        if (session.getAttribute("saveUrl") != null) {
+			            return "redirect:" + session.getAttribute("saveUrl").toString();
+			        } else {
+			            return "redirect:/";
+			        }
+
+			    } else { 
+			        rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요.");
+			        return "redirect:/member/memberLogin.do";
+			    }
+			
+//		MemberVo mv = memberService.LoginCheck(id);
+//		// 저장된 비밀번호를 가져온다
+//
+//		String path = "";
+//		if (mv != null) { // 객체값이 있으면
+//			String reservedPassword = mv.getPassword();
+//			if (bCryptPasswordEncoder.matches(password, reservedPassword)) {
+//				System.out.println("비밀번호 일치");
+////				rttr.addAttribute("midx", mv.getMidx());
+////				rttr.addAttribute("memberId", mv.getId());
+////				rttr.addAttribute("memberNickName", mv.getNickname());
+//				
+//	            session.setAttribute("midx", mv.getMidx());
+//	            session.setAttribute("memberId", mv.getId());
+//	            session.setAttribute("memberNickName", mv.getNickname());
+//	            session.setAttribute("memberEmail", mv.getEmail());
+//	            session.setAttribute("memberPhone", mv.getPhone());
+//	            
+//				logger.info("로그인 성공 midx 번호" + mv.getMidx());
+//				
+//				logger.info("saveUrl : "  + session.getAttribute("saveUrl"));
+//
+//				if (session.getAttribute("saveUrl") != null) {
+//					path = "redirect:" + session.getAttribute("saveUrl").toString();
+//				} else
+//					path = "redirect:/";
+//
+//			} else {
+//				rttr.addAttribute("midx","");
+//				rttr.addAttribute("id", "");
+//				rttr.addAttribute("nickName", "");	
+//				rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요");
+//				path = "redirect:/member/memberLogin.do";
+//			}
+//		} else {
+//			rttr.addAttribute("midx","");
+//			rttr.addAttribute("id", "");
+//			rttr.addAttribute("nickname", "");	
+//			rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요");
+//			path = "redirect:/member/memberLogin.do";
+//    	}
+//		
+//	    if ("Y".equals(mv.getDelyn())) {
+//	        rttr.addFlashAttribute("msg", "아이디/비밀번호를 확인해주세요");
+//	        return "redirect:/member/memberLogin.do";
+//	    }
+//		// 회원정보를 세션에 담는다
+//		return path;
 	}
 	
 	@RequestMapping(value = "Logout.do", method = RequestMethod.GET)
@@ -205,13 +247,74 @@ public class MemberController {
         logger.warn("로그인 정보가 없습니다.");
         return "redirect:/member/memberLogin.do"; 
     }
-
     return "WEB-INF/member/memberMypage";
 	}
 	
+	@RequestMapping(value = "deleteAccount.do", method = RequestMethod.POST)
 	@ResponseBody
-	@RequestMapping(value="configAction.do", method = RequestMethod.POST)
-	public String changePassword() {
-		return "";
+	public Map<String, Object> deleteAccount(HttpSession session) {
+	    Map<String, Object> response = new HashMap<>();
+	    String id = (String) session.getAttribute("memberId");
+
+	    if (id == null) {
+	        response.put("success", false);
+	        response.put("message", "로그인이 필요합니다.");
+	        return response;
+	    }
+
+	    boolean isDeleted = memberService.deleteAccount(id);
+
+	    if (isDeleted) {
+	        session.invalidate(); // 세션 만료 (로그아웃)
+	        response.put("success", true);
+	    } else {
+	        response.put("success", false);
+	        response.put("message", "회원 탈퇴에 실패했습니다.");
+	    }
+
+	    return response;
 	}
+	
+	@RequestMapping(value = "updateProfile.do", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updateProfile(
+	        @RequestParam(value = "currentPassword", required = false) String currentPassword,
+	        @RequestParam(value = "newPassword", required = false) String newPassword,
+	        @RequestParam(value = "nickname", required = false) String nickname,
+	        @RequestParam(value = "email", required = false) String email,
+	        @RequestParam(value = "phone", required = false) String phone,
+	        HttpSession session) {
+
+	    Map<String, Object> response = new HashMap<>();
+	    String id = (String) session.getAttribute("memberId");
+
+	    if (id == null) {
+	        response.put("success", false);
+	        response.put("message", "로그인이 필요합니다.");
+	        response.put("redirectUrl", "/member/memberLogin.do");
+	        return response;
+	    }
+
+	    try {
+	        boolean isUpdated = memberService.updateProfile(id, currentPassword, newPassword, nickname, email, phone);
+
+	        if (isUpdated) {
+	            if (nickname != null && !nickname.isEmpty()) session.setAttribute("nickname", nickname);
+	            if (email != null && !email.isEmpty()) session.setAttribute("email", email);
+	            if (phone != null && !phone.isEmpty()) session.setAttribute("phone", phone);
+	        }
+
+	        response.put("success", isUpdated);
+	        response.put("message", isUpdated ? "회원 정보가 변경되었습니다." : "회원 정보 변경에 실패했습니다.");
+	    } catch (IllegalArgumentException e) {
+	        response.put("success", false);
+	        response.put("message", e.getMessage());  // 비밀번호 오류 메시지 반환
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "서버 오류가 발생했습니다.");
+	    }
+
+	    return response;
+	}
+	
 }

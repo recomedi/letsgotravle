@@ -15,6 +15,115 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/jejugothic.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/MyPage.css">
+     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+$(document).ready(function() {
+    $(".update").click(function() {
+        let currentPassword = $("#currentPassword").val();
+        let newPassword = $("#newPassword").val();
+        let confirmPassword = $("#confirmPassword").val();
+        let nickname = $("#nickname").val();
+        let phone = $("#phone").val();
+        let email = $("#email").val();
+
+        if (currentPassword === "") {
+            alert("현재 비밀번호를 입력해주세요.");
+            $("#currentPassword").focus();
+            return;
+        }
+
+        if (newPassword !== "" && newPassword !== confirmPassword) {
+            alert("비밀번호가 일치하지 않습니다.");
+            $("#confirmPassword").val("");
+            $("#confirmPassword").focus();
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "<%=request.getContextPath()%>/member/updateProfile.do",
+            dataType: "json",
+            data: {
+                currentPassword: currentPassword,
+                newPassword: newPassword,
+                nickname: nickname,
+                phone: phone,
+                email: email
+            },
+            success: function(result) {
+                console.log("서버 응답:", result);
+                if (result.success) {
+                    alert("회원 정보가 수정되었습니다.");
+                    location.reload();
+                } else {
+                    alert(result.message);
+                }
+            },
+            error: function(xhr) {
+                console.error("오류 발생:", xhr.responseText);
+                alert("회원 정보 변경 중 오류가 발생했습니다.");
+            }
+        });
+    });
+});
+
+$(document).ready(function() {
+    $(".delete").click(function() {
+        if (!confirm("정말 탈퇴하시겠습니까?")) {
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "<%=request.getContextPath()%>/member/deleteAccount.do",
+            dataType: "json",
+            success: function(result) {
+                if (result.success) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    window.location.href = "<%=request.getContextPath()%>/member/memberLogin.do"; // 로그인 페이지로 리다이렉트
+                } else {
+                    alert(result.message);
+                }
+            },
+            error: function() {
+                alert("회원 탈퇴 요청 중 오류가 발생했습니다.");
+            }
+        });
+    });
+});
+
+
+$(document).ready(function(){
+	$("#btn-nickname").click(function() {
+	    let nickname = $("#nickname").val();
+	    if (nickname === "") {
+	        alert("닉네임을 입력해주세요");
+	        return;
+	    }
+	
+	    $.ajax({
+	        type: "POST",
+	        url: "<%=request.getContextPath()%>/member/nicknameCheck.do",
+	        dataType: "json",
+	        data: { "nickname": nickname },
+	        success: function(result) {
+	            console.log("닉네임 중복 확인 결과:", result);
+	            if (result.cnt === 0) {
+	                alert("사용할 수 있는 닉네임입니다.");
+	                $("#btn-nickname").val("Y");
+	            } else {
+	                alert("사용할 수 없는 닉네임입니다.");
+	                $("#nickname").val("");
+	            }
+	        },
+	        error: function() {
+	            alert("닉네임 중복 확인 전송 실패");
+	        }
+	    });
+	});
+});
+</script>
+
 </head>
 <body>
    <nav class="breadcrumb">
@@ -30,22 +139,22 @@
             <h2>회원 정보 변경</h2>
         <div class="password-change">
             <label>비밀번호 변경</label>
-            <input type="password" placeholder="비밀번호를 입력해주세요">
+            <input type="password" id="newPassword" placeholder="비밀번호를 입력해주세요">
             <label>비밀번호 확인</label>
-            <input type="password" placeholder="비밀번호를 다시한번 입력해주세요">
+            <input type="password" id="confirmPassword" placeholder="비밀번호를 다시한번 입력해주세요">
         </div>
         <div class="profile-modify">
-            <label>닉네임 변경</label>
+            <label for="nickname">닉네임 변경</label>
             <div style="display: flex; align-items: center; justify-content: center;">
-                <input type="text" class="short-input" name="nickname" placeholder="<%= nickname %>">
-                <button class="check-btn">중복확인</button>
+                <input type="text" class="short-input" id="nickname" name="nickname" placeholder="<%= nickname %>">
+                <button class="check-btn" id="btn-nickname" name="btn-nickname" value="N" type="button">중복확인</button>
             </div>
             <label>연락처 변경</label>
-            <input type="text" name="phone" placeholder="<%= phone %>">
+            <input type="text" id="phone" name="phone" placeholder="<%= phone %>">
             <label>이메일 변경</label>
-            <input type="email" name="email" placeholder="<%= email %>">
+            <input type="email" id="email" name="email" placeholder="<%= email %>">
             <label>현재 비밀번호</label>
-            <input type="password" placeholder="회원 정보를 변경 하려면 현재 비밀번호를 입력해주세요">
+            <input type="password" id="currentPassword" placeholder="회원 정보를 변경 하려면 현재 비밀번호를 입력해주세요">
         </div>
         </div>
         <div class="buttons">
