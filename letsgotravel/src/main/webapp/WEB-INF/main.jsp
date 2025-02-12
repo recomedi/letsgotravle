@@ -21,7 +21,6 @@
       <div class="parallax__visuals">
         <!-- Black line at the bottom -->
         <div class="parallax__black-line-overflow"></div>
-Ï
         <!-- Parallax Layers -->
         <div data-parallax-layers class="parallax__layers">
           <!-- Background Layer 1 -->
