@@ -1,6 +1,7 @@
 package com.letsgotravel.myapp.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -169,11 +170,12 @@ public class TravelController {
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray3(openAIResult1);
 	    
-	    ArrayList<String> sightArray = getSightArray(openAIResult1Array, "추천관광지");
-	    ArrayList<String> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");		
-	    
+	    HashMap<String, String> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
+	    HashMap<String, String> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
+	   
+		model.addAttribute("destination", destination);
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
-		model.addAttribute("sightArray", sightArray);
+		model.addAttribute("sightListArray", sightListArray);
 		model.addAttribute("restaurantListArray", restaurantListArray);
 		
 		return "WEB-INF/travel/travelSights";
@@ -242,12 +244,13 @@ public class TravelController {
 	    
 	    
 	/* 장소 검색 */
-	public ArrayList<String> getSightArray(ArrayList<Map<String, Object>> openAIResult1Array, String sightType) throws Exception {
+	public HashMap<String, String> getSightArray(ArrayList<Map<String, Object>> openAIResult1Array, String sightType) throws Exception {
 		
 		ArrayList<String> sights = (ArrayList<String>)openAIResult1Array.get(0).get(sightType);
-		ArrayList<String> returnSights = new ArrayList<>();
+		HashMap<String, String> returnSights = new HashMap<>();
 	
-	    for(String sight : sights) {	    	
+	    for(String sight : sights) {
+	    	
 	    	// 상세설명 prompt
 		    StringBuilder prompt2 = new StringBuilder();
 		    prompt2.append(sight);
@@ -256,7 +259,7 @@ public class TravelController {
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
 			
 		    String openAIResult1String = travelRecommendation.changeString(openAIResult2);
-			returnSights.add(openAIResult1String);
+			returnSights.put(sight, openAIResult1String);
 	    }
 	
 	    return returnSights;

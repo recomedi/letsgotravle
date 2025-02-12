@@ -31,6 +31,7 @@ body, html, .wrap { height: 100%; }
 
 .btn-box { gap: 15px; }
 .btn { border-radius: 20px; padding: 6px 30px; font-size: 24px; color: #3B8EEF; border: 1px solid #3B8EEF; }
+.btn2 { color: #4FA3C4; border-color: #4FA3C4; }
 .btn.blue { background: #3B8EEF; color: #fff; }
 .btn.green { background: #4FA3C4; color: #fff; border-color: #4FA3C4; }
 
@@ -136,6 +137,7 @@ body, html, .wrap { height: 100%; }
 
 #travel-sights .btn { cursor: pointer; }
 .check-box { display: none; }
+#travel-sights .btn2:checked { background: #4FA3C4; color: #fff; }
 #travel-sights input[type="radio"]:checked + .check-box { display: block; }
 
 
