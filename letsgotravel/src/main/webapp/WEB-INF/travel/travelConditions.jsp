@@ -127,17 +127,6 @@
     	const checked = 'input[name="themaInput"]:checked';
 		const checkeds = document.querySelectorAll(checked);
 		
-		// 선택된 목록에서 value 찾기
-		let themaValue = function () {
-			let value = "";
-			checkeds.forEach((el) => {
-				value += el.value + ', ';
-			});
-			
-			// 마지막 문자 자르기
-			return value.slice(0, -2);
-		}
-
 	    // 유효성 검사하기
 		let fm = document.frm;
 		const regExp = /^[0-9]+$/;
@@ -193,7 +182,19 @@
 		}
 		
 		let ans = confirm("다음페이지로 이동합니다.");
+		
 		if (ans == true) {
+
+			// 선택된 목록에서 value 찾기
+			let themaValue = function () {
+				let value = "";
+				checkeds.forEach((el) => {
+					value += el.value + ', ';
+				});
+				
+				// 마지막 문자 자르기
+				return value.slice(0, -2);
+			}
 
 			// sessionStorage에 저장
 		    sessionStorage.setItem('peopleCount', fm.peopleCount.value);

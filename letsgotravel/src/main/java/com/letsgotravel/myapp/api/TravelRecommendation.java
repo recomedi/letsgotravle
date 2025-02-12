@@ -135,6 +135,47 @@ public class TravelRecommendation {
         
         return content;
     }
+    
+
+    public ArrayList<Map<String, Object>> changeArray4(String openAIResult) throws Exception {
+        
+    	// JSON 객체 생성
+        JSONObject jsonObject = new JSONObject(openAIResult);
+        JSONArray choices = jsonObject.getJSONArray("choices");
+        JSONObject message = choices.getJSONObject(0).getJSONObject("message");
+        String content = message.getString("content");
+
+        // "```json" 부분 제거 및 JSON 배열 파싱
+        String jsonArrayString = content.replace("```json\n", "").replace("\n```", "");
+                
+        ArrayList<Map<String, Object>> travelCityList = new ArrayList<Map<String, Object>>();
+        
+        String cleanJson = jsonArrayString.substring(jsonArrayString.indexOf("["), jsonArrayString.lastIndexOf("]") + 1);
+        
+     // JSON 배열 파싱 후 ArrayList로 변환
+        try {
+            JSONArray jsonArray = new JSONArray(cleanJson);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject destination = jsonArray.getJSONObject(i);
+                Map<String, Object> destinationMap = new HashMap<String, Object>();
+
+                // JSONObject의 각 데이터를 Map으로 변환하여 ArrayList에 추가
+                destinationMap.put("title", destination.getString("title"));
+                destinationMap.put("start", destination.getString("start"));
+                destinationMap.put("end", destination.getString("end"));
+                destinationMap.put("extendedProps", destination.getJSONArray("extendedProps").toList());
+
+                // Map을 ArrayList에 추가
+                travelCityList.add(destinationMap);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return travelCityList;
+    }
 }
 
 
