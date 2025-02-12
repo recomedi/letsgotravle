@@ -9,8 +9,13 @@ public class MemberVo {
 	private String nickname;
 	private String phone;
 	private String date;
+	private String modify;
+	private String ip;
 	private String delyn;
 	private String admin;
+	private String snsProvider;
+	private String email;
+	private String snsId;
 	
 	public int getMidx() {
 		return midx;
@@ -54,6 +59,18 @@ public class MemberVo {
 	public void setDate(String date) {
 		this.date = date;
 	}
+	public String getModify() {
+		return modify;
+	}
+	public void setModify(String modify) {
+		this.modify = modify;
+	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 	public String getDelyn() {
 		return delyn;
 	}
@@ -65,6 +82,24 @@ public class MemberVo {
 	}
 	public void setAdmin(String admin) {
 		this.admin = admin;
+	}
+	public String getSnsProvider() {
+		return snsProvider;
+	}
+	public void setSnsProvider(String snsProvider) {
+		this.snsProvider = snsProvider;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getSnsId() {
+		return snsId;
+	}
+	public void setSnsId(String snsId) {
+		this.snsId = snsId;
 	}
 	
 }

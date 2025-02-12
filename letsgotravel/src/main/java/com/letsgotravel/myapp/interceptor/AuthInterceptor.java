@@ -44,7 +44,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 	    
 	    String cleanUrl = fullUrl.replaceFirst(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + contextPath, "");
 	    	    
-		String param = request.getQueryString();  // 파라미터를 가져온다
+		String param = request.getQueryString();  //
 		
 		if(param == null || param.equals("null") || param.equals("")) {
 			param = "";

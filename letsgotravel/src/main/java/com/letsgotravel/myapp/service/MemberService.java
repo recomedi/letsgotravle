@@ -1,21 +1,10 @@
 package com.letsgotravel.myapp.service;
 
-import org.apache.ibatis.annotations.Select;
-
 import com.letsgotravel.myapp.domain.MemberVo;
 
 public interface MemberService {
-
-	
-	 String getCurrentTime();
-	 
-	 
-	 int saveMemberInfo(MemberVo member);
-
-
-	 Integer getMemberByPhone(String phoneNumber);
-		
-	 MemberVo memberlogin(String id, String password);
-
-		
+	public int memberInsert(MemberVo mv);
+	public int idCheck(String id);
+	public int nicknameCheck(String nickname);
+	public MemberVo LoginCheck(String id);
 }

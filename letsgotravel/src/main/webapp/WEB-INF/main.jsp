@@ -21,7 +21,7 @@
       <div class="parallax__visuals">
         <!-- Black line at the bottom -->
         <div class="parallax__black-line-overflow"></div>
-
+Ï
         <!-- Parallax Layers -->
         <div data-parallax-layers class="parallax__layers">
           <!-- Background Layer 1 -->
@@ -134,6 +134,11 @@
     <a href="${pageContext.request.contextPath}/member/memberFind.do">아이디/비밀번호찾기</a>
     <a href="${pageContext.request.contextPath}/prescription/certification.do">본인인증</a>
     <a href="${pageContext.request.contextPath}/travel/openAiTest.do">테스트페이지</a>
+    
+    <a href="${pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
+    <a href="${pageContext.request.contextPath}/member/memberSignUp.do">회원가입</a>
+    <a href="${pageContext.request.contextPath}/member/memberMypage.do">마이페이지</a>
+    <a href="${pageContext.request.contextPath}/member/Logout.do" style="color:#A39C9C;">로그아웃</a>
   </section>
   </div>
 
