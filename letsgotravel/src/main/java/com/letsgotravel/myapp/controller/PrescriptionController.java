@@ -75,10 +75,6 @@ public class PrescriptionController {
 	
 	
 	
-	
-	
-	
-	
 	@RequestMapping(value = "refreshSecureNo.do", method = RequestMethod.POST)
 	@ResponseBody
 	public HashMap<String, Object> refreshSecureNo(HttpSession session) {
@@ -191,74 +187,6 @@ public class PrescriptionController {
 
 	@RequestMapping(value = "processCertification.do", method = RequestMethod.POST)
 	@ResponseBody
-	public HashMap<String, Object> savePrescription(
-	        @RequestBody List<PrescriptionVo> prescriptions,@RequestParam("phoneNumber") String phoneNumber,
-	        HttpSession session) {
-
-	    HashMap<String, Object> response = new HashMap<>();
-//	    
-//	    try {
-//	        // 📌 인증된 사용자의 midx 가져오기 (DB에서 phoneNumber로 조회)
-//	        Integer midx = 6;  
-//
-////	        if (midx == null) {
-////	            response.put("error", "회원 정보가 존재하지 않습니다. 회원가입이 필요합니다.");
-////	            return response;
-////	        }
-//
-//	        // ✅ 세션에 midx 저장 (회원 인증 완료)
-//	        session.setAttribute("midx", midx);
-//	        response.put("success", true);
-//	        response.put("midx", midx);
-//	        response.put("message", "본인 인증 성공, 세션에 midx 저장 완료");
-//
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	        response.put("error", "본인 인증 중 오류 발생: " + e.getMessage());
-//	    }
-	    
-	    
-	    try {
-	        //Integer midx = (Integer) session.getAttribute("midx"); // 현재 로그인한 회원 ID
-	        Integer midx = 6; // 현재 로그인한 회원 ID
-	        if (midx == null) {
-	            response.put("error", "로그인이 필요합니다.");
-	            return response;
-	        }
-
-	        for (PrescriptionVo prescription : prescriptions) {
-	            prescription.setMidx(midx); // 로그인한 회원과 연결
-
-	            // PRESCRIPTION 데이터 저장
-	            int pidx = prescriptionService.savePrescription(prescription);
-	            if (pidx <= 0) {
-	                response.put("error", "처방전 저장 실패");
-	                return response;
-	            }
-
-	            // DRUG 데이터 저장
-	            for (DrugVo drug : prescription.getDrugs()) {
-	                drug.setPidx(pidx); // 처방전과 연결
-	                prescriptionService.saveDrug(drug);
-	            }
-	        }
-
-	        response.put("success", true);
-	        response.put("message", "처방전 및 약 정보 저장 완료");
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        response.put("error", "저장 중 오류 발생: " + e.getMessage());
-	    }
-	    logger.info("[processCertification] phoneNumber: {}", phoneNumber);
-	    Integer midx = memberService.getMemberByPhone(phoneNumber);
-	    logger.info("[processCertification] 조회된 midx: {}", midx);
-
-	    return response;
-	}
-	
-	
-	
 	public HashMap<String, Object> processCertification(
 	        @RequestParam("idNumberFront") String idNumberFront,
 	        @RequestParam("idNumberBack") String idNumberBack,
@@ -266,8 +194,6 @@ public class PrescriptionController {
 	        @RequestParam("phoneNumber") String phoneNumber,
 	        @RequestParam("telecom") String telecom,
 	        HttpSession session) throws JsonProcessingException {
-		
-		
 
 	    HashMap<String, Object> response = new HashMap<>();
 	    try {
@@ -386,61 +312,6 @@ public class PrescriptionController {
 	        return false; // 디코딩 실패 시 유효하지 않은 문자열
 	    }
 	}
-	
-	
-	
-	@RequestMapping(value = "savePrescriptionData.do", method = RequestMethod.POST)
-	@ResponseBody
-	public HashMap<String, Object> savePrescriptionData(@RequestBody HashMap<String, Object> requestData, HttpSession session) {
-	    HashMap<String, Object> response = new HashMap<>();
-	    try {
-	        // 세션에서 회원 midx 가져오기
-	        Integer midx = (Integer) session.getAttribute("midx");
-	        if (midx == null) {
-	            response.put("success", false);
-	            response.put("message", "회원 인증이 필요합니다.");
-	            return response;
-	        }
-
-	        // JSON 데이터에서 처방전 정보 추출
-	        PrescriptionVo prescription = new PrescriptionVo();
-	        prescription.setMidx(midx);
-	        prescription.setResMenufactureDate((String) requestData.get("resMenufactureDate"));
-	        prescription.setResPrescribeOrg((String) requestData.get("resPrescribeOrg"));
-	        prescription.setResTelNo((String) requestData.get("resTelNo"));
-	        prescription.setCommBrandName((String) requestData.get("commBrandName"));
-	        prescription.setCommTelNo((String) requestData.get("commTelNo"));
-
-	        // JSON 데이터에서 약물 목록 추출
-	        List<HashMap<String, Object>> drugList = (List<HashMap<String, Object>>) requestData.get("drugs");
-	        List<DrugVo> drugs = new ArrayList<>();
-	        for (HashMap<String, Object> drugItem : drugList) {
-	            DrugVo drug = new DrugVo();
-	            drug.setResDrugName((String) drugItem.get("resDrugName"));
-	            drug.setResPrescribeDrugEffect((String) drugItem.get("resPrescribeDrugEffect"));
-	            drug.setResIngredients((String) drugItem.get("resIngredients"));
-	            drug.setResDrugCode((String) drugItem.get("resDrugCode"));
-	            drug.setResContent((String) drugItem.get("resContent"));
-	            drug.setResOneDose((String) drugItem.get("resOneDose"));
-	            drug.setResDailyDosesNumber((String) drugItem.get("resDailyDosesNumber"));
-	            drug.setResTotalDosingdays((String) drugItem.get("resTotalDosingdays"));
-	            drugs.add(drug);
-	        }
-
-	        // 처방전 및 약물 저장
-	        int pidx = prescriptionService.savePrescriptionAndDrugs(prescription, drugs);
-
-	        response.put("success", true);
-	        response.put("message", "처방전 및 약물 정보가 저장되었습니다.");
-	        response.put("pidx", pidx);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        response.put("success", false);
-	        response.put("error", "데이터 저장 중 오류 발생: " + e.getMessage());
-	    }
-	    return response;
-	}
-
 	
 	
 
@@ -713,22 +584,11 @@ public class PrescriptionController {
 	
 	@RequestMapping(value = "prescriptionList.do", method = RequestMethod.GET)
 	public String prescriptionList(HttpSession session, Model model) {
-		
-		// 세션값(prescriptions)이 있으면 세션값을 저장해야됨 
 	    List<PrescriptionVo> prescriptions = (List<PrescriptionVo>) session.getAttribute("finalResultData");
-	    // db에 prescriptions 저장
-	   // prescription Vo setMidx(6)
-	    
-	    
-	    
 	    if (prescriptions == null || prescriptions.isEmpty()) {
 	        return "redirect:/prescription/certification.do"; // 데이터가 없을 경우 인증 페이지로 리다이렉트
 	    }
-	    
-	   
-	    
-	    
-	    model.addAttribute("prescriptions", prescriptions); // DB에서 가져온 데이터를 모델에 추가. mapper 갔다와야
+	    model.addAttribute("prescriptions", prescriptions); // 데이터를 모델에 추가
 	    return "WEB-INF/prescription/prescriptionList";
 	}
 
@@ -768,58 +628,12 @@ public class PrescriptionController {
 	    return "WEB-INF/prescription/prescriptionDetail";
 	}
 	
-	// 임시 회원 저장
-	@RequestMapping(value = "savePrescriptionWithoutMember.do", method = RequestMethod.POST)
-	@ResponseBody
-	public HashMap<String, Object> savePrescriptionWithoutMember(
-	        @RequestParam("name") String name,
-	        @RequestParam("phoneNumber") String phoneNumber,
-	        @RequestBody List<PrescriptionVo> prescriptions) {
+	
 
-	    HashMap<String, Object> response = new HashMap<>();
-	    Integer existingMidx = memberService.getMemberByPhone(phoneNumber);
-	    if (existingMidx != null) {
-	        response.put("success", false);
-	        response.put("message", "이미 가입된 사용자입니다.");
-	        return response;
-	    }
-	    try {
-	        // 임시 사용자 ID 생성
-	        String tempId = "TEMP_" + java.util.UUID.randomUUID().toString();
 
-	        // 임시 사용자 정보 DB 저장
-	        MemberVo tempMember = new MemberVo();
-	        tempMember.setId(tempId);
-	        tempMember.setName(name);
-	        tempMember.setPhone(phoneNumber);
-	        
-	        tempMember.setDelyn("N");
-	        
-	        
 
-	        int midx = memberService.saveMemberInfo(tempMember); // 삽입된 midx 가져오기
 
-	        // 사용자 정보 저장 성공 시 처방전 저장
-	        if (midx > 0) {
-	            for (PrescriptionVo prescription : prescriptions) {
-	                prescription.setMidx(midx); // midx를 PrescriptionVo와 연결
-	                
-	                prescriptionService.savePrescription(prescription);
-	            }
-	            response.put("success", true);
-	            response.put("message", "임시 사용자 및 처방전 정보가 저장되었습니다.");
-	        } else {
-	            response.put("success", false);
-	            response.put("message", "임시 사용자 정보를 저장하는 데 실패했습니다.");
-	        }
 
-	    } catch (Exception e) {
-	        response.put("success", false);
-	        response.put("error", "데이터 저장 중 오류 발생: " + e.getMessage());
-	    }
-
-	    return response;
-	}
 
 
 	

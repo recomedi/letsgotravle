@@ -66,7 +66,7 @@
     <div id="step-4" class="step hidden step-4">
       <label for="sms-auth-number">SMS 인증번호</label>
       <input type="text" id="sms-auth-number" class ="sms-code" placeholder="인증번호 입력">
-      <button class="verify-sms" type="button" id="verify-sms">SMS 인증 확인</button>
+      <button class="verify-sms" type="button" id="verify-sms" style ="padding : 0">SMS 인증 확인</button>
       <p class="auth-text-title">인증번호 문자를 못 받으셨나요?</p>
 
       <p class="auth-text-body">•입력하신 인증정보가 일치하지 않을 경우, 인증번호 문자는 발송 되지 않습니다.</p>
