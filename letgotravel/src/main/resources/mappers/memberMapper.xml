@@ -23,4 +23,7 @@
 		select * from member where id =#{id} 
 	</select>
 	
+	<select id="findId" parameterType="map" resultType="mv">
+    	SELECT id, name FROM MEMBER WHERE name = #{name} AND phone = #{phone}
+	</select>
 </mapper>

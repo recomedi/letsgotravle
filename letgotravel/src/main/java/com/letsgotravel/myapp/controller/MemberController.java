@@ -1,5 +1,8 @@
 package com.letsgotravel.myapp.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
@@ -35,9 +38,30 @@ public class MemberController {
 	
 	@RequestMapping(value = "memberFind.do")
 	public String memberFind() {
-		logger.info("memberFind����");
+		logger.info("memberFind들어옴");
 		return "WEB-INF/member/memberFind";
 	}
+	
+	@RequestMapping(value = "findIdAction.do", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject findId(@RequestParam("name") String name, @RequestParam("phone") String phone) {
+		//logger.info("findIdAction 들어옴");
+	    //logger.info("이름: " + name + ", 연락처: " + phone);
+	    MemberVo mv = memberService.findId(name, phone);  // 
+		JSONObject obj = new JSONObject();
+		
+		  if (mv != null) {
+		      obj.put("found", true);   
+		      obj.put("id", mv.getId());   
+		      obj.put("name", mv.getName());
+		      logger.info("id,name: " + mv.getId() + mv.getName());
+		  } else {
+		      obj.put("found", false);
+		  }
+
+		  return obj;
+	}
+
 	
 	@RequestMapping(value = "memberLogin.do")
 	public String memberLogin() {
@@ -46,9 +70,7 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "loginAction.do", method = RequestMethod.POST)
-	public String LoginAction(
-
-			@RequestParam("id") String id, @RequestParam("password") String password,
+	public String LoginAction(@RequestParam("id") String id, @RequestParam("password") String password,
 			RedirectAttributes rttr, HttpSession session) {
 			System.out.println("아이디" + id);
 			System.out.println("비번" + password);
@@ -162,9 +184,34 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "memberMypage.do")
-	public String memberMypage() {
+	public String memberMypage(HttpSession session) {
 		logger.info("memberMyPage들어옴");
-		return "WEB-INF/member/memberMypage";
+		
+	    String id = (String) session.getAttribute("memberId");
+	    if (id != null) {
+	        MemberVo mv = memberService.LoginCheck(id);
+		
+        if (mv != null) {
+            session.setAttribute("midx", mv.getMidx());
+            session.setAttribute("nickname", mv.getNickname());
+            session.setAttribute("phone", mv.getPhone());
+            session.setAttribute("email", mv.getEmail());
+
+            logger.info("마이페이지 회원번호: " + mv.getMidx());
+        } else {
+            logger.warn("회원 정보를 찾을 수 없습니다.");
+        }
+    } else {
+        logger.warn("로그인 정보가 없습니다.");
+        return "redirect:/member/memberLogin.do"; 
+    }
+
+    return "WEB-INF/member/memberMypage";
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="configAction.do", method = RequestMethod.POST)
+	public String changePassword() {
+		return "";
+	}
 }

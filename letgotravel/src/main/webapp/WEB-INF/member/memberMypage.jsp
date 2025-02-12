@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    String nickname = (String) session.getAttribute("nickname");
+    String phone = (String) session.getAttribute("phone");
+    String email = (String) session.getAttribute("email");
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -32,13 +37,13 @@
         <div class="profile-modify">
             <label>닉네임 변경</label>
             <div style="display: flex; align-items: center; justify-content: center;">
-                <input type="text" class="short-input">
+                <input type="text" class="short-input" name="nickname" placeholder="<%= nickname %>">
                 <button class="check-btn">중복확인</button>
             </div>
             <label>연락처 변경</label>
-            <input type="text">
+            <input type="text" name="phone" placeholder="<%= phone %>">
             <label>이메일 변경</label>
-            <input type="email">
+            <input type="email" name="email" placeholder="<%= email %>">
             <label>현재 비밀번호</label>
             <input type="password" placeholder="회원 정보를 변경 하려면 현재 비밀번호를 입력해주세요">
         </div>
@@ -46,7 +51,7 @@
         <div class="buttons">
             <div class="update-back">
                 <button class="update">수정</button>
-                <button class="back">취소</button>
+                <button class="back" type="button" onclick="history.back();">취소</button>
             </div>
             <button class="delete">회원탈퇴</button>
         </div>

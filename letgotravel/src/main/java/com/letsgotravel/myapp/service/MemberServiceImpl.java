@@ -41,5 +41,10 @@ public class MemberServiceImpl implements MemberService {
 		
 		return mv;
 	}
-	
+
+	@Override
+	public MemberVo findId(String name, String phone) {
+		MemberVo mv = mm.findId(name,phone);
+		return mv;
+	}
 }

@@ -7,4 +7,5 @@ public interface MemberService {
 	public int idCheck(String id);
 	public int nicknameCheck(String nickname);
 	public MemberVo LoginCheck(String id);
+	public MemberVo findId(String name, String phone);
 }
