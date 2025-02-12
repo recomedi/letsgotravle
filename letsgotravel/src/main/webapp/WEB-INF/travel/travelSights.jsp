@@ -36,7 +36,7 @@
 	                   <div class="col">
 	                       <div class="flex justify-content-between">                    
 	                           <div class="btn-box flex">
-	                               <label class="btn green" for="sights">관광지</label> <label class="btn btn2" for="restaurant">음식점</label>
+	                               <label class="btn btn2" for="sights">관광지</label> <label class="btn btn2" for="restaurant">음식점</label>
 	                           </div>
 	                           <button class="btn blue">추가</button>
 	                       </div>
@@ -44,14 +44,14 @@
 					 	<input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
 	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
-	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
+		                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);" data-value="${requestScope.sightListArray[sight]}"><i class="fa-solid fa-plus"></i></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
 	                       <input type="radio" name="sights-radio" id="restaurant" class="none">
 	                       <div class="check-box pt-10 none restaurant">
 	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
-	                            <input type="checkbox" id="ck1${status.index+1}" class="none" name="restaurantCk" value="${restaurant}"><label class="relative mt-20 pl-35 inline-block" for="ck1${status.index+1}"> ${restaurant}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i></button><br>
+	                            <input type="checkbox" id="ck1${status.index+1}" class="none" name="restaurantCk" value="${restaurant}"><label class="relative mt-20 pl-35 inline-block" for="ck1${status.index+1}"> ${restaurant}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);" data-value="${requestScope.restaurantListArray[restaurant]}"><i class="fa-solid fa-plus"></i></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
@@ -63,7 +63,7 @@
 	                           <img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관">
 	                           <img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도">
 	                       </div>
-	                       <p>에펠탑(프랑스어: Tour Eiffel, [tuʁ ɛfɛl], 영어: Eiffel Tower)은 프랑스 파리 마르스 광장에 위치한 격자형 철골 타워이다. 1889년에 프랑스 혁명 100주년을 맞이하여 파리 만국 박람회를 개최하였는데 이 박람회를 상징할만한 기념물로 에펠탑을 건축하였다.[1] 박람회가 열린 마르스 광장 출입 관문에 위치해있다. 프랑스의 대표 건축물인 에펠탑은 격자 구조로 이루어져 파리에서 가장 높은 건축물이며, 매년 수백만 명이 방문할 정도로 파리에서 빼놓을 수 없는 세계적으로 유명한 관광명소이다. 이 탑은 공모전을 통해 선정된 프랑스 공학자 귀스타브 에펠의 작품으로 이를 디자인한 그의 이름을 따서 명명했다.</p>
+	                       <p class="text">에펠탑(프랑스어: Tour Eiffel, [tuʁ ɛfɛl], 영어: Eiffel Tower)은 프랑스 파리 마르스 광장에 위치한 격자형 철골 타워이다. 1889년에 프랑스 혁명 100주년을 맞이하여 파리 만국 박람회를 개최하였는데 이 박람회를 상징할만한 기념물로 에펠탑을 건축하였다.[1] 박람회가 열린 마르스 광장 출입 관문에 위치해있다. 프랑스의 대표 건축물인 에펠탑은 격자 구조로 이루어져 파리에서 가장 높은 건축물이며, 매년 수백만 명이 방문할 정도로 파리에서 빼놓을 수 없는 세계적으로 유명한 관광명소이다. 이 탑은 공모전을 통해 선정된 프랑스 공학자 귀스타브 에펠의 작품으로 이를 디자인한 그의 이름을 따서 명명했다.</p>
 	                   </div>
 	               </div>
 	               
@@ -137,10 +137,11 @@
 		return;
 	}
     
-    function viewDetail(this) {
-    	
-    		console.dir(this);
-    	
+    
+    function viewDetail(button, type) {
+    			
+    	const info = document.querySelector(".info .text");
+        	
     }
  
     </script>
