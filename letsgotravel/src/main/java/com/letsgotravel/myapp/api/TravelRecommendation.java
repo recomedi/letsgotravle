@@ -151,11 +151,11 @@ public class TravelRecommendation {
         ArrayList<Map<String, Object>> travelCityList = new ArrayList<Map<String, Object>>();
         
         String cleanJson = jsonArrayString.substring(jsonArrayString.indexOf("["), jsonArrayString.lastIndexOf("]") + 1);
-        
+        System.out.println(cleanJson);
      // JSON 배열 파싱 후 ArrayList로 변환
         try {
             JSONArray jsonArray = new JSONArray(cleanJson);
-
+System.out.println(jsonArray);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject destination = jsonArray.getJSONObject(i);
                 Map<String, Object> destinationMap = new HashMap<String, Object>();

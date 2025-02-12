@@ -41,8 +41,8 @@
 	                   	   <input type="hidden" name="budgetMax" id="budgetMax">
 	                   	   <input type="hidden" name="destination" id="destination">
 	                   	   <input type="hidden" name="thema" id="thema">
-	                   	   <input type="hidden" name="sights" id="sights">
-	                   	   <input type="hidden" name="restaurants" id="restaurants">
+	                   	   <input type="hidden" name="sights" id="sightsInput">
+	                   	   <input type="hidden" name="restaurants" id="restaurantsInput">
 	                   	   <input type="hidden" name="placeName" id="placeName">
 	                       <div class="flex justify-content-between">                    
 	                           <div class="btn-box flex">
@@ -78,7 +78,7 @@
 	               </div>
 	               
 	               <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-	                   <button type="button" onClick="goTravelModify()" class="btn blue">다음</button>
+	                   <button type="button" onClick="goTravelModify();" class="btn blue">다음</button>
 	                   <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	               </div>
 	            </form>
@@ -98,7 +98,7 @@
 
     	// 선택된 목록 가져오기
     	function findChecked(sights) {
-    		const checked = 'input[name="' + sights + 'Ck"]:checked';
+    		const checked = "input[name='" + sights + "Ck']:checked";
     		const checkeds = document.querySelectorAll(checked);
     		return checkeds;
     	}
@@ -130,22 +130,24 @@
 
 	    	var chkArray = {};
 	    	
-		    function getCheckedValues(name) {
-
-		    	$(`input:checkbox[name="{name}"]:checked`).each(function() {
-		    	    // 'this'는 체크된 체크박스를 가리킴
-		    	    const button = $(this).siblings("button")[0]; // 배열로 반환되므로 첫 번째 요소를 가져온다.
-		    	    const textarea = button.querySelector("textarea");
+		    function getCheckedValues(name) {		
+		    	
+		    	const checkboxes = document.querySelectorAll('input[type="checkbox"][name="{name}"]:checked');
+		    	checkboxes.forEach(function(checkbox) {
+		    		
+		    	    // 'checkbox'는 체크된 체크박스를 가리킴
+		    	    const button = checkbox.closest('div').querySelector('button');  // 부모 요소에서 button을 찾음
+		    	    const textarea = button.querySelector('textarea');
 		    	    const value = textarea.value;
 		    	    
-		    	    chkArray[this.value] = value;
+		    	    chkArray[checkbox.value] = value;
 		    	});
 
 		    }
 		    
-		    getCheckedValues(sightsCk);
-		    getCheckedValues(restaurantCk);
-	    	$('#placeName').val(JSON.stringify(chkArray));  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
+		    getCheckedValues("sightsCk");
+		    getCheckedValues("restaurantCk");
+		    document.querySelector("#placeName").value = JSON.stringify(chkArray);  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
 		    
 	    	function findCheckedValue(sights) {
 	    		
@@ -170,10 +172,11 @@
 		    document.querySelector('#budgetMin').value = sessionStorage.getItem('budgetMin');
 		    document.querySelector('#budgetMax').value = sessionStorage.getItem('budgetMax');
 		    document.querySelector('#destination').value = sessionStorage.getItem('destination');
+		    document.querySelector('#duration').value = sessionStorage.getItem('duration');
 		    document.querySelector('#thema').value = sessionStorage.getItem('thema');
-		    
-		    document.querySelector('#sights').value = findCheckedValue("sights");
-		    document.querySelector('#restaurants').value = findCheckedValue("restaurants");
+		            	   
+		    document.querySelector('#sightsInput').value = findCheckedValue("sights");
+		    document.querySelector('#restaurantsInput').value = findCheckedValue("restaurants");
 	        		    
 			fm.action="${pageContext.request.contextPath}/travel/travelModify.do";
 			fm.method="post";
