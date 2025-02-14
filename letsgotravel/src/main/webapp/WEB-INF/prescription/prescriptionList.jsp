@@ -563,7 +563,7 @@ margin-right:50px;
 
     <!-- 테이블을 감싸는 div 추가 -->
     <div class="table-container">
-      <button class="custom-btn">업데이트</button>
+      <button class="custom-btn"  onclick = "location.href = '${pageContext.request.contextPath}/prescription/certification.do'"> 업데이트</button>
       <table>
         <thead>
           <tr>
@@ -574,7 +574,7 @@ margin-right:50px;
           </tr>
         </thead>
 		     <tbody>
-				      <<c:forEach var="prescription" items="${prescriptions}" varStatus="status">
+				   <c:forEach var="prescription" items="${prescriptions}" varStatus="status">
 					    <tr onclick="window.location.href='${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}'">
 					        <td>${status.index + 1}</td>
 					        <td>
