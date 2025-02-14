@@ -42,7 +42,7 @@ public class PrescriptionController {
     private static final String CLIENT_ID = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
     private static final String CLIENT_SECRET = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
     private static final String API_URL = "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine";
-
+ 
     private final PrescriptionService prescriptionService;
     private final MemberService memberService;
 
@@ -193,16 +193,22 @@ public class PrescriptionController {
 	        @RequestParam("name") String name,
 	        @RequestParam("phoneNumber") String phoneNumber,
 	        @RequestParam("telecom") String telecom,
-	        HttpSession session) throws JsonProcessingException {
-
+	        HttpSession session, Model model) throws JsonProcessingException {
+	    
 	    HashMap<String, Object> response = new HashMap<>();
 	    try {
-	    	
-	        // 주민등록번호 및 휴대폰 번호 합치기
+	        // ✅ 로그인된 사용자의 midx 가져오기
+	        Integer midx = (Integer) session.getAttribute("midx");
+	        if (midx == null) {
+	            response.put("redirect", "/member/memberLogin.do");
+	            return response; // 로그인 안 한 경우 로그인 페이지로 이동
+	        }
+
+	        // ✅ 주민등록번호 및 휴대폰 번호 합치기
 	        String fullIdNumber = idNumberFront + idNumberBack;
 	        String fullPhoneNumber = phoneNumber;
 
-	        // CODEF 요청 데이터 구성
+	        // ✅ CODEF 요청 데이터 구성
 	        HashMap<String, Object> requestData = new HashMap<>();
 	        requestData.put("organization", "0020"); // 기관 코드
 	        requestData.put("loginType", "2");
@@ -213,27 +219,24 @@ public class PrescriptionController {
 	        requestData.put("phoneNo", fullPhoneNumber);
 	        requestData.put("authMethod", "0"); // SMS 인증
 
-	        // 세션에 필수 데이터 저장 (보안문자 새로고침용)
+	        // ✅ 세션에 필수 데이터 저장 (보안문자 새로고침용)
 	        session.setAttribute("secureNoRequestData", requestData);
 	        session.setAttribute("phoneNumber", fullPhoneNumber);
 
-	        // CODEF API 호출 준비
+	        // ✅ CODEF API 호출 준비
 	        EasyCodefToken tokenService = new EasyCodefToken();
 	        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
 	        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
 	        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
-	        
-	        
 
 	        if (accessToken.isEmpty()) {
 	            response.put("error", "토큰 발급 실패");
 	            return response;
 	        }
 
-	        // CODEF API 호출
+	        // ✅ CODEF API 호출
 	        EasyCodefConnector connector = new EasyCodefConnector();
 	        ObjectMapper objectMapper = new ObjectMapper();
-
 	        String requestBody = objectMapper.writeValueAsString(requestData);
 
 	        HashMap<String, Object> apiResponse = connector.getRequestProduct(
@@ -244,19 +247,16 @@ public class PrescriptionController {
 
 	        System.out.println("[DEBUG] CODEF 응답 데이터: " + apiResponse);
 
-	        // 보안문자 처리
+	        // ✅ 보안문자 처리 로직
 	        if (apiResponse.containsKey("data")) {
 	            HashMap<String, Object> data = (HashMap<String, Object>) apiResponse.get("data");
 
 	            if (Boolean.TRUE.equals(data.get("continue2Way"))) {
-	                // 추가 인증이 필요한 경우
+	                // 📌 추가 인증이 필요한 경우
 	                HashMap<String, Object> extraInfo = (HashMap<String, Object>) data.get("extraInfo");
 
 	                if (extraInfo != null) {
-	                    System.out.println("[DEBUG] extraInfo 객체 확인: " + extraInfo);
-
-	                    String reqSecureNo = (String) extraInfo.get("reqSecureNo"); // 보안문자 데이터 추출
-	                    System.out.println("[DEBUG] reqSecureNo 값: " + reqSecureNo);
+	                    String reqSecureNo = (String) extraInfo.get("reqSecureNo");
 
 	                    if (reqSecureNo != null && !reqSecureNo.isEmpty()) {
 	                        if (reqSecureNo.startsWith("data:image/png;base64,")) {
@@ -271,28 +271,38 @@ public class PrescriptionController {
 	                        }
 
 	                        String reEncodedBase64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(decodedBytes);
-	                        response.put("reqSecureNoDecoded", reEncodedBase64); // 클라이언트로 반환
-	                        response.put("redirectToSecureInput", true); // 추가 인증 플래그 설정
+	                        response.put("reqSecureNoDecoded", reEncodedBase64);
+	                        response.put("redirectToSecureInput", true);
 
-	                        // 세션에 추가 인증 관련 데이터 저장
+	                        // ✅ 세션에 추가 인증 관련 데이터 저장
 	                        session.setAttribute("jobIndex", data.get("jobIndex"));
 	                        session.setAttribute("threadIndex", data.get("threadIndex"));
 	                        session.setAttribute("jti", data.get("jti"));
 	                        session.setAttribute("twoWayTimestamp", data.get("twoWayTimestamp"));
-	                    } else {
-	                        System.err.println("[ERROR] 보안문자 데이터가 없습니다.");
+
+	                        return response;
 	                    }
-	                } else {
-	                    System.err.println("[ERROR] extraInfo 객체가 null입니다.");
 	                }
 	            } else {
-	                // 추가 인증이 필요하지 않은 경우
-	                response.put("redirectToSecureInput", false);
-	            }
+	                // 📌 보안문자 필요 없음 → 바로 처방전 저장 후 목록 페이지로 이동
+	                List<PrescriptionVo> prescriptions = getPrescriptionDataFromResponse(data);
 
-	            response.putAll(data); // 필요한 추가 데이터 포함
-	            response.put("success", true);
-	            return response;
+	                if (prescriptions == null || prescriptions.isEmpty()) {
+	                    response.put("redirect", "/prescription/certification.do");
+	                    return response; // 본인인증이 필요하면 다시 인증 페이지로 이동
+	                }
+
+	                // 📌 처방전 데이터를 DB에 저장
+	                for (PrescriptionVo prescription : prescriptions) {
+	                    prescription.setMidx(midx);
+	                    System.out.println("📌 처방전 저장 시작: " + prescription.getCommBrandName());
+	                    prescriptionService.savePrescriptionAndDrugs(prescription, prescription.getDrugs());
+	                }
+
+	                // 📌 저장이 끝나면 처방전 목록 페이지로 리디렉트
+	                response.put("redirect", "/prescription/prescriptionList.do");
+	                return response;
+	            }
 	        }
 
 	    } catch (Exception e) {
@@ -302,6 +312,63 @@ public class PrescriptionController {
 	    response.put("error", "요청 처리 중 오류 발생");
 	    return response;
 	}
+
+
+
+	private List<PrescriptionVo> getPrescriptionDataFromResponse(HashMap<String, Object> data) {
+	    List<PrescriptionVo> prescriptions = new ArrayList<>();
+
+	    if (data == null || !data.containsKey("medicineList")) {
+	        return prescriptions; // 데이터가 없으면 빈 리스트 반환
+	    }
+
+	    // ✅ medicineList를 가져옴
+	    List<HashMap<String, Object>> medicineList = (List<HashMap<String, Object>>) data.get("medicineList");
+
+	    for (HashMap<String, Object> medicine : medicineList) {
+	        PrescriptionVo prescription = new PrescriptionVo();
+	        
+	        // ✅ 처방전 데이터 매핑
+	        prescription.setResMenufactureDate((String) medicine.get("resMenufactureDate"));
+	        prescription.setResPrescribeOrg((String) medicine.get("resPrescribeOrg"));
+	        prescription.setResTelNo((String) medicine.get("resTelNo"));
+	        prescription.setCommBrandName((String) medicine.get("commBrandName"));
+	        prescription.setCommTelNo((String) medicine.get("commTelNo"));
+
+	        // ✅ 약물 정보 리스트 초기화
+	        List<DrugVo> drugs = new ArrayList<>();
+
+	        // ✅ drugList에서 약물 정보를 가져옴
+	        if (medicine.containsKey("drugList")) {
+	            List<HashMap<String, Object>> drugList = (List<HashMap<String, Object>>) medicine.get("drugList");
+
+	            for (HashMap<String, Object> drugData : drugList) {
+	                DrugVo drug = new DrugVo();
+	                drug.setResDrugName((String) drugData.get("resDrugName"));
+	                drug.setResPrescribeDrugEffect((String) drugData.get("resPrescribeDrugEffect"));
+	                drug.setResIngredients((String) drugData.get("resIngredients"));
+	                drug.setResDrugCode((String) drugData.get("resDrugCode"));
+	                drug.setResContent((String) drugData.get("resContent"));
+	                drug.setResOneDose((String) drugData.get("resOneDose"));
+	                drug.setResDailyDosesNumber((String) drugData.get("resDailyDosesNumber"));
+	                drug.setResTotalDosingdays((String) drugData.get("resTotalDosingdays"));
+
+	                drugs.add(drug);
+	            }
+	        }
+
+	        // ✅ 처방전에 약물 리스트 추가
+	        prescription.setDrugs(drugs);
+	        prescriptions.add(prescription);
+	    }
+
+	    return prescriptions;
+	}
+
+
+
+
+
 
 
 	private boolean isBase64(String str) {
@@ -436,92 +503,86 @@ public class PrescriptionController {
 			@ResponseBody
 			public HashMap<String, Object> verifySmsCode(
 			        @RequestParam("smsAuthNo") String smsAuthNo,
-			        @RequestParam("is2Way") boolean is2Way,
+			        @RequestParam(value = "is2Way", required = false, defaultValue = "false") boolean is2Way,
 			        HttpSession session) {
 
 			    HashMap<String, Object> response = new HashMap<>();
 			    try {
-			    	// 세션에서 추가 인증 정보 가져오기
+			        // 🔹 세션에서 필수 정보 가져오기
+			        Integer midx = (Integer) session.getAttribute("midx");
 			        Integer jobIndex = (Integer) session.getAttribute("jobIndex");
 			        Integer threadIndex = (Integer) session.getAttribute("threadIndex");
 			        String jti = (String) session.getAttribute("jti");
 			        Long twoWayTimestamp = (Long) session.getAttribute("twoWayTimestamp");
 
-			        // 디버깅 로그: 세션 값 검증
-			        System.out.println("[DEBUG] 세션 값 검증:");
-			        System.out.println("jobIndex: " + jobIndex);
-			        System.out.println("threadIndex: " + threadIndex);
-			        System.out.println("jti: " + jti);
-			        System.out.println("twoWayTimestamp: " + twoWayTimestamp);
-
-			        // 세션 값 검증 실패 시 처리
-			        if (jobIndex == null || threadIndex == null || jti == null || twoWayTimestamp == null) {
+			        // 🔹 로그인 체크
+			        if (midx == null) {
 			            response.put("verified", false);
-			            response.put("message", "필수 인증 정보가 누락되었습니다. 다시 시도하세요.");
-			            System.err.println("[ERROR] 세션 값이 누락되었습니다.");
+			            response.put("message", "로그인이 필요합니다.");
 			            return response;
 			        }
+
+			        // 🔹 세션 데이터 검증
+			        if (is2Way && (jobIndex == null || threadIndex == null || jti == null || twoWayTimestamp == null)) {
+			            response.put("verified", false);
+			            response.put("message", "필수 인증 정보가 누락되었습니다. 다시 시도하세요.");
+			            return response;
+			        }
+
+			     // 🔹 세션에서 secureNoRequestData 가져오기
+			        @SuppressWarnings("unchecked")
+			        HashMap<String, Object> secureNoRequestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
+			        System.out.println("[DEBUG] 세션에서 가져온 secureNoRequestData: " + secureNoRequestData);
+
+			        if (secureNoRequestData == null || !secureNoRequestData.containsKey("organization")) {
+			            response.put("verified", false);
+			            response.put("message", "필수 입력값이 누락되었습니다. 다시 시도하세요.");
+			            System.err.println("[ERROR] 세션 데이터 누락 또는 organization 키 없음.");
+			            return response;
+			        }
+
+			        // 🔹 CODEF API 요청 데이터 구성
+			        HashMap<String, Object> requestData = new HashMap<>();
+			        requestData.put("smsAuthNo", smsAuthNo);
+			        requestData.put("is2Way", is2Way);
+			        requestData.put("organization", secureNoRequestData.get("organization")); // 필수 입력값 추가
+
 			        
-				        // 세션에서 secureNoRequestData 가져오기
-				        @SuppressWarnings("unchecked")
-				        HashMap<String, Object> requestData = (HashMap<String, Object>) session.getAttribute("secureNoRequestData");
-				        System.out.println("[DEBUG] 세션에서 가져온 requestData: " + requestData);
-			
-				        if (requestData == null || !requestData.containsKey("organization")) {
-				            response.put("verified", false);
-				            response.put("message", "필수 입력값이 누락되었습니다. 다시 시도하세요.");
-				            System.err.println("[ERROR] 세션 데이터 누락 또는 organization 키 없음.");
-				            return response;
-				        }
-			
-				        // 문자 발송 서버에 보낼 데이터 구성
-				        HashMap<String, Object> verificationRequest = new HashMap<>();
-				        verificationRequest.put("smsAuthNo", smsAuthNo);
-				        verificationRequest.put("is2Way", is2Way);
-			
-				        HashMap<String, Object> twoWayInfo = new HashMap<>();
-				        twoWayInfo.put("jobIndex", jobIndex);
-				        twoWayInfo.put("threadIndex", threadIndex);
-				        twoWayInfo.put("jti", jti);
-				        twoWayInfo.put("twoWayTimestamp", twoWayTimestamp);
-			
-				        verificationRequest.put("twoWayInfo", twoWayInfo); // 두웨이 정보 포함
-			
-				        // 필수 파라미터 추가
-				        verificationRequest.put("organization", requestData.get("organization")); // 조직 정보 추가
-			
-				        // 디버깅 로그: CODEF API 요청 데이터 출력
-				        System.out.println("[DEBUG] CODEF API 요청 데이터: " + verificationRequest);
-			
-				        // CODEF API 호출 준비
-				        EasyCodefToken tokenService = new EasyCodefToken();
-				        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
-				        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
-				        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
-				        
-				        
-				        if (accessToken.isEmpty()) {
-				            response.put("error", "토큰 발급 실패");
-				            return response;
-				        }
+			        if (is2Way) {
+			            HashMap<String, Object> twoWayInfo = new HashMap<>();
+			            twoWayInfo.put("jobIndex", jobIndex);
+			            twoWayInfo.put("threadIndex", threadIndex);
+			            twoWayInfo.put("jti", jti);
+			            twoWayInfo.put("twoWayTimestamp", twoWayTimestamp);
+			            requestData.put("twoWayInfo", twoWayInfo);
+			        }
 
-				        // CODEF API 호출
-				        EasyCodefConnector connector = new EasyCodefConnector();
-				        ObjectMapper objectMapper = new ObjectMapper();
-				        
-				        String requestBody = objectMapper.writeValueAsString(verificationRequest);
+			        // 🔹 CODEF API 호출 준비
+			        EasyCodefToken tokenService = new EasyCodefToken();
+			        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
+			        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
+			        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
 
-				        HashMap<String, Object> apiResponse = connector.getRequestProduct(
-				                "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine",
-				                accessToken,
-				                requestBody
-				        );
+			        if (accessToken.isEmpty()) {
+			            response.put("error", "토큰 발급 실패");
+			            return response;
+			        }
 
-				        // 디버깅 로그: CODEF API 응답 데이터 출력
-				        System.out.println("[DEBUG] CODEF API 응답 데이터: " + apiResponse);
+			        // 🔹 CODEF API 호출
+			        EasyCodefConnector connector = new EasyCodefConnector();
+			        ObjectMapper objectMapper = new ObjectMapper();
+			        String requestBody = objectMapper.writeValueAsString(requestData);
 
-			        // CODEF API 응답 처리
+			        HashMap<String, Object> apiResponse = connector.getRequestProduct(
+			                "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine",
+			                accessToken,
+			                requestBody
+			        );
+
+			        // 🔹 API 응답 처리
 			        HashMap<String, Object> result = (HashMap<String, Object>) apiResponse.get("result");
+			        System.out.println("[DEBUG] CODEF API 응답 데이터: " + apiResponse); // 전체 응답 확인
+			        System.out.println("[DEBUG] CODEF API 응답 코드: " + result.get("code")); // 응답 코드 확인
 			        if (result != null && "CF-00000".equals(result.get("code"))) { // 성공 코드 확인
 			            List<HashMap<String, Object>> data = (List<HashMap<String, Object>>) apiResponse.get("data");
 
@@ -536,7 +597,7 @@ public class PrescriptionController {
 			                    prescription.setCommBrandName((String) item.get("commBrandName"));
 			                    prescription.setCommTelNo((String) item.get("resTelNo1"));
 
-			                    // 약물 리스트 매핑
+			                    // 🔹 약물 리스트 매핑
 			                    List<HashMap<String, Object>> drugList = (List<HashMap<String, Object>>) item.get("resDrugList");
 			                    List<DrugVo> drugs = new ArrayList<>();
 			                    for (HashMap<String, Object> drugItem : drugList) {
@@ -550,31 +611,31 @@ public class PrescriptionController {
 			                        drug.setResOneDose((String) drugItem.get("resOneDose"));
 			                        drug.setResDailyDosesNumber((String) drugItem.get("resDailyDosesNumber"));
 			                        drug.setResTotalDosingdays((String) drugItem.get("resTotalDosingdays"));
-
 			                        drugs.add(drug);
 			                    }
-			                    prescription.setDrugs(drugs); // 약물 리스트 추가
+			                    prescription.setDrugs(drugs);
 			                    prescriptions.add(prescription);
 			                }
 
-			                session.setAttribute("finalResultData", prescriptions); // 세션에 저장
+			                // 🔹 DB에 처방전 저장
+			                for (PrescriptionVo prescription : prescriptions) {
+			                    prescription.setMidx(midx);
+			                    prescriptionService.savePrescriptionAndDrugs(prescription, prescription.getDrugs());
+			                }
+
 			                response.put("verified", true);
-			                response.put("message", "SMS 인증 성공");
-			            } else {
-			                response.put("verified", false);
-			                response.put("message", "CODEF API 응답 데이터가 없습니다.");
+			                response.put("redirect", "/prescription/prescriptionList.do");
+			                return response;
 			            }
-			        } else {
-			            response.put("verified", false);
-			            response.put("message", "CODEF API 요청 실패");
 			        }
 
+			        response.put("verified", false);
+			        response.put("message", "CODEF API 요청 실패");
 			    } catch (Exception e) {
 			        e.printStackTrace();
 			        response.put("verified", false);
 			        response.put("message", "SMS 인증 처리 중 오류 발생: " + e.getMessage());
 			    }
-
 			    return response;
 			}
 
@@ -582,15 +643,30 @@ public class PrescriptionController {
 	
 	
 	
-	@RequestMapping(value = "prescriptionList.do", method = RequestMethod.GET)
-	public String prescriptionList(HttpSession session, Model model) {
-	    List<PrescriptionVo> prescriptions = (List<PrescriptionVo>) session.getAttribute("finalResultData");
-	    if (prescriptions == null || prescriptions.isEmpty()) {
-	        return "redirect:/prescription/certification.do"; // 데이터가 없을 경우 인증 페이지로 리다이렉트
-	    }
-	    model.addAttribute("prescriptions", prescriptions); // 데이터를 모델에 추가
-	    return "WEB-INF/prescription/prescriptionList";
-	}
+			@RequestMapping(value = "prescriptionList.do", method = RequestMethod.GET)
+			public String prescriptionList(HttpSession session, Model model, @RequestParam(value = "midx", required = false) Integer midx) {
+				logger.debug("prescriptionList 들어옴");
+				// 🔹 로그인 여부 확인
+			    if (midx == null) {
+			        midx = (Integer) session.getAttribute("midx");
+			        if (midx == null) {
+			            return "redirect:/member/memberLogin.do"; // 로그인 안 한 경우 로그인 페이지로 이동
+			        }
+			    }
+
+			    // 🔹 이제 세션이 아니라 DB에서 처방전 데이터를 가져옴
+			    List<PrescriptionVo> prescriptions = prescriptionService.getPrescriptionsByMidx(midx);
+
+			    // 🔹 만약 DB에도 데이터가 없다면 본인인증 페이지로 이동
+//			    if (prescriptions == null || prescriptions.isEmpty()) {
+//			        return "redirect:/prescription/certification.do";
+//			    }
+
+			    // 🔹 가져온 데이터 모델에 추가
+			    model.addAttribute("prescriptions", prescriptions);
+			    return "WEB-INF/prescription/prescriptionList";
+			}
+
 
 
 
@@ -602,31 +678,19 @@ public class PrescriptionController {
 	@RequestMapping(value = "prescriptionDetail.do", method = RequestMethod.GET)
 	public String getPrescriptionDetail(@RequestParam("id") int pidx, HttpSession session, Model model) {
 	    System.out.println("📌 받은 처방전 ID 값: " + pidx); // 요청된 ID 확인
+	    PrescriptionVo prescription = prescriptionService.getPrescriptionDetail(pidx);
 
-	    List<PrescriptionVo> prescriptions = (List<PrescriptionVo>) session.getAttribute("finalResultData");
 
-	    if (prescriptions == null || prescriptions.isEmpty()) {
+	    if (prescription == null) {
+	        System.out.println("❌ 해당 처방전이 존재하지 않음.");
 	        return "redirect:/prescription/prescriptionList.do";
 	    }
 
-	    PrescriptionVo selectedPrescription = null;
-
-	    for (PrescriptionVo prescription : prescriptions) {
-	        if (prescription.getPidx() == pidx) {  // 실제 pidx 값으로 조회
-	            selectedPrescription = prescription;
-	            break;
-	        }
-	    }
-
-	    if (selectedPrescription == null) {
-	        return "redirect:/prescription/prescriptionList.do";
-	    }
-
-	    model.addAttribute("prescription", selectedPrescription);
-	    model.addAttribute("drugs", selectedPrescription.getDrugs());
+	    model.addAttribute("prescription", prescription);
+	    model.addAttribute("drugs", prescription.getDrugs());
 
 	    return "WEB-INF/prescription/prescriptionDetail";
-	}
+	        }
 	
 	
 

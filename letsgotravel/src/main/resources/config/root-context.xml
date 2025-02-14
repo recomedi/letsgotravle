@@ -9,7 +9,8 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
 		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
@@ -18,44 +19,49 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
-	
-	<!-- Root Context: defines shared resources visible to all other web components -->
-		
-	<!-- mybatis 관련 설정 -->
-	<!-- 설정값을 한개의 파일에서 관리한다 --> 	
-	<context:property-placeholder location="classpath:properties/db.properties"/>  <!-- 설정값을 한개의 파일에서 관리한다 -->
- 	
- 	<bean id="db" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${db.driver}" />  <!-- <property name="driverClassName" value="${db.driver}"></property> 와 같다 -->
+
+	<!-- ✅ DB 설정 (properties 파일에서 로드) -->
+	<context:property-placeholder location="classpath:properties/db.properties"/>
+
+	<!-- ✅ DataSource 정의 (ID: dataSource) -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${db.driver}" />
 		<property name="url" value="${db.url}" />
 		<property name="username" value="${db.username}" />
 		<property name="password" value="${db.password}" />
 	</bean>
-		
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="db" />  <!-- db를 연결한다 -->
-		<property name="mapperLocations" value="classpath:mappers/*.xml" />  <!-- classpath:mappers/에 있는 *.xml파일들을 사용 -->
-		<property name="configLocation" value="classpath:config/mybatis_config.xml" />  <!-- mybatis 설정파일 위치 -->
+
+	<!-- ✅ JdbcTemplate 정의 (dataSource 참조) -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    	<property name="dataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">  <!-- 실제 사용하는 mybatis 객체 -->
-		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />  <!-- 생성자 매개변수로 sqlSessionFactory를 사용해서 sqlSessionFactory와 연동 -->
+	<!-- ✅ MyBatis SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />  <!-- ✅ 올바르게 참조 -->
+		<property name="mapperLocations" value="classpath:mappers/*.xml" />
+		<property name="configLocation" value="classpath:config/mybatis_config.xml" />
 	</bean>
-	
-	<!-- sql 트랜젝션 -->
+
+	<!-- ✅ MyBatis SqlSessionTemplate -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- ✅ 트랜잭션 매니저 -->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<constructor-arg ref="db" />
+		<constructor-arg ref="dataSource" />
 	</bean>
-	
-	<tx:annotation-driven />
-	
-	<!-- AOP -->
-	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
-	
-	<!-- 적용 범위 지정 -->
+
+	<!-- ✅ 트랜잭션 활성화 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- ✅ AOP 설정 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- ✅ Component Scan (Service, Repository 자동 등록) -->
 	<context:component-scan base-package="com.letsgotravel.myapp">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
-	<mybatis-spring:scan base-package="com.letsgotravel.myapp.*" />
-	
+
 </beans>

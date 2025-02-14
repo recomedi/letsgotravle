@@ -12,8 +12,7 @@ import com.letsgotravel.myapp.domain.PrescriptionVo;
 public interface PrescriptionMapper {
 	
 	
-	// 회원별 처방 목록 조회
-    List<PrescriptionVo> selectPrescriptionsByMember(@Param("midx") int midx);
+	
 
     // 특정 처방전 상세 정보 조회
     PrescriptionVo selectPrescriptionDetail(@Param("pidx") int pidx);
@@ -21,6 +20,8 @@ public interface PrescriptionMapper {
     int insertPrescription(PrescriptionVo prescription);
     
     void saveDrug(DrugVo drug);
+
+	List<PrescriptionVo> findPrescriptionsByMidx(Integer midx);
     
     
 }
