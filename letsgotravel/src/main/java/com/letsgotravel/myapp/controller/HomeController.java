@@ -1,5 +1,7 @@
 package com.letsgotravel.myapp.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -19,9 +21,11 @@ public class HomeController {
     private String openAIKey;
 		
 	@RequestMapping(value = "/main.do")
-	public String mainPage(Model model) {
+	public String mainPage(Model model, HttpSession session) {
 		
 		logger.info("main들어옴");
+		   // session값으로 로그인 됐는지 확인
+        System.out.println("session에 저장된 midx값 : " + session.getAttribute("midx"));
 		
 		
 		// CodefToken 占쏙옙占쏙옙

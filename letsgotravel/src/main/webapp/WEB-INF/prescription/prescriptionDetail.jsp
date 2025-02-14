@@ -584,31 +584,28 @@ table {
             <th>총 투약일수</th>
           </tr>
         </thead>
-        <tbody>
-          <c:forEach var="drug" items="${prescription.drugs}" varStatus="status">
-		    <tr>
-		        <td>${status.index + 1}</td>
-		        <td>
-		            <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${drug.didx}">
-		                ${drug.resDrugName} (ID: ${drug.didx})
-		            </a>
-		        </td>
-		        <td>${drug.resPrescribeDrugEffect}</td>
-		        <td>${drug.resIngredients}</td>
-		        <td>${drug.resDrugCode}</td>
-		        <td>${drug.resContent}</td>
-		        <td>${drug.resOneDose}</td>
-		        <td>${drug.resDailyDosesNumber}</td>
-		        <td>${drug.resTotalDosingdays}</td>
-		    </tr>
-		</c:forEach>
-
-          <c:if test="${empty drugs}">
-            <tr>
-              <td colspan="9">처방된 약이 없습니다.</td>
-            </tr>
-          </c:if>
-        </tbody>
+        <c:choose>
+            <c:when test="${not empty prescription.drugs}">
+                <c:forEach var="drug" items="${prescription.drugs}" varStatus="status">
+                    <tr>
+                        <td>${status.index + 1}</td>
+                        <td>${drug.resDrugName}</td>
+                        <td>${drug.resPrescribeDrugEffect}</td>
+                        <td>${drug.resIngredients}</td>
+                        <td>${drug.resDrugCode}</td>
+                        <td>${drug.resContent}</td>
+                        <td>${drug.resOneDose}</td>
+                        <td>${drug.resDailyDosesNumber}</td>
+                        <td>${drug.resTotalDosingdays}</td>
+                    </tr>
+                </c:forEach>
+            </c:when>
+            <c:otherwise>
+                <tr>
+                    <td colspan="9">처방된 약이 없습니다.</td>
+                </tr>
+            </c:otherwise>
+        </c:choose>
        </table>
 
   <!-- 목록 버튼을 테이블 아래에 위치 -->
