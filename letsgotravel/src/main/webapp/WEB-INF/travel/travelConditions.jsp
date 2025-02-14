@@ -113,6 +113,32 @@
 	                    <button onClick="goTravelSelect();" class="btn blue next" type="button">다음</button>
 	                    <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	                </div>
+	                
+	                <div id="loading" style="background: rgba(0,0,0,.1); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1001">
+	                <style>
+					svg path,
+					svg rect{
+					  fill: #FFD700;
+					}</style>
+	                	<!-- 3  -->
+						<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">
+						  <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+						     width="60px" height="60px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+						  <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+						    <animateTransform attributeType="xml"
+						      attributeName="transform"
+						      type="rotate"
+						      from="0 25 25"
+						      to="360 25 25"
+						      dur="0.6s"
+						      repeatCount="indefinite"/>
+						    </path>
+						  </svg>
+						</div>
+					</div>
+			        <%-- <div id="loading" style="display: none; background: rgba(0,0,0,.3); position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+			        	<img src="${pageContext.request.contextPath}/resources/images/loadingImage.gif" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">
+			        </div> --%>
 	            </form>
             </section>
         </div>
@@ -209,6 +235,9 @@
 			fm.action="${pageContext.request.contextPath}/travel/travelSelect.do";
 			fm.method="post";
 			fm.submit();
+			
+			document.getElementById('loading').style.display = 'block';
+			
 		}
 	  
 		return;
