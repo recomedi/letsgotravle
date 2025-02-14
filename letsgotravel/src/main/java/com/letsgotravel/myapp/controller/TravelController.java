@@ -85,7 +85,11 @@ public class TravelController {
 	    prompt1.append("러시아");  // 수정예정
 	    prompt1.append("와 내가 살고있는 한국은 제외하고 추천해줘.");
 	    prompt1.append(departureMonth);
-	    prompt1.append(" 기준의 일정을 추천해줬으면 좋겠어. 여행지의 대표관광지(3개), 대표음식(3개), 날씨, 성수기여부, 물가, 치안, 위생, 교통, ");
+	    prompt1.append(" 기준의 일정을 추천해줬으면 좋겠어. 여행지의 대표관광지(3개), 대표음식(3개), ");
+	    prompt1.append(departureMonth);
+	    prompt1.append(" 기준의 날씨, ");
+	    prompt1.append(departureMonth);
+	    prompt1.append(" 기준의 성수기여부, 한국 대비 물가, 한국 대비 치안, 한국 대비 위생, 한국 대비 교통, ");
 	    prompt1.append(departureMonth);
 	    prompt1.append(" 기간에 라마단같이 문화적으로 주의해야하는 기간이 있으면 알려줘. 위의 내용을 json 형식으로 6개의 도시를 알려줘. 예시를 보여줄게.");
 	    prompt1.append("{" +
@@ -102,6 +106,7 @@ public class TravelController {
 		    	    "}");
 	    System.out.println(prompt1);
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
+	    System.out.println("openAIResult1 : " + openAIResult1);
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray(openAIResult1);
 	    
 	    for(Map<String, Object> openAIResult : openAIResult1Array) {
@@ -152,7 +157,7 @@ public class TravelController {
 	    StringBuilder prompt1 = new StringBuilder();
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 10개 이상과 음식점 2개 이상 추천해줘. 도시는 ");  // 20개씩
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개 이상과 음식점 2개 이상 추천해줘. 도시는 ");  // 20개씩
 	    prompt1.append(destination);
 	    prompt1.append("이고 총 인원은 ");
 	    prompt1.append(peopleCount);
@@ -171,8 +176,8 @@ public class TravelController {
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray3(openAIResult1);
 	    
-	    HashMap<String, String> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
-	    HashMap<String, String> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
+	    ArrayList<Map<String, Object>> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
+	    ArrayList<Map<String, Object>> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
 	   
 		model.addAttribute("destination", destination);
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
@@ -185,7 +190,7 @@ public class TravelController {
 	@RequestMapping(value = "/travelModify.do")
 	public String travelModify(
 			TravelConditionsVo tv, 
-			@RequestParam("sights") String signts, 
+			@RequestParam("sights") String sights, 
 			@RequestParam("restaurants") String restaurants, 
 			Model model) throws Exception {
 		
@@ -198,6 +203,7 @@ public class TravelController {
 	    int budgetMin = tv.getBudgetMin();
 	    int budgetMax = tv.getBudgetMax();
 	    String thema = tv.getThema();
+	    int duration = tv.getDuration();
 	    
 	    // 추천 장소 prompt
 	    StringBuilder prompt1 = new StringBuilder();
@@ -206,20 +212,20 @@ public class TravelController {
 	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 여행 일정을 추천해줘. 총 인원은 ");  // 20개씩
 	    prompt1.append(peopleCount);
 	    prompt1.append("명이고 여행 기간은 ");
-	    prompt1.append(destination);
+	    prompt1.append(duration);
 	    prompt1.append("일, 예산은 ");	    
 	    prompt1.append(budgetMin + "만원 ~ " + budgetMax + "만원");
 	    prompt1.append("이야. 키워드는 ");
 	    prompt1.append(thema);
-	    prompt1.append("이고 여행 장소는 ");
-	    prompt1.append(thema);
-	    prompt1.append("야. ");
+	    prompt1.append("이고 나라/도시는 ");
+	    prompt1.append(destination);
+	    prompt1.append("(이)야.");
 	    prompt1.append(departureMonth);
-	    prompt1.append(" 기준의 일정을 추천해줬으면 좋겠어. 방문할 장소는 ");
-	    prompt1.append(signts);
-	    prompt1.append(" 이고 방문할 음식점은 ");
+	    prompt1.append(" 기준의 일정을 추천해줬으면 좋겠어. 방문할 장소(sight)는 ");
+	    prompt1.append(sights);
+	    prompt1.append(" 이고 방문할 음식점(restaurant)은 ");
 	    prompt1.append(restaurants);
-	    prompt1.append("이야. 대중교통을 이용할 경우걸리는 소요시간까지 반영해서 알려줘. 한번 갔던 장소는 다시 방문하지 않을래. 위의 내용을 json 형식으로 알려줘. 예시를 보여줄게.");
+	    prompt1.append("야. 내가 말한 장소와 음식점만 가지고 일정을 추천해줬으면 좋겠어. 다른건 추가하지 마. 당연히 호텔같은것도 다 제외야. 대중교통을 이용할 경우를 기준으로 걸리는 소요시간까지 반영해서 일정 시간을 정해줘. 한번 갔던 관광지와 음식점은 다시 방문안할래. title에는 저녁식사, 방문 같은 설명 없이 명칭만 알려줘. 위의 내용을 json 형식으로 알려줘. 예시를 보여줄게.");
 	    prompt1.append("[{" + 
 	    				"title: \"도쿄 디즈니랜드\", " +
 		                "start: \"1900-01-01T12:30:00\", " +
@@ -238,7 +244,6 @@ public class TravelController {
 	    System.out.println(prompt1);
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray4(openAIResult1);
-		System.out.println("openAIResult1 : " + openAIResult1);
 		System.out.println("openAIResult1Array : " + openAIResult1Array);
 		
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
@@ -285,24 +290,34 @@ public class TravelController {
 	    
 	    
 	/* 장소 검색 */
-	public HashMap<String, String> getSightArray(ArrayList<Map<String, Object>> openAIResult1Array, String sightType) throws Exception {
+	public ArrayList<Map<String, Object>> getSightArray(ArrayList<Map<String, Object>> openAIResult1Array, String sightType) throws Exception {
 		
 		ArrayList<String> sights = (ArrayList<String>)openAIResult1Array.get(0).get(sightType);
-		HashMap<String, String> returnSights = new HashMap<>();
+		ArrayList<Map<String, Object>> returnSights = new ArrayList<>();
 	
 	    for(String sight : sights) {
 	    	
 	    	// 상세설명 prompt
 		    StringBuilder prompt2 = new StringBuilder();
 		    prompt2.append(sight);
-		    prompt2.append("에 대해 String 형식으로 설명해줘. \"물론입니다\"나 \"알겠습니다\" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해. 존댓말로 해줘.");
+		    prompt2.append("에 대해 에 대해 위도, 경도, 설명(String 형식)해줘. \"물론입니다\"나 \"알겠습니다\" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해. 존댓말로 해줘. 위의 내용을 json 형식으로 부탁해. 예시를 보여줄게.");
+		    prompt2.append("[{" + 
+				    		" \"latitude\": \"37.5665\", " +
+				    		" \"longitude\": \"37.5665\", " +
+				    		" \"설명\": \"도쿄타워(Tokyo Tower)는 일본 도쿄에 위치한 상징적인 탑으로, 1958년에 완공되었습니다. 높이는 약 333미터로, 당시 세계에서 가장 높은 철탑으로 설계되었으며, 프랑스의 파리 에펠탑을 모델로 한 디자인이 특징입니다.\"" +
+				            "}]");
+		    
 		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
-			
-		    String openAIResult1String = travelRecommendation.changeString(openAIResult2);
-			returnSights.put(sight, openAIResult1String);
+
+		    System.out.println(openAIResult2);
+		    Map<String, Object> openAIResult1String = travelRecommendation.changeString(openAIResult2);
+		    
+		    openAIResult1String.put(sightType, sight);			
+
+		    returnSights.add(openAIResult1String);
 	    }
-	
+	    
 	    return returnSights;
 	}
 

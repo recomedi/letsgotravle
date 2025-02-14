@@ -51,6 +51,7 @@ body, html, .wrap { height: 100%; }
 .mb-30 { margin-bottom: 30px; }
 .mb-50 { margin-bottom: 50px; }
 .mb-70 { margin-bottom: 70px; }
+.ml-5 { margin-left: 5px; }
 .ml-10 { margin-left: 10px; }
 .ml-25 { margin-left: 25px; }
 .mr-20 { margin-right: 20px; }
@@ -126,8 +127,8 @@ body, html, .wrap { height: 100%; }
     color: #fff; font-size: 22px; position: absolute; left: 0; top: 50%; transform: translateY(-60%);}
 #travel-sights .check-box input[type="checkbox"]:checked + label:before { content: "∨"; background: #3B8EEF; 
     border-color: #3B8EEF; }
-#travel-sights .plus-icon { border: 2px solid #4FA3C4; border-radius: 50%; width: 24px; height: 24px; vertical-align: text-bottom; }
-#travel-sights .plus-icon .fa-plus { color: #4FA3C4; line-height: 20px; }
+#travel-sights .search-icon { border-color: transparent; border-radius: 50%; width: 24px; height: 24px; vertical-align: text-bottom; }
+#travel-sights .search-icon .icon { color: #4FA3C4; line-height: 20px; font-size: 18px; }
 
 #travel-sights .border-vertical { border-left: 2px dotted #ccc; }
 

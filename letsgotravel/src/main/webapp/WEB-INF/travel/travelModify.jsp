@@ -48,7 +48,9 @@
                 </div>
             </section>
         </div>
-        <footer class="ft"></footer>
+        
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>
+	    <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
 
     <script>
@@ -221,11 +223,12 @@
 		    // sessionStorage.setItem('city', fm.city.value);
 		    
 		    location.href = "${pageContext.request.contextPath}/travel/travelDetails.do";
+
+			document.getElementById('loading').style.display = 'block';
 		}
 	  
 		return;
 	}
     </script>
-    <%@ include file="/WEB-INF/footer.jsp" %>
 </body>
 </html>
