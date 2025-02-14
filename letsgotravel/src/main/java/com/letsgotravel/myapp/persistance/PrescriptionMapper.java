@@ -22,6 +22,7 @@ public interface PrescriptionMapper {
     void saveDrug(DrugVo drug);
 
 	List<PrescriptionVo> findPrescriptionsByMidx(Integer midx);
+	
     
     
 }

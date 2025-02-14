@@ -76,7 +76,7 @@ input, button { font-family: "Jeju Gothic", serif; }
   right: 0;
   transform: translateY(-50%) scaleX(0); /* 초기 상태 숨김 */
   transform-origin: right; /* 애니메이션 기준점 */
-  width: 313px;
+  width: 295px;
   height: 40px;
   background-color: #3B8EEF; /* 파란색 배경 */
   border-radius: 25px; /* 둥근 모서리 */
@@ -86,6 +86,16 @@ input, button { font-family: "Jeju Gothic", serif; }
   padding: 0 15px;
   opacity: 0; /* 보이지 않음 */
   transition: transform 0.4s ease-in-out, opacity 0.3s; /* 애니메이션 */
+}
+
+/* 로그인 후 (logged-in 클래스가 추가될 경우) */
+.side-menu.logged-in {
+    width: 450px; /* 로그인 후 너비 */
+}
+
+.side-menu.logged-in ul{
+	padding : 0 35px 0 10px;
+	
 }
 
 /* 활성화된 사이드 메뉴 */
