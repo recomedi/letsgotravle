@@ -176,8 +176,8 @@ public class TravelController {
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray3(openAIResult1);
 	    
-	    HashMap<String, String> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
-	    HashMap<String, String> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
+	    ArrayList<Map<String, Object>> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
+	    ArrayList<Map<String, Object>> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
 	   
 		model.addAttribute("destination", destination);
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
@@ -225,7 +225,7 @@ public class TravelController {
 	    prompt1.append(sights);
 	    prompt1.append(" 이고 방문할 음식점(restaurant)은 ");
 	    prompt1.append(restaurants);
-	    prompt1.append("야. 내가 말한 장소와 음식점만 가지고 일정을 추천해줬으면 좋겠어. 다른건 추가하지 마. 당연히 호텔같은것도 다 제외야. 대중교통을 이용할 경우를 기준으로 걸리는 소요시간까지 반영해서 일정 시간을 정해줘. 한번 갔던 관광지와 음식점은 다시 방문안할래. title에는 저녁식사, 방문 같은 설명 없이 명칭만 알려줘. 위의명칭만  위의 내용을 json 형식으로 알려줘. 예시를 보여줄게.");
+	    prompt1.append("야. 내가 말한 장소와 음식점만 가지고 일정을 추천해줬으면 좋겠어. 다른건 추가하지 마. 당연히 호텔같은것도 다 제외야. 대중교통을 이용할 경우를 기준으로 걸리는 소요시간까지 반영해서 일정 시간을 정해줘. 한번 갔던 관광지와 음식점은 다시 방문안할래. title에는 저녁식사, 방문 같은 설명 없이 명칭만 알려줘. 위의 내용을 json 형식으로 알려줘. 예시를 보여줄게.");
 	    prompt1.append("[{" + 
 	    				"title: \"도쿄 디즈니랜드\", " +
 		                "start: \"1900-01-01T12:30:00\", " +
@@ -290,31 +290,34 @@ public class TravelController {
 	    
 	    
 	/* 장소 검색 */
-	public HashMap<String, String> getSightArray(ArrayList<Map<String, Object>> openAIResult1Array, String sightType) throws Exception {
+	public ArrayList<Map<String, Object>> getSightArray(ArrayList<Map<String, Object>> openAIResult1Array, String sightType) throws Exception {
 		
 		ArrayList<String> sights = (ArrayList<String>)openAIResult1Array.get(0).get(sightType);
-		HashMap<String, String> returnSights = new HashMap<>();
+		ArrayList<Map<String, Object>> returnSights = new ArrayList<>();
 	
 	    for(String sight : sights) {
 	    	
 	    	// 상세설명 prompt
 		    StringBuilder prompt2 = new StringBuilder();
 		    prompt2.append(sight);
-		    prompt2.append("에 대해 String 형식으로 설명해줘. \"물론입니다\"나 \"알겠습니다\" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해. 존댓말로 해줘.");
+		    prompt2.append("에 대해 에 대해 위도, 경도, 설명(String 형식)해줘. \"물론입니다\"나 \"알겠습니다\" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해. 존댓말로 해줘. 위의 내용을 json 형식으로 부탁해. 예시를 보여줄게.");
+		    prompt2.append("[{" + 
+				    		" \"latitude\": \"37.5665\", " +
+				    		" \"longitude\": \"37.5665\", " +
+				    		" \"설명\": \"도쿄타워(Tokyo Tower)는 일본 도쿄에 위치한 상징적인 탑으로, 1958년에 완공되었습니다. 높이는 약 333미터로, 당시 세계에서 가장 높은 철탑으로 설계되었으며, 프랑스의 파리 에펠탑을 모델로 한 디자인이 특징입니다.\"" +
+				            "}]");
+		    
 		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
-			
-		    String openAIResult1String = travelRecommendation.changeString(openAIResult2);
-			returnSights.put(sight, openAIResult1String);
+
+		    System.out.println(openAIResult2);
+		    Map<String, Object> openAIResult1String = travelRecommendation.changeString(openAIResult2);
+		    
+		    openAIResult1String.put(sightType, sight);			
+
+		    returnSights.add(openAIResult1String);
 	    }
 	    
-
-//도쿄 타워에 대해 위도, 경도, 설명(String 형식)해줘. "물론입니다"나 "알겠습니다" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해. 존댓말로 해줘.위의 내용을 json 형식으로 부탁해. 예시를 보여줄게.
-//
-//[{"위도": "37.5665"}, {"경도" : "126.9782"}, {"설명" : "도쿄타워(Tokyo Tower)는 일본 도쿄에 위치한 상징적인 탑으로, 1958년에 완공되었습니다. 높이는 약 333미터로, 당시 세계에서 가장 높은 철탑으로 설계되었으며, 프랑스의 파리 에펠탑을 모델로 한 디자인이 특징입니다.
-//
-//도쿄타워는 방송용 송신탑으로 처음 건설되었으며, 현재도 TV와 라디오 방송 송신을 위한 주요 시설로 사용되고 있습니다. 또한, 도쿄의 대표적인 관광 명소 중 하나로, 전망대에서 도쿄 전경을 한눈에 볼 수 있어 많은 관광객들이 방문합니다."}]
-	
 	    return returnSights;
 	}
 

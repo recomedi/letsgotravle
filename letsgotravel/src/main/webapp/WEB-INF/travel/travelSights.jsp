@@ -55,9 +55,9 @@
 					 	   <input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
 	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
-		                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightCk" value="${sight}">
-		                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
-		                            <button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass"></i><textarea class="none">${requestScope.sightListArray[sight]}</textarea></button><br>
+	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightCk" value="${sight}">
+	                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray(index)[설명]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
@@ -66,7 +66,7 @@
 	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
 	                            <input type="checkbox" id="ck10${status.index+1}" class="none" name="restaurantCk" value="${restaurant}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label>
-	                            <button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass"></i><textarea class="none">${requestScope.restaurantListArray[restaurant]}</textarea></button><br>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray(index)[설명]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
@@ -89,17 +89,17 @@
 	            </form>
             </section>
         </div>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
     
     <script>
 	// 최초 상세설명 입력
 	let infoArea = document.querySelector(".info .text");
-	let textValue = document.querySelector(".check-box .plus-icon textarea").value;
+	let textValue = document.querySelector(".check-box .search-icon textarea").value;
     infoArea.innerText = textValue;
     
-    function goTravelModify() {
-    	
+    function goTravelModify() {    	
 
     	// 선택된 목록 가져오기
     	function findChecked(sight) {
@@ -186,6 +186,8 @@
 			fm.action="${pageContext.request.contextPath}/travel/travelModify.do";
 			fm.method="post";
 			fm.submit();
+
+			document.getElementById('loading').style.display = 'block';
 		}
 	  
 		return;

@@ -191,6 +191,7 @@
 	            </form>
             </section>
         </div>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
     
@@ -224,6 +225,8 @@
 			fm.action="${pageContext.request.contextPath}/travel/travelSights.do";
 			fm.method="post";
 			fm.submit();
+
+			document.getElementById('loading').style.display = 'block';
 		}
 	  
 		return;
