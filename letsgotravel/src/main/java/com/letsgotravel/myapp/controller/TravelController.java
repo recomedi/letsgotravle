@@ -106,7 +106,7 @@ public class TravelController {
 		    	    "}");
 	    System.out.println(prompt1);
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
-	    System.out.println("openAIResult1 : " + openAIResult1);
+
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray(openAIResult1);
 	    
 	    for(Map<String, Object> openAIResult : openAIResult1Array) {
@@ -310,7 +310,6 @@ public class TravelController {
 		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
 
-		    System.out.println(openAIResult2);
 		    Map<String, Object> openAIResult1String = travelRecommendation.changeString(openAIResult2);
 		    
 		    openAIResult1String.put(sightType, sight);			

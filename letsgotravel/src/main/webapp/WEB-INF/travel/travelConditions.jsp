@@ -175,6 +175,11 @@
 			alert("최대예산은 숫자만 입력해주세요");
 			fm.budgetMax.focus();
 			fm.budgetMax.value = "";
+			return;			
+		} else if (fm.budgetMin.value > fm.budgetMax.value) {
+			alert("최대예산은 최소예산보다 적을 수 없습니다");
+			fm.budgetMax.focus();
+			fm.budgetMax.value = "";
 			return;
 		} else if (checkeds.length == 0) {
 			alert("테마를 선택해주세요");

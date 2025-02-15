@@ -206,6 +206,7 @@ input, button { font-family: "Jeju Gothic", serif; }
 	top: 0; 
 	left: 0; 
 	width: 100%; 
+	min-width: 1260px;
 	height: 100%; 
 	z-index: 1001
 }
