@@ -21,11 +21,18 @@
 	    </nav>
         
         <div class="inner travel" id="travel-conditions">
-            
             <section class="contents">
                 <ul class="step flex justify-content-between">
-                    <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
-                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                	<c:choose>
+                    	<c:when test="${not empty requestScope.city}">
+	                    	<li class="step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
+	                    	<li class="relative step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
+                    	</c:when>
+                    	<c:otherwise>
+		                    <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
+		                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                    	</c:otherwise>
+	                </c:choose>
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                 </ul>
@@ -33,6 +40,7 @@
                 <h3 class="main-title center mb-70">🤔 여행 조건을 입력해주세요.</h3>
 
             	<form name="frm">
+	            	<input type="hidden" name="destination">
 	                <div class="row flex justify-content-between mb-2">
 	                    <div class="col">
 	                        <label>
@@ -121,7 +129,22 @@
     </div>
     
     <script>
-
+	
+	// sessionStorage 초기화
+	if(sessionStorage.getItem("thema") != null) {
+		sessionStorage.removeItem("peopleCount");
+		sessionStorage.removeItem("departureMonth");
+		sessionStorage.removeItem("duration");
+		sessionStorage.removeItem("groupType");
+		sessionStorage.removeItem("budgetMin");
+		sessionStorage.removeItem("budgetMax");
+		sessionStorage.removeItem("thema");
+		sessionStorage.removeItem("destination");
+		sessionStorage.removeItem("sights");
+		sessionStorage.removeItem("restaurants");
+		sessionStorage.removeItem("schedule");
+	}
+	
     function goTravelSelect() { 
 
 		// 선택된 목록 가져오기
@@ -211,8 +234,18 @@
 		    sessionStorage.setItem('budgetMax', fm.budgetMax.value);
 		    sessionStorage.setItem('thema', themaValue());
 		    document.querySelector('#thema').value = themaValue();
-		    
-			fm.action="${pageContext.request.contextPath}/travel/travelSelect.do";
+
+        	<c:choose>
+        	<c:when test="${not empty requestScope.city}">
+				sessionStorage.setItem("destination", sessionStorage.getItem("city"));
+				fm.destination.value = sessionStorage.getItem("city");
+				fm.action="${pageContext.request.contextPath}/travel/travelSights.do";
+			</c:when>
+           	<c:otherwise>
+				fm.action="${pageContext.request.contextPath}/travel/travelSelect.do";
+			</c:otherwise>
+			</c:choose>
+			
 			fm.method="post";
 			fm.submit();
 			

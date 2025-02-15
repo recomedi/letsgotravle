@@ -51,16 +51,17 @@ public class TravelController {
 	}
 
 	@RequestMapping(value = "/travelConditions.do")
-	public String travelConditions() {
+	public String travelConditions(@RequestParam(value = "city", required = false) String city, Model model) {
 		logger.info("travelConditions 들어옴");
-		return "WEB-INF/travel/travelConditions";
+	    model.addAttribute("city", city);
+	    return "WEB-INF/travel/travelConditions";
 	}
 
 	@RequestMapping(value = "/travelSelect.do")
 	public String travelSelect(TravelConditionsVo tv, Model model) throws Exception {
 
 		logger.info("travelSelect 들어옴");
-				
+		
 	    int peopleCount = tv.getPeopleCount();
 	    String departureMonth = tv.getDepartureMonth();
 	    int duration = tv.getDuration();
@@ -230,21 +231,20 @@ public class TravelController {
 	    				"title: \"도쿄 디즈니랜드\", " +
 		                "start: \"1900-01-01T12:30:00\", " +
 		                "end: \"1900-01-01T13:30:00\", " +
-						    "extendedProps: {\" " +
-			                    "category: \"sight\" " +
-			                "}" +
+					    "extendedProps: {\" " +
+		                    "category: \"sight\" " +
+		                "}" +
 						"},{" + 
 					    "title: \"라멘 츠케멘\"," +
 		                "start: \"1900-01-01T12:30:00\"," +
 		                "end: \"1900-01-01T13:30:00\"," +
-		                	"extendedProps: {" +
-		                    	"category: \"restaurant\"" +
-		                    "}" +
+	                	"extendedProps: {" +
+	                    	"category: \"restaurant\"" +
+	                    "}" +
 	    				"}]");
 	    System.out.println(prompt1);
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray4(openAIResult1);
-		System.out.println("openAIResult1Array : " + openAIResult1Array);
 		
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
 		
@@ -320,6 +320,5 @@ public class TravelController {
 	    return returnSights;
 	}
 
-	
 }
 
