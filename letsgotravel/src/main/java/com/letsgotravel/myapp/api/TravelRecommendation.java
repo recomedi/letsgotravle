@@ -189,8 +189,15 @@ System.out.println(jsonArray);
                 destinationMap.put("title", destination.getString("title"));
                 destinationMap.put("start", destination.getString("start"));
                 destinationMap.put("end", destination.getString("end"));
+                
+                // extendedProps Map 생성
+                Map<String, Object> extendedProps = new HashMap<>();
+                extendedProps.put("category", "restaurant");
+                // extendedProps를 원본 eventMap에 추가
+                destinationMap.put("extendedProps", extendedProps);
+                
                 destinationMap.put("extendedProps", destination.getJSONArray("extendedProps").toList());
-
+                
                 // Map을 ArrayList에 추가
                 travelCityList.add(destinationMap);
             }

@@ -48,7 +48,7 @@
                 </div>
             </section>
         </div>
-        
+        ${requestScope.openAIResult1Array}
         <%@ include file="/WEB-INF/loadingImage.jsp" %>
 	    <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
@@ -88,7 +88,27 @@
             	
             	
             [
-                {
+            	<c:if test="${!empty requestScope.openAIResult1Array}">
+            	<c:forEach items="${requestScope.openAIResult1Array}" var="rs" varStatus="status">
+                    {
+                    	title : "${rs.title}",
+                    	start: "${rs.start}",
+                    	end: "${rs.end}",                    	
+                    	<c:choose>
+                    	<c:when test="${rs.extendedProps.category == 'sight'}">
+	                    	backgroundColor: '#D8E8FC;',
+	                    	borderColor: '#3B8EEF;',
+                    	</c:when>
+                    	<c:otherwise>
+	                    	backgroundColor: '#DCEDF3;',
+	                    	borderColor: '#4FA3C4;',
+                    	</c:otherwise>
+	                    </c:choose>
+                    	textColor: '#333;'
+                     },
+                </c:forEach>
+                </c:if>
+                /* {
                     title: '해리포터 스튜디오',
                     start: '1900-01-01T12:30:00',
                     end: '1900-01-01T13:30:00',
@@ -112,7 +132,7 @@
                     borderColor: '#4FA3C4',
                     textColor: '#333'
                     // allDay : false
-                }
+                } */
             ],
             /* eventClick: function(e) { /* 일정 클릭 이벤트 */
     			/* var startDayStr = e.event.startStr;
