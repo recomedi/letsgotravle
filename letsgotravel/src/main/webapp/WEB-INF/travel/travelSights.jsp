@@ -57,7 +57,7 @@
 	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
 	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightCk" value="${sight}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
-	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray(index)[설명]}</textarea></button><br>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
@@ -66,7 +66,7 @@
 	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
 	                            <input type="checkbox" id="ck10${status.index+1}" class="none" name="restaurantCk" value="${restaurant}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label>
-	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray(index)[설명]}</textarea></button><br>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
