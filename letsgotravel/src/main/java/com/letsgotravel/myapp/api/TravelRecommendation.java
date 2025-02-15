@@ -125,7 +125,7 @@ public class TravelRecommendation {
         return travelCityList;
     }
     
-    public String changeString(String openAIResult) throws Exception {
+    public Map<String, Object> changeString(String openAIResult) throws Exception {
         
     	// JSON 객체 생성
         JSONObject jsonObject = new JSONObject(openAIResult);
@@ -133,7 +133,32 @@ public class TravelRecommendation {
         JSONObject message = choices.getJSONObject(0).getJSONObject("message");
         String content = message.getString("content");
         
-        return content;
+        // "```json" 부분 제거 및 JSON 배열 파싱
+        String jsonArrayString = content.replace("```json\n", "").replace("\n```", "");
+
+        Map<String, Object> destinationMap = new HashMap<String, Object>();
+        
+        // content가 JSON 배열로 시작하는지 확인
+        if (jsonArrayString.contains("[")) {
+	        String cleanJson = jsonArrayString.substring(jsonArrayString.indexOf("["), jsonArrayString.lastIndexOf("]") + 1);
+	        
+	        // JSON 배열 파싱 후 ArrayList로 변환
+	        try {
+	            JSONArray jsonArray = new JSONArray(cleanJson);
+	
+                JSONObject destination = jsonArray.getJSONObject(0);
+
+                // JSONObject의 각 데이터를 Map으로 변환하여 ArrayList에 추가
+                destinationMap.put("latitude", destination.getString("latitude"));
+                destinationMap.put("longitude", destination.getString("longitude"));
+                destinationMap.put("설명", destination.getString("설명"));	
+	
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+        }
+
+        return destinationMap;
     }
     
 
@@ -151,11 +176,11 @@ public class TravelRecommendation {
         ArrayList<Map<String, Object>> travelCityList = new ArrayList<Map<String, Object>>();
         
         String cleanJson = jsonArrayString.substring(jsonArrayString.indexOf("["), jsonArrayString.lastIndexOf("]") + 1);
-        
+        System.out.println(cleanJson);
      // JSON 배열 파싱 후 ArrayList로 변환
         try {
             JSONArray jsonArray = new JSONArray(cleanJson);
-
+System.out.println(jsonArray);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject destination = jsonArray.getJSONObject(i);
                 Map<String, Object> destinationMap = new HashMap<String, Object>();

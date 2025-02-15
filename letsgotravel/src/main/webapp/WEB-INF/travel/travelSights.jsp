@@ -41,12 +41,13 @@
 	                   	   <input type="hidden" name="budgetMax" id="budgetMax">
 	                   	   <input type="hidden" name="destination" id="destination">
 	                   	   <input type="hidden" name="thema" id="thema">
-	                   	   <input type="hidden" name="sights" id="sights">
-	                   	   <input type="hidden" name="restaurants" id="restaurants">
+	                   	   <input type="hidden" name="sights" id="sightsInput">
+	                   	   <input type="hidden" name="restaurants" id="restaurantsInput">
+	                   	   <input type="hidden" name="duration" id="duration">
 	                   	   <input type="hidden" name="placeName" id="placeName">
 	                       <div class="flex justify-content-between">                    
 	                           <div class="btn-box flex">
-	                               <label class="btn btn2 green" for="sights" onClick="btnClick(this);">관광지</label> <label class="btn btn2" for="restaurant" onClick="btnClick(this);">음식점</label>
+	                               <label class="btn btn2 green" for="sights" onClick="btnClick(this);">관광지</label> <label class="btn btn2" for="restaurants" onClick="btnClick(this);">음식점</label>
 	                           </div>
 	                           <button class="btn blue">추가</button>
 	                       </div>
@@ -54,14 +55,18 @@
 					 	   <input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
 	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
-		                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightsCk" value="${sight}"><label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i><textarea class="none">${requestScope.sightListArray[sight]}</textarea></button><br>
+	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightCk" value="${sight}">
+	                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray(index)[설명]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
-	                       <input type="radio" name="sights-radio" id="restaurant" class="none">
-	                       <div class="check-box pt-10 none restaurant">
+	                       <input type="radio" name="sights-radio" id="restaurants" class="none">
+	                       <div class="check-box pt-10 none restaurants">
 	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
-	                            <input type="checkbox" id="ck10${status.index+1}" class="none" name="restaurantCk" value="${restaurant}"><label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label><button class="ml-10 center plus-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-plus"></i><textarea class="none">${requestScope.restaurantListArray[restaurant]}</textarea></button><br>
+	                            <input type="checkbox" id="ck10${status.index+1}" class="none" name="restaurantCk" value="${restaurant}">
+	                            <label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray(index)[설명]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
@@ -78,27 +83,27 @@
 	               </div>
 	               
 	               <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-	                   <button type="button" onClick="goTravelModify()" class="btn blue">다음</button>
+	                   <button type="button" onClick="goTravelModify();" class="btn blue">다음</button>
 	                   <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	               </div>
 	            </form>
             </section>
         </div>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
     
     <script>
 	// 최초 상세설명 입력
 	let infoArea = document.querySelector(".info .text");
-	let textValue = document.querySelector(".check-box .plus-icon textarea").value;
+	let textValue = document.querySelector(".check-box .search-icon textarea").value;
     infoArea.innerText = textValue;
     
-    function goTravelModify() {
-    	
+    function goTravelModify() {    	
 
     	// 선택된 목록 가져오기
-    	function findChecked(sights) {
-    		const checked = 'input[name="' + sights + 'Ck"]:checked';
+    	function findChecked(sight) {
+    		const checked = "input[name='" + sight + "Ck']:checked";
     		const checkeds = document.querySelectorAll(checked);
     		return checkeds;
     	}
@@ -118,7 +123,7 @@
 			return;
 		} */
 		
-		if (findChecked("sights").length == 0 && findChecked("restaurant").length == 0) {
+		if (findChecked("sight").length == 0 && findChecked("restaurant").length == 0) {
 			alert("관광지나 음식점을 선택해주세요");
 			window.scrollTo({top: 0, behavior: 'smooth'});
 			return;
@@ -130,22 +135,24 @@
 
 	    	var chkArray = {};
 	    	
-		    function getCheckedValues(name) {
-
-		    	$(`input:checkbox[name="{name}"]:checked`).each(function() {
-		    	    // 'this'는 체크된 체크박스를 가리킴
-		    	    const button = $(this).siblings("button")[0]; // 배열로 반환되므로 첫 번째 요소를 가져온다.
-		    	    const textarea = button.querySelector("textarea");
+		    function getCheckedValues(name) {		
+		    	
+		    	const checkboxes = document.querySelectorAll('input[type="checkbox"][name="{name}"]:checked');
+		    	checkboxes.forEach(function(checkbox) {
+		    		
+		    	    // 'checkbox'는 체크된 체크박스를 가리킴
+		    	    const button = checkbox.closest('div').querySelector('button');  // 부모 요소에서 button을 찾음
+		    	    const textarea = button.querySelector('textarea');
 		    	    const value = textarea.value;
 		    	    
-		    	    chkArray[this.value] = value;
+		    	    chkArray[checkbox.value] = value;
 		    	});
 
 		    }
 		    
-		    getCheckedValues(sightsCk);
-		    getCheckedValues(restaurantCk);
-	    	$('#placeName').val(JSON.stringify(chkArray));  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
+		    getCheckedValues("sightCk");
+		    getCheckedValues("restaurantCk");
+		    document.querySelector("#placeName").value = JSON.stringify(chkArray);  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
 		    
 	    	function findCheckedValue(sights) {
 	    		
@@ -160,8 +167,8 @@
 	    	}
 
 			// sessionStorage에 저장
-		    sessionStorage.setItem('sights', findCheckedValue("sights"));
-		    sessionStorage.setItem('restaurants', findCheckedValue("restaurants"));
+		    sessionStorage.setItem('sights', findCheckedValue("sight"));
+		    sessionStorage.setItem('restaurants', findCheckedValue("restaurant"));
 		    
 			// sessionStorage에서 불러오기
 		    document.querySelector('#peopleCount').value = sessionStorage.getItem('peopleCount');
@@ -170,14 +177,17 @@
 		    document.querySelector('#budgetMin').value = sessionStorage.getItem('budgetMin');
 		    document.querySelector('#budgetMax').value = sessionStorage.getItem('budgetMax');
 		    document.querySelector('#destination').value = sessionStorage.getItem('destination');
+		    document.querySelector('#duration').value = sessionStorage.getItem('duration');
 		    document.querySelector('#thema').value = sessionStorage.getItem('thema');
-		    
-		    document.querySelector('#sights').value = findCheckedValue("sights");
-		    document.querySelector('#restaurants').value = findCheckedValue("restaurants");
-	        		    
+		            	   
+		    document.querySelector('#sightsInput').value = findCheckedValue("sight");
+		    document.querySelector('#restaurantsInput').value = findCheckedValue("restaurant");
+	        
 			fm.action="${pageContext.request.contextPath}/travel/travelModify.do";
 			fm.method="post";
 			fm.submit();
+
+			document.getElementById('loading').style.display = 'block';
 		}
 	  
 		return;

@@ -76,17 +76,17 @@
 	                            <p class="text">· ${city.get("성수기여부")}</p>
 	                        </div>
 	                        <div class="select-item">
-	                            <p class="sub-title mb-1">🍔 물가</p>
+	                            <p class="sub-title mb-1">🍔 한국 대비 물가</p>
 	                            <p class="text">· ${city.get("한국 대비 물가")}</p>
 	                        </div>
 	                    </div>
 	                    <div class="col flex mb-2">
 	                        <div class="select-item">
-	                            <p class="sub-title mb-1">👮 치안</p>
+	                            <p class="sub-title mb-1">👮 한국 대비 치안</p>
 	                            <p class="text">· ${city.get("치안")}</p>
 	                        </div>
 	                        <div class="select-item">
-	                            <p class="sub-title mb-1">😷 위생</p>
+	                            <p class="sub-title mb-1">😷 한국 대비 위생</p>
 	                            <p class="text">· ${city.get("위생")}</p>
 	                        </div>
 	                        <div class="select-item">
@@ -149,17 +149,17 @@
 		                            <p class="text">· ${city.get("성수기여부")}</p>
 		                        </div>
 		                        <div class="select-item">
-		                            <p class="sub-title mb-1">🍔 물가</p>
+		                            <p class="sub-title mb-1">🍔  한국 대비 물가</p>
 		                            <p class="text">· ${city.get("한국 대비 물가")}</p>
 		                        </div>
 		                    </div>
 		                    <div class="col flex mb-2">
 		                        <div class="select-item">
-		                            <p class="sub-title mb-1">👮 치안</p>
+		                            <p class="sub-title mb-1">👮  한국 대비 치안</p>
 		                            <p class="text">· ${city.get("치안")}</p>
 		                        </div>
 		                        <div class="select-item">
-		                            <p class="sub-title mb-1">😷 위생</p>
+		                            <p class="sub-title mb-1">😷  한국 대비 위생</p>
 		                            <p class="text">· ${city.get("위생")}</p>
 		                        </div>
 		                        <div class="select-item">
@@ -191,6 +191,7 @@
 	            </form>
             </section>
         </div>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
     
@@ -224,6 +225,8 @@
 			fm.action="${pageContext.request.contextPath}/travel/travelSights.do";
 			fm.method="post";
 			fm.submit();
+
+			document.getElementById('loading').style.display = 'block';
 		}
 	  
 		return;

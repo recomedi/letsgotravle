@@ -45,6 +45,7 @@
 	             </form>
             </section>
         </div>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>        
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
     <script>
@@ -67,6 +68,8 @@
 		    sessionStorage.setItem('city', fm.city.value);
 		    
 		    location.href = "${pageContext.request.contextPath}/travel/travelSights.do";
+		    
+		    document.getElementById('loading').style.display = 'block';
 		}
 	  
 		return;
