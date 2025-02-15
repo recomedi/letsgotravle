@@ -137,6 +137,7 @@
     <a href="${pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
     <a href="${pageContext.request.contextPath}/member/memberSignUp.do">회원가입</a>
     <a href="${pageContext.request.contextPath}/member/memberMypage.do">마이페이지</a>
+    <a href="${pageContext.request.contextPath}/naverImageTest/naverImageTest.do">이미지 테스트</a>
     <a href="${pageContext.request.contextPath}/member/Logout.do" style="color:#A39C9C;">로그아웃</a>
   </section>
   </div>

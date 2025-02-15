@@ -419,7 +419,6 @@ table {
   box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .table-header th,
@@ -430,7 +429,6 @@ table {
   box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .table-header th,
@@ -610,7 +608,7 @@ table {
 
   <!-- 목록 버튼을 테이블 아래에 위치 -->
   <div class="btn-box">
- 	<button class="custom-btn">목록</button>
+ 	<button class="custom-btn" onclick = "location.href = '${pageContext.request.contextPath}/prescription/prescriptionList.do'">목록</button>
   </div>
 </div>
 

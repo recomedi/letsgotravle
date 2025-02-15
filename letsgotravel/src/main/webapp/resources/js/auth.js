@@ -53,8 +53,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	phoneNumberInput.addEventListener("input", () => {
 	    if (phoneNumberInput.value.trim().length === 11) {
+			
 	        console.log("[DEBUG] 전화번호 입력 완료 → 본인인증 요청 시작...");
 
+			document.getElementById('loading').style.display = 'block';
+			
 	        const formData = new FormData();
 	        formData.append("idNumberFront", document.getElementById("id-number-front").value.trim());
 	        formData.append("idNumberBack", document.getElementById("id-number-back").value.trim());
@@ -70,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	            .then(data => {
 	                if (data.redirectToSecureInput) {
 	                    if (data.reqSecureNoDecoded) {
+							document.getElementById('loading').style.display = 'none';
 	                        secureNoImage.src = data.reqSecureNoDecoded;
 	                        step3.classList.remove("hidden"); // 보안문자 입력 단계 표시
 	                        console.log("[DEBUG] 보안문자 갱신 완료.");
@@ -122,6 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	        twoWayTimestamp: sessionStorage.getItem('twoWayTimestamp') || Date.now()
 	    };
 
+		document.getElementById('loading').style.display = 'block';
+
 	    console.log('[DEBUG] 보안문자 인증 요청 데이터:', secureData);
 
 	    $.ajax({
@@ -131,8 +137,11 @@ document.addEventListener("DOMContentLoaded", function () {
 	        data: $.param(secureData),
 	        success: function (response) {
 	            console.log('[DEBUG] 추가 인증 응답:', response);
+				
 
 	            if (response.success) {
+
+					document.getElementById('loading').style.display = 'none';
 	                alert('보안문자 인증 성공! 이제 SMS 인증번호를 입력하세요.');
 
 	                // SMS 인증 필드 표시
@@ -160,6 +169,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const smsCode = smsAuthNumberInput.value.trim();
 
         if (smsCode.length === 6) {
+			
+			document.getElementById('loading').style.display = 'block';
+			
 			fetch(`${contextPath}/prescription/verifySmsCode.do`, {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
