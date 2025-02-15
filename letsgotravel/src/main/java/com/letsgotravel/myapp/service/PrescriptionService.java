@@ -13,9 +13,6 @@ import com.letsgotravel.myapp.persistance.PrescriptionMapper;
 @Service
 public interface PrescriptionService {
 
-
-	
-
     // 특정 처방전 상세 정보 조회
     PrescriptionVo getPrescriptionDetail(int pidx);
 
@@ -26,9 +23,10 @@ public interface PrescriptionService {
 	int savePrescriptionAndDrugs(PrescriptionVo prescription, List<DrugVo> drugs);
 
 	List<PrescriptionVo> getPrescriptionsByMidx(Integer midx);
-	
 
-	
-    
+	void resetAndSavePrescriptions(PrescriptionVo prescription, List<DrugVo> list);
+
+	void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions);
+
     
 }

@@ -54,6 +54,38 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         return prescription;
     }
+    
+    @Transactional
+    @Override
+    public void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions) {
+        System.out.println("📌 기존 처방 데이터 삭제 시작...");
+        
+        int deletedDrugs = pm.resetDrugsByMidx(midx);
+        System.out.println("✅ 삭제된 약물 개수: " + deletedDrugs);
+
+        int deletedPrescriptions = pm.resetPrescriptionsByMidx(midx);
+        System.out.println("✅ 삭제된 처방전 개수: " + deletedPrescriptions);
+
+        // 삭제 후 DB에 남아있는 데이터 개수 확인 (디버깅용)
+        List<PrescriptionVo> checkPrescriptions = pm.findPrescriptionsByMidx(midx);
+        System.out.println("📌 삭제 후 남은 처방전 개수: " + (checkPrescriptions != null ? checkPrescriptions.size() : 0));
+
+        for (PrescriptionVo prescription : prescriptions) {
+            prescription.setMidx(midx);
+            pm.insertPrescription(prescription);
+            int pidx = prescription.getPidx();
+
+            for (DrugVo drug : prescription.getDrugs()) {
+                drug.setPidx(pidx);
+                pm.insertDrug(drug);
+            }
+        }
+    }
+
+
+
+    
+
 
 
 
@@ -114,6 +146,13 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 	    return prescriptions;
 	}
+
+
+	@Override
+	public void resetAndSavePrescriptions(PrescriptionVo prescription, List<DrugVo> list) {
+		
+	};
+	
 	
 	
 	
