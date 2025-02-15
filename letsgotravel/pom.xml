@@ -39,7 +39,13 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
 		</dependency>	
-		
+		 <!-- AspectJ 라이브러리 추가 -->
+	    <dependency>
+	        <groupId>org.aspectj</groupId>
+	        <artifactId>aspectjweaver</artifactId>
+	        <version>1.9.7</version>  <!-- 최신 버전 사용 가능 -->
+	    </dependency>
+			
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -172,7 +178,12 @@
 		    <artifactId>spring-tx</artifactId>
 		    <version>${org.springframework-version}</version>
 		</dependency>
-		
+		 <!-- Spring AOP (트랜잭션에 필요) -->
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-aop</artifactId>
+	        <version>${org.springframework-version}</version>  <!-- Spring 4.x 버전에 맞게 수정 -->
+	    </dependency>
 		<!-- json -->
 		<!-- json을 쉽게 만들기 위한 라이브러리 -->
 		<dependency>
