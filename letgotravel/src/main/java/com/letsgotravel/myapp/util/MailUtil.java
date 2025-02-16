@@ -19,7 +19,7 @@ public class MailUtil {
     public void sendMail(MemberVo mv, String tempPassword) throws MessagingException {
         String subject = "LecoTrip 임시 비밀번호 발급 안내";
         String msg = "<div align='left'>";
-        msg += "<h3>" + mv.getId() + "님의 임시 비밀번호입니다.<br>마이페이지에서 비밀번를 변경해 주세.</h3>";
+        msg += "<h3>" + mv.getId() + "님의 임시 비밀번호입니다.<br>마이페이지에서 비밀번를 반드시 변경해 주세요.</h3>";
         msg += "<p>임시 비밀번호 : <strong>" + tempPassword + "</strong></p>";
         msg += "</div>";
 
