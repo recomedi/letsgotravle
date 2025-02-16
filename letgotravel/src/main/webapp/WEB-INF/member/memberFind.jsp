@@ -95,8 +95,41 @@
 	        alert("전송오류");
 	    }
 	}
-  
-  $(document).ready(function () {
+$(document).ready(function () {
+	    // 이메일로 임시 비밀번호 전송 (비밀번호 찾기)
+	    $(".email-send-btn").click(function () {
+	        let id = $("#id").val();
+	        let email = $("#email").val();
+
+	        if (id === "") {
+	            alert("아이디를 입력해주세요.");
+	            return;
+	        }
+
+	        if (email === "") {
+	            alert("이메일을 입력해주세요.");
+	            return;
+	        }
+
+	        $.ajax({
+	            type: "POST",
+	            url: "<%=request.getContextPath()%>/member/findPwAction.do",
+	            data: { id: id, email: email },
+	            dataType: "json",
+	            success: function (response) {
+	                console.log("응답:", response);
+	                if (response.success) {
+	                    alert("임시 비밀번호가 이메일로 발송되었습니다.");
+	                } else {
+	                    alert(response.message);
+	                }
+	            },
+	            error: function (xhr) {
+	                console.error("비밀번호 찾기 오류:", xhr.responseText);
+	                alert("비밀번호 찾기 중 오류가 발생했습니다.");
+	            }
+	        });
+	    });
 	    $(".find-password-btn").click(function (e) {
 	        e.preventDefault();
 	        let id = $("#id").val();
@@ -131,7 +164,7 @@
 	            }
 	        });
 	    });
-  });
+	});
 
   </script>
   <body>
