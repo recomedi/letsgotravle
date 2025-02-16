@@ -1,6 +1,10 @@
 package com.letsgotravel.myapp.controller;
 
 import com.letsgotravel.myapp.service.NaverImageSearchService;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +34,16 @@ public class NaverImageController {
     @GetMapping(value = "/search", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public String searchImages(@RequestParam("query") String query) {
-        logger.info("이미지 검색 요청: {}", query);
         try {
-            return naverImageSearchService.searchImages(query);
+            // ✅ URL 디코딩 적용 (띄어쓰기 복구)
+            String decodedQuery = URLDecoder.decode(query, StandardCharsets.UTF_8);
+            logger.info("🟢 컨트롤러에서 받은 검색어 (디코딩 적용): {}", decodedQuery); // ✅ 디코딩 확인
+
+            return naverImageSearchService.searchImages(decodedQuery);
         } catch (Exception e) {
-            logger.error("이미지 검색 실패", e);
+            logger.error("❌ 이미지 검색 실패", e);
             return "{\"error\":\"이미지 검색 중 오류가 발생했습니다.\"}";
         }
     }
+
 }

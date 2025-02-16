@@ -27,33 +27,49 @@
 
     <div class="image-container" id="imageResults"></div>
 
-    <script>
-			    function searchImages() {
-			        let query = $("#searchQuery").val();
-			        if (!query) {
-			            alert("검색어를 입력하세요!");
+		    <script>
+		    function searchImages() {
+		        let query = $("#searchQuery").val();
+		        if (!query) {
+		            alert("검색어를 입력하세요!");
+		            return;
+		        }
+
+		        console.log("🔍 검색어 (프론트엔드):", query); // ✅ 프론트에서 검색어 확인
+
+		        $.ajax({
+		            url: "/travel/naverImageTest/search",
+		            type: "GET",
+		            data: { query: query }, 
+		            dataType: "json",
+		            success: function(response) {
+		                console.log("✅ 서버 응답:", response); 
+		                displayImages(response);
+		            },
+		            error: function(xhr, status, error) {
+		                console.log("❌ AJAX 요청 오류:", xhr.responseText);
+		            }
+		        });
+		    }
+
+			    
+			    function displayImages(response) {
+			        let imageContainer = $("#imageResults");
+			        imageContainer.empty();  // 기존 이미지 제거
+
+			        if (!response.items || response.items.length === 0) {
+			            imageContainer.html("<p>이미지를 찾을 수 없습니다.</p>");
 			            return;
 			        }
-			
-			        $.ajax({
-			            url: "/travel/naverImageTest/search",  // ✅ 프로젝트 context 고려하여 경로 확인
-			            type: "GET",
-			            data: { query: query },
-			            dataType: "json",
-			            success: function(response) {
-			                console.log(response); // ✅ 응답 디버깅
-			                displayImages(response);
-			            },
-			            error: function(xhr, status, error) {
-			                console.log(xhr);
-			                console.log(status);
-			                console.log(error);
-			                alert("이미지 검색 중 오류가 발생했습니다.");
-			            }
+
+			        response.items.forEach(item => {
+			            let img = $("<img>").attr("src", item.thumbnail).attr("alt", item.title);
+			            imageContainer.append(img);
 			        });
 			    }
-
-    </script>
+			    
+			    
+		    </script>
 
 </body>
 </html>
