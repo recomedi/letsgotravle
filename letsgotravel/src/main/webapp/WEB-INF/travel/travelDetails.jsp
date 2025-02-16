@@ -96,9 +96,18 @@
     </section>
 
     <!-- 하단 버튼 -->
-    <div class="bottom-buttons">
-      <button class="blue-btn">스크랩</button>
-      <button class="white-btn">뒤로</button>
+    <div class="bottom-buttons">    
+    <c:choose>
+   	<c:when test="${!empty requestScope.destination}">
+		<button class="blue-btn">스크랩</button>
+		<button class="white-btn">뒤로</button>
+   	</c:when>
+   	<c:otherwise>
+		<button class="blue-btn">수정</button>
+		<button class="white-btn">삭제</button>
+		<button class="white-btn">목록</button>
+   	</c:otherwise>
+    </c:choose>    
     </div>
   </main>
 
