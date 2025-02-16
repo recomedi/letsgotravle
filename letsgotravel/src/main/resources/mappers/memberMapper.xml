@@ -12,15 +12,46 @@
 	</insert>
 
 	<select id="idCheck" parameterType="String" resultType="int">
-		select count(*) as cnt from MEMBER where id=#{id}
+		select count(*) as cnt from MEMBER where id=#{id} AND delyn='N'
 	</select>
 	
 	<select id="nicknameCheck" parameterType="String" resultType="int">
-    	select count(*) as cnt from MEMBER where nickname = #{nickname}
+    	select count(*) as cnt from MEMBER where nickname = #{nickname} AND delyn='N'
+	</select>
+	
+	
+	<select id="findId" parameterType="map" resultType="mv">
+    	SELECT id, name FROM MEMBER WHERE name = #{name} AND phone = #{phone} AND delyn='N'
 	</select>
 	
 	<select id="LoginCheck" parameterType="String" resultType="mv">
-		select * from member where id =#{id} 
+		select * from member where id =#{id} AND delyn='N'
 	</select>
 	
+	<update id="changePassword" parameterType="map">
+	    UPDATE MEMBER SET password = #{password} WHERE id = #{id}
+	</update>
+
+	<update id="updateUserProfile" parameterType="map">
+	    UPDATE MEMBER
+	    <set>
+	        <if test="nickname != null and nickname != ''">nickname = #{nickname},</if>
+	        <if test="email != null and email != ''">email = #{email},</if>
+	        <if test="phone != null and phone != ''">phone = #{phone},</if>
+	    </set>
+	    WHERE id = #{id}
+	</update>
+	
+	<update id="updateDelyn" parameterType="map">
+	    UPDATE MEMBER SET delyn = #{delyn} WHERE id = #{id}
+	</update>
+	
+    <select id="findByEmail" parameterType="map" resultType="mv">
+        SELECT * FROM MEMBER WHERE id = #{id} AND email = #{email} AND delyn='N'
+    </select>
+
+    <update id="tempPassword" parameterType="mv">
+        UPDATE MEMBER SET password = #{password} WHERE id = #{id}
+    </update>
+	    
 </mapper>
