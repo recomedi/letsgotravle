@@ -26,18 +26,10 @@ public class ScrapController {
 //	private ScrapVo sv;
 	
 	@RequestMapping(value = "scrapWriteAction.do", method = RequestMethod.POST)
-	public String scrapWriteAction(
-			@RequestParam("calendarData") String calendarData,
-			@RequestParam("sights") String sights,
-			@RequestParam("restaurants") String restaurants,
-			@RequestParam("destination") String destination,
-			Model model) {
-		
+	public String scrapWriteAction() {
 		logger.info("scrapWriteAction들어옴");
 
-		//int value = scrapService.scrapInsert(sv);
-		logger.info("calendarData:" + calendarData);
-	    
+		//int value = scrapService.scrapInsert(sv);	    
 //
 //		String path = "";
 //		if (value == 1) {
@@ -45,11 +37,8 @@ public class ScrapController {
 //		} else if (value == 0) {
 //			path = "redirect:/member/memberSignup.do";
 //		}
-
-		model.addAttribute("destination", destination);
-		model.addAttribute("calendarData", calendarData);
 		
-		return "WEB-INF/travel/travelDetails";
+		return "WEB-INF/scrap/scrapList";
 	}
 	
 	

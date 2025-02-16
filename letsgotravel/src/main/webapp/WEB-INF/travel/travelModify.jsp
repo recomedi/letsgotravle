@@ -33,8 +33,8 @@
                     <li class="relative step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
                     <li class="relative step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
                 </ul>
-            
-                <h3 class="main-title center mb-70">🤔 "일본 / 도쿄"의 일정을 확정해주세요.</h3>
+                
+                <h3 class="main-title center mb-70">🤔 "${requestScope.destination}"의 일정을 확정해주세요.</h3>
                 <form name="frm">
                 	<input type="hidden" name="sights" id="sights">
                 	<input type="hidden" name="restaurants" id="restaurants">
@@ -252,9 +252,11 @@
 		    document.querySelector('#destination').value = sessionStorage.getItem('destination');
 		    
 			let fm = document.frm;
-			fm.action="${pageContext.request.contextPath}/scrap/scrapWriteAction.do";
+			fm.action="${pageContext.request.contextPath}/travel/travelDetails.do";
 			fm.method="post";
 			fm.submit();
+
+			document.getElementById('loading').style.display = 'block';
 		}
 		
 		return;

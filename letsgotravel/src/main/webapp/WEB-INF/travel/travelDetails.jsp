@@ -22,6 +22,7 @@
   
   <!-- 메인 콘텐츠 -->
   <main class="main-content">
+  <form name="frm">
     <!-- 지도 섹션 -->
     <section class="map-section">
       <h2 class="detailtitle">일본 도쿄</h2>
@@ -29,14 +30,15 @@
       <div class="map-container">
         <!-- 하드코딩된 지도 이미지 -->
         <img src="${pageContext.request.contextPath}/resources/images/image 187.png" alt="지도 이미지">
-        <div class="dropdown">
-            <button class="dropdown-btn">1일차 ∨</button>
-            <ul class="dropdown-menu">
-              <li>2일차</li>
-              <li>3일차</li>
-              <li>4일차</li>
-            </ul>
-          </div>
+      </div>
+      <div class="dropdown">
+        <button class="dropdown-btn">1일차 ∨</button>
+        <ul class="dropdown-menu">
+          <li>2일차</li>
+          <li>3일차</li>
+          <li>4일차</li>
+        </ul>
+      </div>
     </section>
 
     <!-- 첫 번째 컨텐츠 -->
@@ -99,8 +101,8 @@
     <div class="bottom-buttons">    
     <c:choose>
    	<c:when test="${!empty requestScope.destination}">
-		<button class="blue-btn">스크랩</button>
-		<button class="white-btn">뒤로</button>
+		<button class="blue-btn" type="button" onClick="goScrapList();">스크랩</button>
+		<button class="white-btn" type="button" onClick="history.back();">뒤로</button>
    	</c:when>
    	<c:otherwise>
 		<button class="blue-btn">수정</button>
@@ -109,9 +111,48 @@
    	</c:otherwise>
     </c:choose>    
     </div>
+    </form>
   </main>
 
+  <%@ include file="/WEB-INF/loadingImage.jsp" %>
   <!-- 풋터 -->
   <%@ include file="/WEB-INF/footer.jsp" %>
+  
+  <script>
+  function goScrapList() {    	
+
+		let fm = document.frm;	
+		
+		let ans = confirm("스크랩 하시겠습니까?");
+		
+		if (ans == true) {
+
+/* 			// sessionStorage에 저장
+		    sessionStorage.setItem('sights', findCheckedValue("sight"));
+		    sessionStorage.setItem('restaurants', findCheckedValue("restaurant"));
+		    
+			// sessionStorage에서 불러오기
+		    document.querySelector('#peopleCount').value = sessionStorage.getItem('peopleCount');
+		    document.querySelector('#departureMonth').value = sessionStorage.getItem('departureMonth');
+		    document.querySelector('#groupType').value = sessionStorage.getItem('groupType');
+		    document.querySelector('#budgetMin').value = sessionStorage.getItem('budgetMin');
+		    document.querySelector('#budgetMax').value = sessionStorage.getItem('budgetMax');
+		    document.querySelector('#destination').value = sessionStorage.getItem('destination');
+		    document.querySelector('#duration').value = sessionStorage.getItem('duration');
+		    document.querySelector('#thema').value = sessionStorage.getItem('thema');
+		            	   
+		    document.querySelector('#sightsInput').value = findCheckedValue("sight");
+		    document.querySelector('#restaurantsInput').value = findCheckedValue("restaurant"); */
+	        
+			fm.action="${pageContext.request.contextPath}/scrap/scrapWriteAction.do";
+			fm.method="post";
+			fm.submit();
+
+			document.getElementById('loading').style.display = 'block';
+		}
+	  
+		return;
+	}   
+  </script>
 </body>
 </html>
