@@ -158,7 +158,7 @@ public class TravelController {
 	    StringBuilder prompt1 = new StringBuilder();
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개 이상과 음식점 2개 이상 추천해줘. 도시는 ");  // 20개씩
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 도시는 ");
 	    prompt1.append(destination);
 	    prompt1.append("이고 총 인원은 ");
 	    prompt1.append(peopleCount);
@@ -166,7 +166,7 @@ public class TravelController {
 	    prompt1.append(budgetMin + "만원 ~ " + budgetMax + "만원");
 	    prompt1.append("이야. 키워드는 ");
 	    prompt1.append(thema);
-	    prompt1.append("이고 ");  // 수정예정
+	    prompt1.append("이고 ");
 	    prompt1.append(departureMonth);
 	    prompt1.append("에 방문하기 좋은 장소로 추천해줬으면 좋겠어. 설명 없이 명칭만 알려줘. 위의 내용을 json 형식으로 부탁해. 예시를 보여줄게.");
 	    prompt1.append("[{" +
@@ -210,7 +210,7 @@ public class TravelController {
 	    StringBuilder prompt1 = new StringBuilder();
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 여행 일정을 추천해줘. 총 인원은 ");  // 20개씩
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 여행 일정을 추천해줘. 총 인원은 ");
 	    prompt1.append(peopleCount);
 	    prompt1.append("명이고 여행 기간은 ");
 	    prompt1.append(duration);
@@ -245,16 +245,23 @@ public class TravelController {
 	    System.out.println(prompt1);
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray4(openAIResult1);
-		
+	    System.out.println(openAIResult1);
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
+		model.addAttribute("destination", destination);
 		
 		return "WEB-INF/travel/travelModify";
 	}
 
 	@RequestMapping(value = "/travelDetails.do")
-	public String travelDetails() {
+	public String travelDetails(
+			@RequestParam("calendarData") String calendarData,
+			@RequestParam("sights") String sights,
+			@RequestParam("restaurants") String restaurants,
+			@RequestParam("destination") String destination,
+			Model model) {
 		logger.info("travelDetails 들어옴");
-		
+
+		logger.info("calendarData:" + calendarData);
 //		//占쏙옙占쏙옙 占쏙옙占쏙옙
 //		sessionStorage.setItem("key", value);
 //
@@ -266,6 +273,8 @@ public class TravelController {
 //
 //		//占쏙옙占쏙옙 占쏙옙체 占쏙옙占쏙옙
 //		sessionStorage.clear();		
+
+		model.addAttribute("destination", destination);
 		
 		return "WEB-INF/travel/travelDetails";
 	}

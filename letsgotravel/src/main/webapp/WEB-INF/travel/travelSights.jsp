@@ -29,7 +29,8 @@
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                 </ul>
             
-                <h3 class="main-title center mb-70">🤔 "${requestScope.destination}"에서 방문할 장소를 선택해주세요.</h3>
+                <h3 class="main-title center mb-10">🤔 "${requestScope.destination}"에서 방문할 장소를 선택해주세요.</h3>
+                <p class="center mb-70">(주어진 기간 내에 너무 많은 장소를 선택할 경우, 조건에 맞춰 가성비가 가장 뛰어난 일정으로 제공합니다.)</p>
 
             	<form name="frm">
 	               <div class="flex">
@@ -49,7 +50,7 @@
 	                           <div class="btn-box flex">
 	                               <label class="btn btn2 green" for="sights" onClick="btnClick(this);">관광지</label> <label class="btn btn2" for="restaurants" onClick="btnClick(this);">음식점</label>
 	                           </div>
-	                           <button class="btn blue">추가</button>
+	                           <!-- <button class="btn blue">추가</button> -->
 	                       </div>
 						
 					 	   <input type="radio" name="sights-radio" id="sights" class="none" checked>
