@@ -709,3 +709,7 @@ margin-right:50px;
         width: 231.77px;
         height: auto;
       }
+      
+      input[type="password"] { 
+	    font-family:"Gothic"; 
+	  }

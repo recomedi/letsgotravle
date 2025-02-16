@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/MyPage.css">
      <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script>
-$(document).ready(function() {
+<%-- $(document).ready(function() {
     $(".update").click(function() {
         let currentPassword = $("#currentPassword").val();
         let newPassword = $("#newPassword").val();
@@ -25,8 +25,13 @@ $(document).ready(function() {
         let nickname = $("#nickname").val();
         let phone = $("#phone").val();
         let email = $("#email").val();
-
-        if (currentPassword === "") {
+        
+        if (nickname === "" && phone === "" && email === "" && newPassword === "") {
+            alert("변경할 정보가 없습니다.");
+            return;
+        }
+        
+        if (newPassword !== "" && currentPassword === "") {
             alert("현재 비밀번호를 입력해주세요.");
             $("#currentPassword").focus();
             return;
@@ -39,33 +44,137 @@ $(document).ready(function() {
             return;
         }
 
-        $.ajax({
+        let updateUserInfo = {
+            nickname: nickname,
+            phone: phone,
+            email: email,
+            currentPassword: currentPassword
+        };
+
+        let updatePasswordInfo = {
+            currentPassword: currentPassword,
+            newPassword: newPassword
+        };
+        
+
+         $.ajax({
             type: "POST",
             url: "<%=request.getContextPath()%>/member/updateProfile.do",
             dataType: "json",
-            data: {
-                currentPassword: currentPassword,
-                newPassword: newPassword,
-                nickname: nickname,
-                phone: phone,
-                email: email
-            },
+            data: updateUserInfo,
             success: function(result) {
-                console.log("서버 응답:", result);
-                if (result.success) {
-                    alert("회원 정보가 수정되었습니다.");
-                    location.reload();
-                } else {
+                if (!result.success) {
                     alert(result.message);
                 }
             },
-            error: function(xhr) {
-                console.error("오류 발생:", xhr.responseText);
-                alert("회원 정보 변경 중 오류가 발생했습니다.");
-            }
         });
+
+         if (newPassword !== "") {
+             $.ajax({
+                 type: "POST",
+                 url: "<%=request.getContextPath()%>/member/changePassword.do",
+                 dataType: "json",
+                 data: updatePasswordInfo,
+                 success: function(result) {
+                 //console.log("비밀번호 변경 응답:", result);
+            if (result.success) {
+                         alert("비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+                         window.location.href = "<%=request.getContextPath()%>/member/memberLogin.do"; // 로그인 페이지 이동
+                     } else {
+                         alert(result.message);
+                     }
+                 },
+            }); 
+        } else {
+            alert("회원 정보가 수정되었습니다.");
+             location.reload(); 
+        }
+    });
+});  --%>
+$(document).ready(function() {
+    $(".update").click(function() {
+        let currentPassword = $("#currentPassword").val();
+        let newPassword = $("#newPassword").val();
+        let confirmPassword = $("#confirmPassword").val();
+        let nickname = $("#nickname").val();
+        let phone = $("#phone").val();
+        let email = $("#email").val();
+
+        if (nickname === "" && phone === "" && email === "" && newPassword === "") {
+            alert("변경할 정보가 없습니다.");
+            return;
+        }
+
+        if (newPassword !== "" && currentPassword === "") {
+            alert("현재 비밀번호를 입력해주세요.");
+            $("#currentPassword").focus();
+            return;
+        }
+
+        if (newPassword !== "" && newPassword !== confirmPassword) {
+            alert("비밀번호가 일치하지 않습니다.");
+            $("#confirmPassword").val("");
+            $("#confirmPassword").focus();
+            return;
+        }
+
+        let updateUserInfo = {
+            nickname: nickname,
+            phone: phone,
+            email: email,
+            currentPassword: currentPassword
+        };
+
+        let updatePasswordInfo = {
+            currentPassword: currentPassword,
+            newPassword: newPassword
+        };
+
+        let hasProfileUpdate = nickname !== "" || phone !== "" || email !== "";
+        let hasPasswordChange = newPassword !== "";
+
+        if (hasProfileUpdate) {
+            $.ajax({
+                type: "POST",
+                url: "<%=request.getContextPath()%>/member/updateProfile.do",
+                dataType: "json",
+                data: updateUserInfo,
+                success: function(result) {
+                    if (!result.success) {
+                        alert(result.message);
+                    } else {
+                        alert("회원 정보가 수정되었습니다.");
+                        location.reload();
+                    }
+                },
+                error: function () {
+                    alert("회원 정보 변경 중 오류가 발생했습니다.");
+                }
+            });
+        }
+
+        if (hasPasswordChange) {
+            $.ajax({
+                type: "POST",
+                url: "<%=request.getContextPath()%>/member/changePassword.do",
+                dataType: "json",
+                data: updatePasswordInfo,
+                success: function(result) {
+                    if (result.success) {
+                        alert("비밀번호가 변경되었습니다. 다시 로그인해주세요.");
+                        window.location.href = "<%=request.getContextPath()%>/member/memberLogin.do";
+                    } else {
+                        alert(result.message);
+                    }
+                },
+                error: function () {
+                    alert("비밀번호 변경 중 오류가 발생했습니다.");
+                }
+            });
+        }
     });
 });
+
 
 $(document).ready(function() {
     $(".delete").click(function() {
@@ -139,9 +248,9 @@ $(document).ready(function(){
             <h2>회원 정보 변경</h2>
         <div class="password-change">
             <label>비밀번호 변경</label>
-            <input type="password" id="newPassword" placeholder="비밀번호를 입력해주세요">
+            <input type="password" id="newPassword" name="newPassword" placeholder="비밀번호를 입력해주세요">
             <label>비밀번호 확인</label>
-            <input type="password" id="confirmPassword" placeholder="비밀번호를 다시한번 입력해주세요">
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시한번 입력해주세요">
         </div>
         <div class="profile-modify">
             <label for="nickname">닉네임 변경</label>
@@ -154,7 +263,7 @@ $(document).ready(function(){
             <label>이메일 변경</label>
             <input type="email" id="email" name="email" placeholder="<%= email %>">
             <label>현재 비밀번호</label>
-            <input type="password" id="currentPassword" placeholder="회원 정보를 변경 하려면 현재 비밀번호를 입력해주세요">
+            <input type="password" id="currentPassword" name="currentPassword" placeholder="회원 정보를 변경 하려면 현재 비밀번호를 입력해주세요">
         </div>
         </div>
         <div class="buttons">

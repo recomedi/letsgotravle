@@ -16,7 +16,7 @@ public class HomeController {
 	@RequestMapping(value = "/main.do")
 	public String mainPage(Model model) {
 		
-		logger.info("main����");
+		logger.info("main들어옴");
 		
 		
 		// CodefToken ����

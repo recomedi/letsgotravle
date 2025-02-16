@@ -95,6 +95,44 @@
 	        alert("전송오류");
 	    }
 	}
+  
+  $(document).ready(function () {
+	    $(".find-password-btn").click(function (e) {
+	        e.preventDefault();
+	        let id = $("#id").val();
+	        let tempPassword = $("#auth-code").val(); // 인증번호 입력칸 = 임시 비밀번호
+	        if (id === "") {
+	            alert("아이디를 입력해주세요.");
+	            return;
+	        }
+
+	        if (tempPassword === "") {
+	            alert("이메일로 받은 임시 비밀번호를 입력해주세요.");
+	            return;
+	        }
+
+	        $.ajax({
+	            type: "POST",
+	            url: "<%=request.getContextPath()%>/member/tempLoginAction.do",
+	            data: { id: id, password: tempPassword },  // 로그인 액션 호출
+	            dataType: "json",
+	            success: function (response) {
+	                console.log("로그인 응답:", response);
+	                if (response.success) {
+	                    alert("임시 로그인 성공! 메인 페이지로 이동합니다.");
+	                    window.location.href = "<%=request.getContextPath()%>" + response.redirectUrl; // 메인 페이지 이동
+	                } else {
+	                    alert(response.message); // "임시 비밀번호가 일치하지 않습니다."
+	                }
+	            },
+	            error: function (xhr) {
+	                console.error("로그인 오류:", xhr.responseText);
+	                alert("로그인 중 오류가 발생했습니다.");
+	            }
+	        });
+	    });
+  });
+
   </script>
   <body>
    <%@ include file="/WEB-INF/header1.jsp" %>
@@ -167,7 +205,7 @@
               <div class="form-group">
                 <label for="auth-code">인증번호</label>
                 <input
-                  type="text"
+                  type="password"
                   id="auth-code"
                   placeholder="인증번호를 입력해주세요"
                 />
@@ -177,7 +215,7 @@
               <button type="submit" class="find-password-btn">
                 비밀번호 찾기
               </button>
-              <button type="button" class="cancel-btn">취소</button>
+              <button type="button" class="cancel-btn" onclick="history.back();">취소</button>
             </div>
           </form>
         </section>

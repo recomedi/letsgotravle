@@ -23,13 +23,31 @@
 		
 	<!-- mybatis 관련 설정 -->
 	<!-- 설정값을 한개의 파일에서 관리한다 --> 	
-	<context:property-placeholder location="classpath:properties/db.properties"/>  <!-- 설정값을 한개의 파일에서 관리한다 -->
- 	
+	<context:property-placeholder location="classpath:properties/db.properties, classpath:properties/mail.properties"/>
+  <!-- 설정값을 한개의 파일에서 관리한다 -->
  	<bean id="db" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${db.driver}" />  <!-- <property name="driverClassName" value="${db.driver}"></property> 와 같다 -->
 		<property name="url" value="${db.url}" />
 		<property name="username" value="${db.username}" />
 		<property name="password" value="${db.password}" />
+	</bean>
+		
+ 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	    <property name="host" value="smtp.gmail.com"/>
+	    <property name="port" value="587"/>
+	    <property name="username" value="${mail.username}"/>
+	    <property name="password" value="${mail.password}"/>
+	    <property name="javaMailProperties">
+	        <props>
+	            <prop key="mail.smtp.auth">true</prop>
+	            <prop key="mail.smtp.starttls.enable">true</prop>
+	            <prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+	            <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+	            <prop key="mail.smtp.ssl.checkserveridentity">true</prop>
+	            <prop key="mail.smtp.timeout">5000</prop>
+	            <prop key="mail.smtp.connectiontimeout">5000</prop>
+	        </props>
+	    </property>
 	</bean>
 		
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

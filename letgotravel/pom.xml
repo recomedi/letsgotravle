@@ -91,8 +91,34 @@
     		<version>20240205</version>
 		</dependency>
 
-		
-		
+		<!-- 메일 관련 api -->    
+	  <!-- Spring Mail Support -->
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-context-support</artifactId>
+	        <version>5.3.23</version>
+	    </dependency>
+	
+	    <!-- Java Mail API -->
+	    <dependency>
+	        <groupId>javax.mail</groupId>
+	        <artifactId>javax.mail-api</artifactId>
+	        <version>1.6.2</version>
+	    </dependency>
+	
+	    <!-- Activation Framework (필요한 경우) -->
+	    <dependency>
+	        <groupId>com.sun.activation</groupId>
+	        <artifactId>javax.activation</artifactId>
+	        <version>1.2.0</version>
+	    </dependency>
+	
+	    <!-- Jakarta Mail (Java EE 9 이상을 사용하는 경우 필요) -->
+	    <dependency>
+	        <groupId>com.sun.mail</groupId>
+	        <artifactId>jakarta.mail</artifactId>
+	        <version>1.6.7</version>
+	    </dependency>
 		
 
 		<!-- @Inject -->
