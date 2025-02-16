@@ -80,6 +80,8 @@
    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
    <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+   
+   <%@ include file="/WEB-INF/loadingImage.jsp" %>     
    <!-- 풋터 -->
    <%@ include file="/WEB-INF/footer.jsp" %>
    <script>

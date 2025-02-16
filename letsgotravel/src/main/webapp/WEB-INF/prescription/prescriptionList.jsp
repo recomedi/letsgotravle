@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
@@ -574,18 +576,19 @@ margin-right:50px;
           </tr>
         </thead>
 		     <tbody>
-				   <c:forEach var="prescription" items="${prescriptions}" varStatus="status">
-					    <tr onclick="window.location.href='${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}'">
-					        <td>${status.index + 1}</td>
-					        <td>
-					            <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}">
-					                ${prescription.resMenufactureDate}
-					            </a>
-					        </td>
-					        <td>${prescription.resPrescribeOrg}</td>
-					        <td>${prescription.commBrandName}</td>
-					    </tr>
-					</c:forEach>
+				 <c:forEach var="prescription" items="${prescriptions}" varStatus="status">
+				    <tr onclick="window.location.href='${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}'">
+				        <td>${fn:length(prescriptions) - status.index}</td> <!-- 내림차순 번호 -->
+				        <td>
+				            <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}">
+				                ${prescription.resMenufactureDate}
+				            </a>
+				        </td>
+				        <td>${prescription.resPrescribeOrg}</td>
+				        <td>${prescription.commBrandName}</td>
+				    </tr>
+				</c:forEach>
+
 				
 				        <!-- 데이터가 없는 경우 -->
 				        <c:if test="${empty prescriptions}">
