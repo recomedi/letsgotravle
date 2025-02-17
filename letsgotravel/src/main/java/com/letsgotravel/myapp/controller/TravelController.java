@@ -191,8 +191,8 @@ public class TravelController {
 	@RequestMapping(value = "/travelModify.do")
 	public String travelModify(
 			TravelConditionsVo tv, 
-			@RequestParam("sights") String sights, 
-			@RequestParam("restaurants") String restaurants, 
+			@RequestParam(value = "sights", required = false) String sights, 
+			@RequestParam(value = "restaurants", required = false) String restaurants, 
 			Model model) throws Exception {
 		
 		logger.info("travelModify 들어옴");
@@ -254,10 +254,10 @@ public class TravelController {
 
 	@RequestMapping(value = "/travelDetails.do")
 	public String travelDetails(
-			@RequestParam("calendarData") String calendarData,
-			@RequestParam("sights") String sights,
-			@RequestParam("restaurants") String restaurants,
-			@RequestParam("destination") String destination,
+			@RequestParam(value = "calendarData", required = false) String calendarData,
+			@RequestParam(value = "sights", required = false) String sights,
+			@RequestParam(value = "restaurants", required = false) String restaurants,
+			@RequestParam(value = "destination", required = false) String destination,
 			Model model) {
 		logger.info("travelDetails 들어옴");
 
