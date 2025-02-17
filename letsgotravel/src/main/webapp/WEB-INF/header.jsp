@@ -25,7 +25,7 @@
                 <li><span>|</span></li>
                 <li><a href="${pageContext.request.contextPath}/travel/travelConditions.do">여행 일정 짜기</a></li>
                 <li><span>|</span></li>
-                <li><a href="${pageContext.request.contextPath}/prescription/prescrtionList.do">처방전</a></li>
+                <li><a href="${pageContext.request.contextPath}/prescription/prescriptionList.do">처방전</a></li>
                 <li><span>|</span></li>
                 <li><a href="${pageContext.request.contextPath}/scrap/scrapList.do">스크랩</a></li>
              </c:when>

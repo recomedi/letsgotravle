@@ -29,6 +29,7 @@
       <div class="map-container">
         <!-- 하드코딩된 지도 이미지 -->
         <img src="${pageContext.request.contextPath}/resources/images/image 187.png" alt="지도 이미지">
+        </div>
         <div class="dropdown">
             <button class="dropdown-btn">1일차 ∨</button>
             <ul class="dropdown-menu">
