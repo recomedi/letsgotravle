@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import javax.servlet.http.HttpSession; // 🔹 세션을 사용하기 위해 추가
 import com.letsgotravel.myapp.domain.Criteria;
 import com.letsgotravel.myapp.domain.PageMaker;
@@ -14,7 +16,7 @@ import org.slf4j.Logger;
 @Controller
 @RequestMapping(value = "/scrap")
 public class ScrapController {
-
+		
     private static final Logger logger = LoggerFactory.getLogger(ScrapController.class);
 
     @Autowired
@@ -44,4 +46,29 @@ public class ScrapController {
 
         return "WEB-INF/scrap/scrapList";
     }
+    
+	@RequestMapping(value = "scrapWriteAction.do", method = RequestMethod.POST)
+	public String scrapWriteAction() {
+		logger.info("scrapWriteAction들어옴");
+
+		//int value = scrapService.scrapInsert(sv);	    
+//
+//		String path = "";
+//		if (value == 1) {
+//			path = "redirect:/";
+//		} else if (value == 0) {
+//			path = "redirect:/member/memberSignup.do";
+//		}
+		
+		return "WEB-INF/scrap/scrapList";
+	}
+
+	@RequestMapping(value = "scrapList.do")
+	public String scrapList() {
+		logger.info("scrapList들어옴");
+
+		return "WEB-INF/scrap/scrapList";
+	}
+	
+	
 }
