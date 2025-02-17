@@ -1,10 +1,12 @@
 package com.letsgotravel.myapp.service;
 
-import com.letsgotravel.myapp.domain.MemberVo;
+import java.util.List;
+import com.letsgotravel.myapp.domain.Criteria;
+import com.letsgotravel.myapp.domain.ScrapVo;
 
 public interface ScrapService {
-	public int memberInsert(MemberVo mv);
-	public int idCheck(String id);
-	public int nicknameCheck(String nickname);
-	public MemberVo LoginCheck(String id);
+    
+    List<ScrapVo> getScrapList(int midx, Criteria cri);
+    int scrapTotalCount(int midx);
+    ScrapVo scrapSelectOne(int sidx);
 }

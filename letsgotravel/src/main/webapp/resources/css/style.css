@@ -85,17 +85,19 @@ body, html, .wrap { height: 100%; }
 #travel-conditions input, #travel-conditions .badge-label { width: 142px; font-size: 20px; }
 #travel-conditions .badge-label { text-align: center; cursor: pointer; line-height: 25px; }
 
-#travel-conditions input[type="radio"]:checked + .badge-label,
-#travel-conditions .duplication input[type="checkbox"]:nth-of-type(1):checked + .badge-label { 
+#travel-conditions input[type="radio"]:checked + .badge-label { 
     background: #C3DDFD; color: #1C64F2; border-color: #1C64F2; }
-#travel-conditions .duplication input[type="checkbox"]:nth-of-type(2):checked + .badge-label { 
+    
+#travel-conditions .duplication input[type="checkbox"]:nth-of-type(1):checked + .badge-label { 
     background: #FBD5D5; color: #E02424; border-color: #E02424; }
-#travel-conditions .duplication input[type="checkbox"]:nth-of-type(3):checked + .badge-label {
+#travel-conditions .duplication input[type="checkbox"]:nth-of-type(2):checked + .badge-label {
      background: #FCD9BD; color: #D03801; border-color: #D03801; }
-#travel-conditions .duplication input[type="checkbox"]:nth-of-type(4):checked + .badge-label { 
+#travel-conditions .duplication input[type="checkbox"]:nth-of-type(3):checked + .badge-label { 
     background: #FCE96A; color: #9F580A; border-color: #9F580A; }
-#travel-conditions .duplication input[type="checkbox"]:nth-of-type(5):checked + .badge-label { 
+#travel-conditions .duplication input[type="checkbox"]:nth-of-type(4):checked + .badge-label { 
     background: #BCF0DA; color: #057A55; border-color: #057A55; }
+#travel-conditions .duplication input[type="checkbox"]:nth-of-type(5):checked + .badge-label { 
+    background: #C3DDFD; color: #1C64F2; border-color: #1C64F2; }
 #travel-conditions .duplication input[type="checkbox"]:nth-of-type(6):checked + .badge-label { 
     background: #CDDBFE; color: #5850EC; border-color: #5850EC; }
 #travel-conditions .duplication input[type="checkbox"]:nth-of-type(7):checked + .badge-label {
