@@ -35,15 +35,13 @@
 		            return;
 		        }
 
-		        console.log("🔍 검색어 (프론트엔드):", query); // ✅ 프론트에서 검색어 확인
-
 		        $.ajax({
-		            url: "/travel/naverImageTest/search",
+		            url: "/myapp/naverImageTest/search",
 		            type: "GET",
-		            data: { query: query }, 
+		            data: { query: query },  // ✅ 추가 인코딩 없이 그대로 전달
 		            dataType: "json",
 		            success: function(response) {
-		                console.log("✅ 서버 응답:", response); 
+		                console.log("✅ 서버 응답:", response);
 		                displayImages(response);
 		            },
 		            error: function(xhr, status, error) {
@@ -52,21 +50,24 @@
 		        });
 		    }
 
+
+
 			    
-			    function displayImages(response) {
-			        let imageContainer = $("#imageResults");
-			        imageContainer.empty();  // 기존 이미지 제거
+		    function displayImages(response) {
+		        let imageContainer = $("#imageResults");
+		        imageContainer.empty();  // 기존 이미지 제거
 
-			        if (!response.items || response.items.length === 0) {
-			            imageContainer.html("<p>이미지를 찾을 수 없습니다.</p>");
-			            return;
-			        }
+		        if (!response.items || response.items.length === 0) {
+		            imageContainer.html("<p>이미지를 찾을 수 없습니다.</p>");
+		            return;
+		        }
 
-			        response.items.forEach(item => {
-			            let img = $("<img>").attr("src", item.thumbnail).attr("alt", item.title);
-			            imageContainer.append(img);
-			        });
-			    }
+		        response.items.forEach(item => {
+		            let imgUrl = item.thumbnail && item.thumbnail.startsWith("http") ? item.thumbnail : item.link;
+		            let img = $("<img>").attr("src", imgUrl).attr("alt", item.title);
+		            imageContainer.append(img);
+		        });
+		    }
 			    
 			    
 		    </script>

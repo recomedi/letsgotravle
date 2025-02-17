@@ -34,16 +34,33 @@ public class NaverImageController {
     @GetMapping(value = "/search", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public String searchImages(@RequestParam("query") String query) {
-        try {
-            // ✅ URL 디코딩 적용 (띄어쓰기 복구)
-            String decodedQuery = URLDecoder.decode(query, StandardCharsets.UTF_8);
-            logger.info("🟢 컨트롤러에서 받은 검색어 (디코딩 적용): {}", decodedQuery); // ✅ 디코딩 확인
+    	  try {
+    	        logger.info("🟢 컨트롤러에서 받은 검색어 (디코딩 전): {}", query);
 
-            return naverImageSearchService.searchImages(decodedQuery);
-        } catch (Exception e) {
-            logger.error("❌ 이미지 검색 실패", e);
-            return "{\"error\":\"이미지 검색 중 오류가 발생했습니다.\"}";
-        }
-    }
+    	        // ✅ JSON 형태의 문자열이 query에 들어가는지 확인
+    	        if (query.startsWith("{") && query.endsWith("}")) {
+    	            logger.error("❌ 잘못된 query 값 (JSON 데이터 포함됨): {}", query);
+    	            return "{\"error\":\"잘못된 검색어 형식입니다.\"}";
+    	        }
+
+    	        // ✅ 한 번만 디코딩 (이중 인코딩 방지)
+    	        String decodedQuery = URLDecoder.decode(query, StandardCharsets.UTF_8);
+    	        logger.info("🟢 컨트롤러에서 받은 검색어 (디코딩 적용): {}", decodedQuery);
+
+    	        // ✅ 한글 포함 여부 확인
+    	        if (!decodedQuery.matches(".*[가-힣]+.*")) {
+    	            logger.warn("⚠️ 한글이 포함되지 않음. query: {}", decodedQuery);
+    	        }
+
+    	        // ✅ 네이버 API 호출
+    	        String result = naverImageSearchService.searchImages(decodedQuery);
+    	        logger.info("🟢 네이버 API 결과: {}", result);
+
+    	        return result;
+    	    } catch (Exception e) {
+    	        logger.error("❌ 이미지 검색 실패", e);
+    	        return "{\"error\":\"이미지 검색 중 오류가 발생했습니다.\"}";
+    	    }
+    	}
 
 }
