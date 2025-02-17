@@ -53,5 +53,4 @@
     <update id="tempPassword" parameterType="mv">
         UPDATE MEMBER SET password = #{password} WHERE id = #{id}
     </update>
-	    
 </mapper>

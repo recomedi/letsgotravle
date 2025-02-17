@@ -120,8 +120,9 @@
     </div>
 </section>
 <section class="button-section">
-    <a href="${pageContext.request.contextPath}/travel/travelConditions.do" class="button-transparent">여행조건 입력</button>
+    <a href="${pageContext.request.contextPath}/travel/travelConditions.do" class="button-transparent">여행조건 입력</a>
     <a href="${pageContext.request.contextPath}/travel/travelInput.do" class="button-solid">여행지 입력</a>
+     <a href="${pageContext.request.contextPath}/naverImageTest/naverImageTest.do" class="button-solid">naver image test</a>
   </section>
   </div>
 

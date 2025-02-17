@@ -212,9 +212,9 @@
             font-size: 18px;
         }
         
-		input[type="password"] { 
-			font-family:"Gothic"; 
-		}
+        input[type="password"] { 
+          font-family:"Gothic"; 
+        }
 
         .password-change{
             margin-bottom: 20px;
