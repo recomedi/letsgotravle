@@ -1,5 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.Properties, java.io.InputStream, java.io.IOException" %>
+<%
+    Properties properties = new Properties();
+    try {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream input = classLoader.getResourceAsStream("properties/googleMap.properties");
+        if (input != null) {
+            properties.load(input);
+            input.close();
+        } else {
+            throw new IOException("googleMap.properties 파일을 찾을 수 없습니다.");
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    String googleMapsApiKey = properties.getProperty("google.maps.api.key");
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,7 +25,7 @@
     <title>관광지와 음식점을 선택해주세요.</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places&callback=initMap" async defer"></script>
     <!-- 폰트어썸 불러오기 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
@@ -77,7 +94,7 @@
 	                   <div class="col info">
 	                       <div class="flex mb-20 justify-content-between">
 	                           <img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관">
-	                           <img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도">
+	                           <div id="map" style="width:350px; height:300px;"></div>
 	                       </div>
 	                       <p class="text"></p>
 	                   </div>
