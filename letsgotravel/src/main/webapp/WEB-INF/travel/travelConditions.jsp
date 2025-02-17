@@ -199,7 +199,7 @@
 			fm.budgetMax.focus();
 			fm.budgetMax.value = "";
 			return;			
-		} else if (fm.budgetMin.value > fm.budgetMax.value) {
+		} else if (parseInt(fm.budgetMin.value) > parseInt(fm.budgetMax.value)) {
 			alert("최대예산은 최소예산보다 적을 수 없습니다");
 			fm.budgetMax.focus();
 			fm.budgetMax.value = "";
