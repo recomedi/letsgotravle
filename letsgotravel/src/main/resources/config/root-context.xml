@@ -21,7 +21,6 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 
 	<!-- ✅ DB 설정 (properties 파일에서 로드) -->
-	<context:property-placeholder location="classpath:properties/db.properties"/>
 	<context:property-placeholder location="classpath:properties/db.properties, classpath:properties/mail.properties"/>
 
 	<!-- ✅ DataSource 정의 (ID: dataSource) -->
@@ -48,7 +47,7 @@
 	            <prop key="mail.smtp.connectiontimeout">5000</prop>
 	        </props>
 	    </property>
-	</bean
+	</bean>
 
 	<!-- ✅ JdbcTemplate 정의 (dataSource 참조) -->
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
