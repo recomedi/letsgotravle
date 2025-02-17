@@ -1,4 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+	<script>
+	window.onpageshow = function (event){     //뒤로가기로 페이지 접근했는지 확인
+	    if(event.persisted || (window.performance && window.performance.navigation.type == 2) || (window.performance.getEntriesByType("navigation")[0].type == "back_forward")){
+
+			document.getElementById('loading').style.display = 'none';
+	        
+	    }
+	}
+	</script>
 	<div id="loading">
 		<div>
 			<svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"

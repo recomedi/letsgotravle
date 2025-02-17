@@ -21,7 +21,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 
 	<!-- ✅ DB 설정 (properties 파일에서 로드) -->
-	<context:property-placeholder location="classpath:properties/db.properties"/>
+	<context:property-placeholder location="classpath:properties/db.properties, classpath:properties/mail.properties"/>
 
 	<!-- ✅ DataSource 정의 (ID: dataSource) -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -29,6 +29,24 @@
 		<property name="url" value="${db.url}" />
 		<property name="username" value="${db.username}" />
 		<property name="password" value="${db.password}" />
+	</bean>
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	    <property name="host" value="smtp.gmail.com"/>
+	    <property name="port" value="587"/>
+	    <property name="username" value="${mail.username}"/>
+	    <property name="password" value="${mail.password}"/>
+	    <property name="javaMailProperties">
+	        <props>
+	            <prop key="mail.smtp.auth">true</prop>
+	            <prop key="mail.smtp.starttls.enable">true</prop>
+	            <prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+	            <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+	            <prop key="mail.smtp.ssl.checkserveridentity">true</prop>
+	            <prop key="mail.smtp.timeout">5000</prop>
+	            <prop key="mail.smtp.connectiontimeout">5000</prop>
+	        </props>
+	    </property>
 	</bean>
 
 	<!-- ✅ JdbcTemplate 정의 (dataSource 참조) -->

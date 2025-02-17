@@ -122,23 +122,6 @@
 <section class="button-section">
     <a href="${pageContext.request.contextPath}/travel/travelConditions.do" class="button-transparent">여행조건 입력</button>
     <a href="${pageContext.request.contextPath}/travel/travelInput.do" class="button-solid">여행지 입력</a>
-    <a href="${pageContext.request.contextPath}/travel/travelSelect.do">도시선택</a>
-    <a href="${pageContext.request.contextPath}/travel/travelSights.do">장소선택</a>
-    <a href="${pageContext.request.contextPath}/travel/travelModify.do">일정수정</a>
-    <a href="${pageContext.request.contextPath}/travel/travelDetails.do">일정상세</a>
-    
-    <a href="${pageContext.request.contextPath}/scrap/scrapList.do">스크랩목록</a>
-    <a href="${pageContext.request.contextPath}/prescription/prescriptionList.do">처방전목록</a>
-    <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do">처방전상세</a>
-    <a href="${pageContext.request.contextPath}/member/memberFind.do">아이디/비밀번호찾기</a>
-    <a href="${pageContext.request.contextPath}/prescription/certification.do">본인인증</a>
-    <a href="${pageContext.request.contextPath}/travel/openAiTest.do">테스트페이지</a>
-    
-    <a href="${pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
-    <a href="${pageContext.request.contextPath}/member/memberSignUp.do">회원가입</a>
-    <a href="${pageContext.request.contextPath}/member/memberMypage.do">마이페이지</a>
-    <a href="${pageContext.request.contextPath}/naverImageTest/naverImageTest.do">이미지 테스트</a>
-    <a href="${pageContext.request.contextPath}/member/Logout.do" style="color:#A39C9C;">로그아웃</a>
   </section>
   </div>
 

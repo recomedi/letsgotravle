@@ -189,7 +189,9 @@ System.out.println(jsonArray);
                 destinationMap.put("title", destination.getString("title"));
                 destinationMap.put("start", destination.getString("start"));
                 destinationMap.put("end", destination.getString("end"));
-                destinationMap.put("extendedProps", destination.getJSONArray("extendedProps").toList());
+                // extendedProps 안의 category 값 추가                
+                JSONObject extendedProps = destination.getJSONObject("extendedProps");
+                destinationMap.put("category", extendedProps.getString("category"));
 
                 // Map을 ArrayList에 추가
                 travelCityList.add(destinationMap);

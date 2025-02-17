@@ -1,8 +1,14 @@
 package com.letsgotravel.myapp.controller;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.letsgotravel.myapp.util.UserIp;
 
 @Controller
 @RequestMapping(value = "/scrap")
@@ -10,9 +16,37 @@ public class ScrapController {
 		
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ScrapController.class);
 	
-	@RequestMapping(value = "/scrapList.do")
-	public String scrapList() {
-		logger.info("scrapListµé¾î¿È");
+	@Autowired(required=false)
+	private UserIp userip;
+	
+//	@Autowired
+//	private ScrapService scrapService;
+
+//	@Autowired
+//	private ScrapVo sv;
+	
+	@RequestMapping(value = "scrapWriteAction.do", method = RequestMethod.POST)
+	public String scrapWriteAction() {
+		logger.info("scrapWriteActionë“¤ì–´ì˜´");
+
+		//int value = scrapService.scrapInsert(sv);	    
+//
+//		String path = "";
+//		if (value == 1) {
+//			path = "redirect:/";
+//		} else if (value == 0) {
+//			path = "redirect:/member/memberSignup.do";
+//		}
+		
 		return "WEB-INF/scrap/scrapList";
 	}
+
+	@RequestMapping(value = "scrapList.do")
+	public String scrapList() {
+		logger.info("scrapListë“¤ì–´ì˜´");
+
+		return "WEB-INF/scrap/scrapList";
+	}
+	
+	
 }

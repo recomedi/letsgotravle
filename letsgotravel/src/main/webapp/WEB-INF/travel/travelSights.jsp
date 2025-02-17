@@ -29,7 +29,8 @@
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                 </ul>
             
-                <h3 class="main-title center mb-70">🤔 "${requestScope.destination}"에서 방문할 장소를 선택해주세요.</h3>
+                <h3 class="main-title center mb-10">🤔 "${requestScope.destination}"에서 방문할 장소를 선택해주세요.</h3>
+                <p class="center mb-70">(주어진 기간 내에 너무 많은 장소를 선택할 경우, 조건에 맞춰 가성비가 가장 뛰어난 일정으로 제공합니다.)</p>
 
             	<form name="frm">
 	               <div class="flex">
@@ -49,7 +50,7 @@
 	                           <div class="btn-box flex">
 	                               <label class="btn btn2 green" for="sights" onClick="btnClick(this);">관광지</label> <label class="btn btn2" for="restaurants" onClick="btnClick(this);">음식점</label>
 	                           </div>
-	                           <button class="btn blue">추가</button>
+	                           <!-- <button class="btn blue">추가</button> -->
 	                       </div>
 						
 					 	   <input type="radio" name="sights-radio" id="sights" class="none" checked>
@@ -57,7 +58,7 @@
 	                			<c:forEach var="sight" items="     " varStatus="status">
 	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightCk" value="${sight}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
-	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray(index)[설명]}</textarea></button><br>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
@@ -66,7 +67,7 @@
 	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
 	                            <input type="checkbox" id="ck10${status.index+1}" class="none" name="restaurantCk" value="${restaurant}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label>
-	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray(index)[설명]}</textarea></button><br>
+	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
