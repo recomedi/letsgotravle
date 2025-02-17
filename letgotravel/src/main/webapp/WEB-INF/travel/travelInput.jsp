@@ -38,9 +38,9 @@
                 <h3 class="main-title center mb-70">🤔 여행지를 입력해주세요.</h3>
 				<form name="frm">
 	                <div class="mb-2 center">
-	                    <input type="text" id="searchbox" name="city" placeholder="여행지를 입력해주세요. (예: 미국/하와이)" class="w-200">     
+	                    <input type="text" id="searchbox" name="city" placeholder='여행지를 "나라/도시" 형식으로 입력해주세요. (예: 프랑스/파리)' class="w-200">
 	                </div>
-	              
+	
 	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
 	                    <button class="btn blue" type="button" onClick="goTravelConditions();">다음</button>
 	                    <button class="btn" type="button" onClick="history.back();">뒤로</button>
@@ -72,6 +72,7 @@
 		
     	// 유효성 검사하기
 		let fm = document.frm;
+		
 		if (fm.city.value == "") {
 			console.log("city :", city);
 			alert("여행지를 입력해주세요");
