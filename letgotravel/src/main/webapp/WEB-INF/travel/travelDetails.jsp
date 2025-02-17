@@ -26,13 +26,13 @@
     <!-- 지도 섹션 -->
     <section class="map-section">
       <h2 class="detailtitle">일본 도쿄</h2>
-      <button class="tag">상비약</button>
+      <!-- <button class="tag">상비약</button> -->
       <div class="map-container">
         <!-- 하드코딩된 지도 이미지 -->
         <img src="${pageContext.request.contextPath}/resources/images/image 187.png" alt="지도 이미지">
       </div>
       <div class="dropdown">
-        <button class="dropdown-btn">1일차 ∨</button>
+        <button class="dropdown-btn" type="button">1일차 ∨</button>
         <ul class="dropdown-menu">
           <li>2일차</li>
           <li>3일차</li>
@@ -48,7 +48,7 @@
         <div class="images">
           <img src="${pageContext.request.contextPath}/resources/images/harry1.png" alt="해리포터 스튜디오 외관">
           <img src="${pageContext.request.contextPath}/resources/images/harry2.png" alt="해리포터 성 내부">
-          <button class="direction-btn">길찾기</button>
+          <!-- <button class="direction-btn">길찾기</button> -->
         </div>
         <p>
             2023년 6월 오픈한 일본의 실내 테마파크이다. 
@@ -85,7 +85,7 @@
         <div class="images">
           <img src="${pageContext.request.contextPath}/resources/images/kyopao1.png" alt="교파오 외부">
           <img src="${pageContext.request.contextPath}/resources/images/kyopao2.png" alt="교파오 내부">
-          <button class="direction-btn">길찾기</button>
+          <!-- <button class="direction-btn">길찾기</button> -->
         </div>
         <p>
           우리 교파오는 롯폰기 지역에서 유명한 딤섬과 일본식 만두 요리를 즐길 수 있는 레스토랑입니다.
@@ -105,11 +105,11 @@
 		<button class="white-btn" type="button" onClick="history.back();">뒤로</button>
    	</c:when>
    	<c:otherwise>
-		<button class="blue-btn">수정</button>
-		<button class="white-btn">삭제</button>
-		<button class="white-btn">목록</button>
+		<a class="blue-btn" style="display: inline-block; box-sizing: border-box; text-align: center;" href="${pageContext.request.contextPath}/travel/travelModify.do">수정</a>
+		<a class="white-btn" style="display: inline-block; box-sizing: border-box; text-align: center; background: transparent;" onClick="alert('삭제되었습니다'); location.href = '${pageContext.request.contextPath}/scrap/scrapList.do';">삭제</a>
+		<a class="white-btn" style="background: transparent; display: inline-block; box-sizing: border-box; text-align: center;" href="${pageContext.request.contextPath}/scrap/scrapList.do">목록</a>
    	</c:otherwise>
-    </c:choose>    
+    </c:choose>
     </div>
     </form>
   </main>
@@ -127,12 +127,12 @@
 		
 		if (ans == true) {
 
-/* 			// sessionStorage에 저장
-		    sessionStorage.setItem('sights', findCheckedValue("sight"));
-		    sessionStorage.setItem('restaurants', findCheckedValue("restaurant"));
+ 			// sessionStorage에 저장
+/*		    sessionStorage.setItem('sights', findCheckedValue("sight"));
+		    sessionStorage.setItem('restaurants', findCheckedValue("restaurant"));*/
 		    
 			// sessionStorage에서 불러오기
-		    document.querySelector('#peopleCount').value = sessionStorage.getItem('peopleCount');
+/*		    document.querySelector('#peopleCount').value = sessionStorage.getItem('peopleCount');
 		    document.querySelector('#departureMonth').value = sessionStorage.getItem('departureMonth');
 		    document.querySelector('#groupType').value = sessionStorage.getItem('groupType');
 		    document.querySelector('#budgetMin').value = sessionStorage.getItem('budgetMin');
@@ -142,7 +142,21 @@
 		    document.querySelector('#thema').value = sessionStorage.getItem('thema');
 		            	   
 		    document.querySelector('#sightsInput').value = findCheckedValue("sight");
-		    document.querySelector('#restaurantsInput').value = findCheckedValue("restaurant"); */
+		    document.querySelector('#restaurantsInput').value = findCheckedValue("restaurant");*/
+		    
+			// sessionStorage 초기화
+			sessionStorage.removeItem("peopleCount");
+			sessionStorage.removeItem("departureMonth");
+			sessionStorage.removeItem("duration");
+			sessionStorage.removeItem("groupType");
+			sessionStorage.removeItem("budgetMin");
+			sessionStorage.removeItem("budgetMax");
+			sessionStorage.removeItem("thema");
+			sessionStorage.removeItem("destination");
+			sessionStorage.removeItem("sights");
+			sessionStorage.removeItem("restaurants");
+			sessionStorage.removeItem("schedule");
+			sessionStorage.removeItem("city");		    
 	        
 			fm.action="${pageContext.request.contextPath}/scrap/scrapWriteAction.do";
 			fm.method="post";

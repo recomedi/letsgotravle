@@ -509,7 +509,7 @@
 	      <tbody>
 	        <tr>
 	          <td>1</td>
-	          <td><a href="#">일본/도쿄</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">일본/도쿄</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -519,7 +519,7 @@
 	        </tr>
 	        <tr>
 	          <td>2</td>
-	          <td><a href="#">한국/경주</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">한국/경주</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -529,7 +529,7 @@
 	        </tr>
 	        <tr>
 	          <td>3</td>
-	          <td><a href="#">중국/상하이</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">중국/상하이</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -539,7 +539,7 @@
 	        </tr>
 	        <tr>
 	          <td>4</td>
-	          <td><a href="#">대만/타이베이</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">대만/타이베이</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -549,7 +549,7 @@
 	        </tr>
 	        <tr>
 	          <td>5</td>
-	          <td><a href="#">대만/타이베이</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">대만/타이베이</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -559,7 +559,7 @@
 	        </tr>
 	        <tr>
 	          <td>6</td>
-	          <td><a href="#">대만/타이베이</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">대만/타이베이</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -569,7 +569,7 @@
 	        </tr>
 	        <tr>
 	          <td>7</td>
-	          <td><a href="#">대만/타이베이</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">대만/타이베이</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -579,7 +579,7 @@
 	        </tr>
 	        <tr>
 	          <td>8</td>
-	          <td><a href="#">대만/타이베이</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">대만/타이베이</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
@@ -589,7 +589,7 @@
 	        </tr>
 	        <tr>
 	          <td>9</td>
-	          <td><a href="#">대만/타이베이</a></td>
+	          <td><a href="${pageContext.request.contextPath}/travel/travelDetails.do">대만/타이베이</a></td>
 	          <td>2025.02.03 ~ 2025.02.07</td>
 	          <td>4</td>
 	          <td>100만원~200만원</td>
