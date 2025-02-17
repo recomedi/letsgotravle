@@ -1,77 +1,77 @@
 package com.letsgotravel.myapp.domain;
 
 public class ScrapVo {
-		
-	public int pidx;
-	public int midx;
-	public String resMenufactureDate;
-	public String resPrescribeOrg;
-	public String resTelNo;
-	public String commBrandName;
-	public String commTelNo;
-	public String date;
-	public String ip;
-	public String delyn;
-	
-	public int getPidx() {
-		return pidx;
-	}
-	public void setPidx(int pidx) {
-		this.pidx = pidx;
-	}
-	public int getMidx() {
-		return midx;
-	}
-	public void setMidx(int midx) {
-		this.midx = midx;
-	}
-	public String getResMenufactureDate() {
-		return resMenufactureDate;
-	}
-	public void setResMenufactureDate(String resMenufactureDate) {
-		this.resMenufactureDate = resMenufactureDate;
-	}
-	public String getResPrescribeOrg() {
-		return resPrescribeOrg;
-	}
-	public void setResPrescribeOrg(String resPrescribeOrg) {
-		this.resPrescribeOrg = resPrescribeOrg;
-	}
-	public String getResTelNo() {
-		return resTelNo;
-	}
-	public void setResTelNo(String resTelNo) {
-		this.resTelNo = resTelNo;
-	}
-	public String getCommBrandName() {
-		return commBrandName;
-	}
-	public void setCommBrandName(String commBrandName) {
-		this.commBrandName = commBrandName;
-	}
-	public String getCommTelNo() {
-		return commTelNo;
-	}
-	public void setCommTelNo(String commTelNo) {
-		this.commTelNo = commTelNo;
-	}
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
-	public String getIp() {
-		return ip;
-	}
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
-	public String getDelyn() {
-		return delyn;
-	}
-	public void setDelyn(String delyn) {
-		this.delyn = delyn;
-	}
-	
+    
+    public int sidx;
+    public int tcidx;
+    public String destination;
+    public int duration;
+    public int peopleCount;
+    public String budget;
+    public String groupType;
+    public String thema;
+    public String date;
+
+    public int getSidx() {
+        return sidx;
+    }
+    public void setSidx(int sidx) {
+        this.sidx = sidx;
+    }
+
+    public int getTcidx() {
+        return tcidx;
+    }
+    public void setTcidx(int midx) {
+        this.tcidx = midx;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getPeopleCount() {
+        return peopleCount;
+    }
+    public void setPeopleCount(int peopleCount) {
+        this.peopleCount = peopleCount;
+    }
+
+    public String getBudget() {
+        return budget;
+    }
+    public void setBudget(String budget) {
+        this.budget = budget;
+    }
+
+    public String getGroupType() {
+        return groupType;
+    }
+    public void setGroupType(String groupType) {
+        this.groupType = groupType;
+    }
+
+    public String getThema() {
+        return thema;
+    }
+    public void setThema(String thema) {
+        this.thema = thema;
+    }
+
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
 }
