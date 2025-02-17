@@ -21,11 +21,18 @@
 	    </nav>
         
         <div class="inner travel" id="travel-conditions">
-            
             <section class="contents">
                 <ul class="step flex justify-content-between">
-                    <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
-                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                	<c:choose>
+                    	<c:when test="${not empty requestScope.city}">
+	                    	<li class="step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
+	                    	<li class="relative step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
+                    	</c:when>
+                    	<c:otherwise>
+		                    <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
+		                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                    	</c:otherwise>
+	                </c:choose>
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                 </ul>
@@ -33,6 +40,7 @@
                 <h3 class="main-title center mb-70">🤔 여행 조건을 입력해주세요.</h3>
 
             	<form name="frm">
+	            	<input type="hidden" name="destination">
 	                <div class="row flex justify-content-between mb-2">
 	                    <div class="col">
 	                        <label>
@@ -86,56 +94,63 @@
 	                    <div class="col">
 	                        <p class="title bold thema">🎮 테마(중복선택가능)</p>
 	                        <div class="duplication badge-label-box ml-3 mt-1 flex flex-wrap">
-	                            <input type="checkbox" name="thema" id="filial-piety" class="none" value="효도">
+	                            <input type="checkbox" name="themaInput" id="filial-piety" class="none" value="효도">
 	                            <label class="badge-label" for="filial-piety"> 효도</label>
-	                            <input type="checkbox" name="thema" id="healing" class="none" value="힐링">
+	                            <input type="checkbox" name="themaInput" id="healing" class="none" value="힐링">
 	                            <label class="badge-label" for="healing"> 힐링</label>
-	                            <input type="checkbox" name="thema" id="cost-effectiveness" class="none" value="가성비">
+	                            <input type="checkbox" name="themaInput" id="cost-effectiveness" class="none" value="가성비">
 	                            <label class="badge-label" for="cost-effectiveness"> 가성비</label>
-	                            <input type="checkbox" name="thema" id="staycation" class="none" value="호캉스">
+	                            <input type="checkbox" name="themaInput" id="staycation" class="none" value="호캉스">
 	                            <label class="badge-label" for="staycation"> 호캉스</label>
-	                            <input type="checkbox" name="thema" id="epicurism" class="none" value="식도락">
+	                            <input type="checkbox" name="themaInput" id="epicurism" class="none" value="식도락">
 	                            <label class="badge-label" for="epicurism"> 식도락</label>
-	                            <input type="checkbox" name="thema" id="shopping" class="none" value="쇼핑">
+	                            <input type="checkbox" name="themaInput" id="shopping" class="none" value="쇼핑">
 	                            <label class="badge-label" for="shopping"> 쇼핑</label>
-	                            <input type="checkbox" name="thema" id="historic-site" class="none" value="유적지">
+	                            <input type="checkbox" name="themaInput" id="historic-site" class="none" value="유적지">
 	                            <label class="badge-label" for="historic-site"> 유적지</label>
-	                            <input type="checkbox" name="thema" id="landscape" class="none" value="자연경관">
+	                            <input type="checkbox" name="themaInput" id="landscape" class="none" value="자연경관">
 	                            <label class="badge-label" for="landscape"> 자연경관</label>
-	                            <input type="checkbox" name="thema" id="activity" class="none" value="액티비티">
+	                            <input type="checkbox" name="themaInput" id="activity" class="none" value="액티비티">
 	                            <label class="badge-label" for="activity"> 액티비티</label>
+	                        	<input type="hidden" name="thema" id="thema" class="none" value="">
 	                        </div>
 	                    </div>
 	                </div>
 	
 	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
 	                    <button onClick="goTravelSelect();" class="btn blue next" type="button">다음</button>
-	                    <button class="btn">뒤로</button>
+	                    <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	                </div>
 	            </form>
             </section>
         </div>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
     
     <script>
-
+	
+	// sessionStorage 초기화
+	if(sessionStorage.getItem("thema") != null) {
+		sessionStorage.removeItem("peopleCount");
+		sessionStorage.removeItem("departureMonth");
+		sessionStorage.removeItem("duration");
+		sessionStorage.removeItem("groupType");
+		sessionStorage.removeItem("budgetMin");
+		sessionStorage.removeItem("budgetMax");
+		sessionStorage.removeItem("thema");
+		sessionStorage.removeItem("destination");
+		sessionStorage.removeItem("sights");
+		sessionStorage.removeItem("restaurants");
+		sessionStorage.removeItem("schedule");
+	}
+	
     function goTravelSelect() { 
 
 		// 선택된 목록 가져오기
-    	const checked = 'input[name="thema"]:checked';				  
+    	const checked = 'input[name="themaInput"]:checked';
 		const checkeds = document.querySelectorAll(checked);
 		
-		// 선택된 목록에서 value 찾기
-		let themaValue = function () {
-			let value = "";
-			checkeds.forEach((el) => {
-				value += el.value + ', ';
-			});
-			// 마지막 문자 자르기
-			return value.slice(0, -2);
-		}
-
 	    // 유효성 검사하기
 		let fm = document.frm;
 		const regExp = /^[0-9]+$/;
@@ -183,6 +198,11 @@
 			alert("최대예산은 숫자만 입력해주세요");
 			fm.budgetMax.focus();
 			fm.budgetMax.value = "";
+			return;			
+		} else if (fm.budgetMin.value > fm.budgetMax.value) {
+			alert("최대예산은 최소예산보다 적을 수 없습니다");
+			fm.budgetMax.focus();
+			fm.budgetMax.value = "";
 			return;
 		} else if (checkeds.length == 0) {
 			alert("테마를 선택해주세요");
@@ -191,7 +211,19 @@
 		}
 		
 		let ans = confirm("다음페이지로 이동합니다.");
+		
 		if (ans == true) {
+
+			// 선택된 목록에서 value 찾기
+			let themaValue = function () {
+				let value = "";
+				checkeds.forEach((el) => {
+					value += el.value + ', ';
+				});
+				
+				// 마지막 문자 자르기
+				return value.slice(0, -2);
+			}
 
 			// sessionStorage에 저장
 		    sessionStorage.setItem('peopleCount', fm.peopleCount.value);
@@ -200,11 +232,25 @@
 		    sessionStorage.setItem('groupType', fm.groupType.value);
 		    sessionStorage.setItem('budgetMin', fm.budgetMin.value);
 		    sessionStorage.setItem('budgetMax', fm.budgetMax.value);
-		    sessionStorage.setItem('thema', themaValue());		    
-		    
-			fm.action="${pageContext.request.contextPath}/travel/travelSelect.do";
+		    sessionStorage.setItem('thema', themaValue());
+		    document.querySelector('#thema').value = themaValue();
+
+        	<c:choose>
+        	<c:when test="${not empty requestScope.city}">
+				sessionStorage.setItem("destination", sessionStorage.getItem("city"));
+				fm.destination.value = sessionStorage.getItem("city");
+				fm.action="${pageContext.request.contextPath}/travel/travelSights.do";
+			</c:when>
+           	<c:otherwise>
+				fm.action="${pageContext.request.contextPath}/travel/travelSelect.do";
+			</c:otherwise>
+			</c:choose>
+			
 			fm.method="post";
 			fm.submit();
+			
+			document.getElementById('loading').style.display = 'block';
+			
 		}
 	  
 		return;

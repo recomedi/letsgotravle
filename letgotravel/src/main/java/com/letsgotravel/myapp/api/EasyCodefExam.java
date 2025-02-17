@@ -8,21 +8,21 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class EasyCodefExam {
 
     public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
-        // EasyCodef °´Ã¼ »ı¼º
+        // EasyCodef å ì™ì˜™ì²´ å ì™ì˜™å ì™ì˜™
         EasyCodef codef = new EasyCodef();
 
-        // µ¥¸ğ Å¬¶óÀÌ¾ğÆ® Á¤º¸ ¼³Á¤ (Codef¿¡¼­ Á¦°øÇÑ Client ID¿Í Secret »ç¿ë)
-        String demoClientId = "fbbcf915-2395-4dfe-9316-a5ce610fab1a";
-		String demoClientSecret = "2b152335-b63a-4596-bf34-5b44f79b41b0";
+        // å ì™ì˜™å ì™ì˜™ í´å ì™ì˜™å ì‹±ì–µì˜™íŠ¸ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ (Codefå ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ Client IDå ì™ì˜™ Secret å ì™ì˜™å ï¿½)
+        String demoClientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
+		String demoClientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
 		
-        // Å¬¶óÀÌ¾ğÆ® Á¤º¸ ¼³Á¤
+        // í´å ì™ì˜™å ì‹±ì–µì˜™íŠ¸ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™
         codef.setClientInfoForDemo(demoClientId, demoClientSecret);
 
-        // RSA ÆÛºí¸¯Å° ¼³Á¤ (Codef¿¡¼­ Á¦°øÇÑ Public Key »ç¿ë)
-        String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtphbcADV32+LTG5pki0L89WxekjcQpZNy4skAu5Ncxo4u2TKGe1+OM23zw02u8Huwfo62Y7xqc1GtFkoz/KK8J660y5K7xGRsEnptrmd4Uox3IqzJ8eIU4xCEoPLDrTK5CKbVFaoZhIxBEGwFvpNB3pA46khTc15f+FgXdHGZ7n0TWIZvZbJo+LPH4znxlcIUHqu9NCcGkkTljDXBOnGvbbCAS8X9AHKOg+pIo8jQiwDnokAfD0CxmzcREO5aUhe3I9hV3mnxzUqIaETlhRYyr2pfQHB/kH2yCceO8uT6VT1hQ91EmsGniAZYPVYkNMsC5j+1OXZY4mJ7hg/z0jU8QIDAQAB";
+        // RSA å ìŒœë¸ì˜™í‚¤ å ì™ì˜™å ì™ì˜™ (Codefå ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ Public Key å ì™ì˜™å ï¿½)
+        String publicKey = "MIMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl7WKXMFQvedU6MiAqerFcKAQzL3C18f12EO4MmZf9g7tjX5Pw6+BJD+m5zfhCY2Wn3rsuEgMz3DUT024gA1fggCy5/xJm78Ppr2vzeyxJNOiW8iY/ArLTxrYf5HzEt0KaFxQhthKC6WY2W6Plq6lLHgPKQqIn7fY9S2D7vgBOH8eUTdv7iGW3MGiZn6IbH7XcQ+s+nsbbBHK475ogAyjTjACFGBMTa8uSlrgo0H9r8ekhc6NnLvYYcuPz2d//8lFd1fkQZdNgFdftlJTVhlSRp1Xvj0Lcf7pX9RtntbIi4fDEGSxU7LJ1nYqo5pIIE/ikvCHgXdSwSTc3aC2X8/CLQIDAQAB";
         codef.setPublicKey(publicKey);
         
-        // ¼­ºñ½º Å¸ÀÔÀ» DEMO·Î ¼³Á¤
+        // å ì™ì˜™å ì™ì˜™ íƒ€å ì™ì˜™å ì™ì˜™ DEMOå ì™ì˜™ å ì™ì˜™å ì™ì˜™
         String accessToken = codef.requestToken(EasyCodefServiceType.DEMO);
         System.out.println("Access Token: " + accessToken);
     }

@@ -8,9 +8,15 @@
     <title>여행지를 입력해주세요.</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-
+	<script src="${pageContext.request.contextPath}/resources/js/googlemapAPI.js" defer></script>
     <!-- 폰트어썸 불러오기 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+        <style>
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
     <div class="wrap flex flex-column">
@@ -26,35 +32,48 @@
                     <li class="step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
+                    <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                 </ul>
             
                 <h3 class="main-title center mb-70">🤔 여행지를 입력해주세요.</h3>
 				<form name="frm">
 	                <div class="mb-2 center">
-	                    <input type="text" name="city" placeholder="여행지를 입력해주세요." class="w-200">
+	                    <input type="text" id="searchbox" name="city" placeholder="여행지를 입력해주세요. (예: 미국/하와이)" class="w-200">     
 	                </div>
-	
-	                <div class="map">
-	
-	                </div>
-	
+	              
 	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-	                    <button class="btn blue" type="button" onClick="goTravelSights();">다음</button>
-	                    <button class="btn">뒤로</button>
+	                    <button class="btn blue" type="button" onClick="goTravelConditions();">다음</button>
+	                    <button class="btn" type="button" onClick="history.back();">뒤로</button>
 	                </div>
 	             </form>
             </section>
         </div>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>        
         <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
     <script>
+	
+	// sessionStorage 초기화
+	if(sessionStorage.getItem("thema") != null) {
+		sessionStorage.removeItem("peopleCount");
+		sessionStorage.removeItem("departureMonth");
+		sessionStorage.removeItem("duration");
+		sessionStorage.removeItem("groupType");
+		sessionStorage.removeItem("budgetMin");
+		sessionStorage.removeItem("budgetMax");
+		sessionStorage.removeItem("thema");
+		sessionStorage.removeItem("destination");
+		sessionStorage.removeItem("sights");
+		sessionStorage.removeItem("restaurants");
+		sessionStorage.removeItem("schedule");			
+	}
 
-    function goTravelSights() { 
+    function goTravelConditions() { 
 		
     	// 유효성 검사하기
 		let fm = document.frm;
-		
 		if (fm.city.value == "") {
+			console.log("city :", city);
 			alert("여행지를 입력해주세요");
 			fm.city.focus();
 			return;
@@ -65,8 +84,13 @@
 
 			// sessionStorage에 저장
 		    sessionStorage.setItem('city', fm.city.value);
-		    
-		    location.href = "${pageContext.request.contextPath}/travel/travelSights.do";
+			
+			fm.action="${pageContext.request.contextPath}/travel/travelConditions.do";
+			fm.method="post";
+			fm.submit();
+			
+			
+		    document.getElementById('loading').style.display = 'block';
 		}
 	  
 		return;

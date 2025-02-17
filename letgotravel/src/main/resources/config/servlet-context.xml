@@ -49,6 +49,9 @@
 			<mapping path="/member/memberMypageAction.do" />
 			<mapping path="/member/memberDeleteAction.do" />
 			
+				<!-- ✅ 처방전 관련 경로에도 로그인 체크 적용 -->
+			<mapping path="/prescription/prescriptionList.do" />
+			<mapping path="/prescription/prescriptionDetail.do" />
 			<beans:ref bean="authInterceptor" />
 		</interceptor>
 	</interceptors>

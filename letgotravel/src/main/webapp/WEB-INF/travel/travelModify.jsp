@@ -33,42 +33,36 @@
                     <li class="relative step-item finished flex justify-content-center align-items-center"><i class="fa-solid fa-check"></i></li>
                     <li class="relative step-item on flex justify-content-center align-items-center"><i class="fa-solid fa-pencil"></i></li>
                 </ul>
-            
-                <h3 class="main-title center mb-70">🤔 "일본 / 도쿄"의 일정을 확정해주세요.</h3>
-
-                <div class="calendar-wrap">
-                    <div class="calendar-box">
-                        <div id="calendar"></div>
-                    </div>
-                </div>
-
-                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
-                    <button type="button" onClick="goTravelDetails()" class="btn blue">다음</button>
-                    <button class="btn">뒤로</button>
-                </div>
+                
+                <h3 class="main-title center mb-70">🤔 "${requestScope.destination}"의 일정을 확정해주세요.</h3>
+                <form name="frm">
+                	<input type="hidden" name="sights" id="sights">
+                	<input type="hidden" name="restaurants" id="restaurants">
+                	<input type="hidden" name="destination" id="destination">
+               		<div class="calendar-wrap">
+	                    <div class="calendar-box">
+	                        <div id="calendar"></div>
+	                        <textarea id="calendarData" class="none" name="calendarData"></textarea>
+	                    </div>
+	                </div>
+	
+	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
+	                    <button type="button" onClick="goTravelDetails()" class="btn blue" onClick="goTravelDetails();">다음</button>
+	                    <button class="btn" type="button" onClick="history.back();">뒤로</button>
+	                </div>
+                </form>
             </section>
         </div>
-        <footer class="ft"></footer>
+        <%@ include file="/WEB-INF/loadingImage.jsp" %>
+	    <%@ include file="/WEB-INF/footer.jsp" %>
     </div>
 
     <script>
-    // document.addEventListener('DOMContentLoaded', function() {
-    //     var calendarEl = document.getElementById('calendar');
-    //     var calendar = new FullCalendar.Calendar(calendarEl, {
-    //         initialView: 'dayGridDay',
-    //         events: [
-    //             {
-    //                 title  : 'event3',
-    //                 start  : '2025-02-02T12:30:00',
-    //                 end  : '2025-02-02T13:30:00',
-    //                 allDay : false // will make the time show
-    //             }
-    //         ]
-    //     });
-    //     calendar.render();
-    // });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    let saveEvent;
+	
+    document.addEventListener('DOMContentLoaded', function() {	
+    	
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'en',
@@ -83,35 +77,29 @@
             },
             titleRangeSeparator : ' ~ ',
             events: 
-            	
-            	
-            [
-                {
-                    title: '해리포터 스튜디오',
-                    start: '1900-01-01T12:30:00',
-                    end: '1900-01-01T13:30:00',
-                    backgroundColor: '#D8E8FC',
-                    borderColor: '#3B8EEF',
-                    // backgroundcolor: '#DCEDF3',
-                    // borderColor: '#4FA3C4',
-                    textColor: '#333',
-                    extendedProps: {
-                        description: "Additional information",
-                        referenceId: 12345,
-                        customData: { key: "value" }
-                    },
-                    description: "Additional information",
-                },
-                {
-                    title: '라멘',
-                    start: '1900-01-02T16:30:00',
-                    end: '1900-01-02T17:30:00',
-                    backgroundColor: '#DCEDF3',
-                    borderColor: '#4FA3C4',
-                    textColor: '#333'
-                    // allDay : false
-                }
-            ],
+            	<c:if test="${!empty requestScope.openAIResult1Array}">  // 수정 예정
+            	[
+                	<c:forEach items="${requestScope.openAIResult1Array}" var="rs" varStatus="status">
+                    {
+                    	title : "${rs.title}",
+                    	start: "${rs.start}",
+                    	end: "${rs.end}",                    	
+                    	<c:choose>
+                    	<c:when test="${rs.category eq 'sight'}">
+	                    	backgroundColor: '#D8E8FC',
+	                    	borderColor: '#3B8EEF',
+                    	</c:when>
+                    	<c:otherwise>
+	                    	backgroundColor: '#DCEDF3',
+	                    	borderColor: '#4FA3C4',
+                    	</c:otherwise>
+	                    </c:choose>
+                    	textColor: '#333'
+                     }
+                     <c:if test="${!status.last}">,</c:if>
+                </c:forEach>
+                ],
+            	</c:if>
             /* eventClick: function(e) { /* 일정 클릭 이벤트 */
     			/* var startDayStr = e.event.startStr;
     			var endDayStr = e.event.endStr;
@@ -129,7 +117,8 @@
 
     	    	fn_schedulePop(startDayStr, endDayStr, e.event.id); */
         });
-        calendar.render();		
+        
+        calendar.render();
 
         // 캘린더 크기조정
         const calendarBox = document.querySelector(".calendar-box");
@@ -137,11 +126,11 @@
         calendarBox.style.width = 120 * duration + 46 +"px";
                 
         // 일정 설정
-		let date = new Date('1900-01-01');
+		let date = new Date('${requestScope.openAIResult1Array[0].start}');
 		date.setDate(date.getDate() + duration);
-		const endDate = date.toISOString().split('T')[0];		
+		const endDate = date.toISOString().split('T')[0];
         calendar.changeView('timeGrid', {
-            start: '1900-01-01',
+            start: '${requestScope.openAIResult1Array[0].start}',
             end: endDate
         });
 		
@@ -150,6 +139,28 @@
         daysAll.forEach(function(e, i) {
         	e.innerText = `\${i+1}일차`;  // 백틱 안될 때 앞에 '\' 붙이기
         })
+        
+     	// 변경 이벤트 저장
+     	saveEvent = function() {
+    		const updatedEvents = []; // 이벤트 데이터를 담을 배열
+    		
+    		calendar.getEvents().forEach(event => {
+    		    updatedEvents.push({
+    		    	title: event.title,
+    		    	start: event.start.toISOString(),
+    		        end: event.end.toISOString(),
+    		    	backgroundColor: event.backgroundColor,
+    		    	borderColor: event.borderColor,
+    		 	textColor: event.textColor
+    		    });
+    		});
+
+    	    // JSON 문자열로 변환하여 전송할 input 필드에 담기
+    	    document.querySelector("#calendarData").value = JSON.stringify(updatedEvents);
+			
+			// sessionStorage에 저장
+		    sessionStorage.setItem('schedule', document.querySelector("#calendarData").value);
+        }
         
     });
 
@@ -211,21 +222,45 @@
     //     });
     //     calendar.render();
     // });
+    
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     var calendarEl = document.getElementById('calendar');
+    //     var calendar = new FullCalendar.Calendar(calendarEl, {
+    //         initialView: 'dayGridDay',
+    //         events: [
+    //             {
+    //                 title  : 'event3',
+    //                 start  : '2025-02-02T12:30:00',
+    //                 end  : '2025-02-02T13:30:00',
+    //                 allDay : false // will make the time show
+    //             }
+    //         ]
+    //     });
+    //     calendar.render();
+    // });
 
     function goTravelDetails() { 
-		
 		let ans = confirm("다음페이지로 이동합니다.");
+		
 		if (ans == true) {
-
-			// sessionStorage에 저장
-		    // sessionStorage.setItem('city', fm.city.value);
+			
+			saveEvent();
 		    
-		    location.href = "${pageContext.request.contextPath}/travel/travelDetails.do";
+			// sessionStorage에서 불러오기
+		    document.querySelector('#sights').value = sessionStorage.getItem('sights');
+		    document.querySelector('#restaurants').value = sessionStorage.getItem('restaurants');
+		    document.querySelector('#destination').value = sessionStorage.getItem('destination');
+		    
+			let fm = document.frm;
+			fm.action="${pageContext.request.contextPath}/travel/travelDetails.do";
+			fm.method="post";
+			fm.submit();
+
+			document.getElementById('loading').style.display = 'block';
 		}
-	  
+		
 		return;
 	}
     </script>
-    <%@ include file="/WEB-INF/footer.jsp" %>
 </body>
 </html>
