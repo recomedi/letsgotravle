@@ -11,7 +11,7 @@
 
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/memberFind.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/Find.css">
   </head>
 
   <script>
