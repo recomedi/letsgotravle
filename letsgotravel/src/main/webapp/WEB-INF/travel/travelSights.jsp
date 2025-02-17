@@ -55,7 +55,7 @@
 						
 					 	   <input type="radio" name="sights-radio" id="sights" class="none" checked>
 	                       <div class="check-box pt-10 sights">
-	                			<c:forEach var="sight" items="     " varStatus="status">
+	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
 	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightCk" value="${sight}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
 	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray[status.index]["설명"]}</textarea></button><br>
