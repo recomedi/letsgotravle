@@ -4,90 +4,58 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PageMaker {
+    public PageMaker() {
+        System.out.println("PageMaker 객체 생성됨!");
+    }
 
-	private int displayPageNum = 10;
-	private int startPage;
-	private int endPage;
-	private int totalCount;
-	
-	private boolean prev;
-	private boolean next;
-	
-	private SearchCriteria scri;	
+    private int displayPageNum = 10; //한 그룹에 보여줄 페이지 개수 (10개씩)
+    private int startPage;
+    private int endPage;
+    private int totalCount;
+    private boolean prev;
+    private boolean next;
+    private Criteria cri = new Criteria(); // 기본값 설정 (null 방지)
 
-	public int getDisplayPageNum() {
-		return displayPageNum;
-	}
+    public int getDisplayPageNum() { return displayPageNum; }
+    public void setDisplayPageNum(int displayPageNum) { this.displayPageNum = displayPageNum; }
 
-	public void setDisplayPageNum(int displayPageNum) {
-		this.displayPageNum = displayPageNum;
-	}
+    public int getStartPage() { return startPage; }
+    public int getEndPage() { return endPage; }
+    public boolean isPrev() { return prev; }
+    public boolean isNext() { return next; }
+    public int getTotalCount() { return totalCount; }
 
-	public int getStartPage() {
-		return startPage;
-	}
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+        calcData(); //totalCount 설정 시 자동 계산
+    }
 
-	public void setStartPage(int startPage) {
-		this.startPage = startPage;
-	}
+    public Criteria getCri() { return cri; }
+    
+    public void setCri(Criteria cri) {
+        this.cri = (cri != null) ? cri : new Criteria(); //null 체크 및 기본값 설정
+    }
 
-	public int getEndPage() {
-		return endPage;
-	}
+    private void calcData() {
+        //현재 페이지가 속한 그룹의 마지막 페이지 계산
+        endPage = (int) (Math.ceil(cri.getPage() / (double) displayPageNum) * displayPageNum);
+        
+        //현재 그룹의 첫 번째 페이지
+        startPage = (endPage - displayPageNum) + 1;
+        if (startPage < 1) startPage = 1;
 
-	public void setEndPage(int endPage) {
-		this.endPage = endPage;
-	}
+        //전체 페이지 개수 계산
+        int totalPage = (int) Math.ceil((double) totalCount / cri.getPerPageNum());
 
-	public int getTotalCount() {
-		return totalCount;
-	}
+        //실제 마지막 페이지가 endPage보다 작으면 변경
+        if (endPage > totalPage) {
+            endPage = totalPage;
+        }
 
-	public void setTotalCount(int totalCount) {
-		this.totalCount = totalCount;
-		calcData();
-		
-	}
+        //이전 버튼 (1페이지 그룹이 아니면 존재)
+        prev = startPage > 1;
 
-	public boolean isPrev() {
-		return prev;
-	}
-
-	public void setPrev(boolean prev) {
-		this.prev = prev;
-	}
-
-	public boolean isNext() {
-		return next;
-	}
-
-	public void setNext(boolean next) {
-		this.next = next;
-	}
-
-	public SearchCriteria getScri() {
-		return scri;
-	}
-
-	public void setScri(SearchCriteria scri) {
-		this.scri = scri;
-	}
-	
-	private void calcData() {
-		
-		endPage = (int)(Math.ceil(scri.getPage() / (double)displayPageNum) * displayPageNum);
-		
-		startPage = (endPage - displayPageNum) + 1;
-		
-		int tempEndPage = (int)(Math.ceil(totalCount / (double)scri.getPerPageNum()));
-		
-		if (endPage > tempEndPage) {
-			endPage = tempEndPage;
-		}
-		
-		prev = (startPage == 1? false : true);
-		
-		next = (endPage * scri.getPerPageNum() >= totalCount ? false : true);
-	}
-	
+        //다음 버튼 (마지막 페이지 그룹이 아니면 존재)
+        next = endPage < totalPage;
+    }
 }
