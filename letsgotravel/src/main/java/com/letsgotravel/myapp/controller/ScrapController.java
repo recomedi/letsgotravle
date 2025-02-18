@@ -63,7 +63,7 @@ public class ScrapController {
 		return "WEB-INF/scrap/scrapList";
 	}
 
-	@RequestMapping(value = "scrapList.do")
+	@RequestMapping(value = "scrapList.do", method = RequestMethod.GET)
 	public String scrapList() {
 		logger.info("scrapList들어옴");
 
