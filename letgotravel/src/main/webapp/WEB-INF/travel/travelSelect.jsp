@@ -1,5 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.Properties, java.io.InputStream, java.io.IOException" %>
+<%
+    Properties properties = new Properties();
+    try {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream input = classLoader.getResourceAsStream("properties/googleMap.properties");
+        if (input != null) {
+            properties.load(input);
+            input.close();
+        } else {
+            throw new IOException("googleMap.properties 파일을 찾을 수 없습니다.");
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    String googleMapsApiKey = properties.getProperty("google.maps.api.key");
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,7 +25,7 @@
     <title>도시를 선택해주세요.</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-    
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&callback=initMap" async defer"></script>
      <!-- 폰트어썸 불러오기 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
@@ -46,7 +63,9 @@
 	                    <div class="col flex mb-1">
 	                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 175.png" alt="에펠탑"></div>
 	                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관"></div>
-	                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도"></div>
+	                        <div id="map-${status.index}" class="map" 
+                 			data-city="${city.get('나라/도시')}" 
+	                        style="width:380px; height:380px;"></div>
 	                    </div>
 	                    <div class="col flex mb-2">
 	                        <div class="select-item">
@@ -119,7 +138,7 @@
 		                    <div class="col flex mb-1">
 		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 175.png" alt="에펠탑"></div>
 		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관"></div>
-		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 179.png" alt="파리지도"></div>
+		                        <div id="map" style="width:380px; height:380px;"></div>
 		                    </div>
 		                    <div class="col flex mb-2">
 		                        <div class="select-item">
@@ -236,6 +255,35 @@
     function moreResult() {
     	document.querySelector(".addition").style.display = "block";
     	document.querySelector(".more").style.display = "none";
+    }
+    
+    function initMap() {
+        document.querySelectorAll('.map').forEach((mapDiv) => {
+            let cityName = mapDiv.dataset.city;
+
+            if (cityName) {
+                let geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ address: cityName }, function(results, status) {
+                    if (status === "OK") {
+                        let latLng = results[0].geometry.location;
+                        
+                        let map = new google.maps.Map(mapDiv, {
+                            center: latLng,
+                            zoom: 12
+                        });
+
+                        new google.maps.Marker({
+                            position: latLng,
+                            map: map,
+                            title: cityName
+                        });
+
+                    } else {
+                        console.error("Geocode 실패: " + status);
+                    }
+                });
+            }
+        });
     }
  
     </script>
