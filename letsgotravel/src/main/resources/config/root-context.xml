@@ -21,7 +21,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 
 	<!-- ✅ DB 설정 (properties 파일에서 로드) -->
-	<context:property-placeholder location="classpath:properties/db.properties, classpath:properties/mail.properties"/>
+	<context:property-placeholder location="classpath:properties/db.properties, classpath:properties/mail.properties, classpath:properties/googleMap.properties"/>
 
 	<!-- ✅ DataSource 정의 (ID: dataSource) -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
