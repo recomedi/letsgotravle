@@ -138,7 +138,9 @@
 		                    <div class="col flex mb-1">
 		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 175.png" alt="에펠탑"></div>
 		                        <div class="select-item"><img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관"></div>
-		                        <div id="map" style="width:380px; height:380px;"></div>
+		                        <div id="map-${status.index}" class="map" 
+                 			data-city="${city.get('나라/도시')}" 
+	                        style="width:380px; height:380px;"></div>
 		                    </div>
 		                    <div class="col flex mb-2">
 		                        <div class="select-item">
@@ -269,7 +271,7 @@
                         
                         let map = new google.maps.Map(mapDiv, {
                             center: latLng,
-                            zoom: 12
+                            zoom: 4
                         });
 
                         new google.maps.Marker({
