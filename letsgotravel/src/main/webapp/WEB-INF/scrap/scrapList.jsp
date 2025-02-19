@@ -495,7 +495,7 @@ section:not(.allheaders) {
     <span>홈</span> &gt; <span>스크랩</span> &gt; <span>스크랩 목록</span>
 </nav>
 
-<article class="title">스크랩(커밋테스트)</article>
+<article class="title">스크랩</article>
 
 <div class="table-container">
   <table>
