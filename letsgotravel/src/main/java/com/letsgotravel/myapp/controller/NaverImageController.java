@@ -1,9 +1,13 @@
 package com.letsgotravel.myapp.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letsgotravel.myapp.service.NaverImageSearchService;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +37,11 @@ public class NaverImageController {
     // 네이버 이미지 검색 API
     @GetMapping(value = "/search", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public String searchImages(@RequestParam("query") String query) {
+    public String searchImages(@RequestParam("query") String query, HttpServletRequest request ) {
     	  try {
     	        logger.info("🟢 컨트롤러에서 받은 검색어 (디코딩 전): {}", query);
-
+    	        
+    	        
     	        // ✅ JSON 형태의 문자열이 query에 들어가는지 확인
     	        if (query.startsWith("{") && query.endsWith("}")) {
     	            logger.error("❌ 잘못된 query 값 (JSON 데이터 포함됨): {}", query);
@@ -55,6 +60,17 @@ public class NaverImageController {
     	        // ✅ 네이버 API 호출
     	        String result = naverImageSearchService.searchImages(decodedQuery);
     	        logger.info("🟢 네이버 API 결과: {}", result);
+    	        
+    	     // JSON 파싱하여 첫 번째 이미지 URL 저장
+    	        ObjectMapper objectMapper = new ObjectMapper();
+    	        JsonNode rootNode = objectMapper.readTree(result);
+    	        JsonNode items = rootNode.path("items");
+
+    	        if (items.isArray() && items.size() > 0) {
+    	            String firstImageUrl = items.get(0).path("thumbnail").asText();
+    	            request.getSession().setAttribute("firstImageUrl", firstImageUrl); // 세션에 저장
+    	            logger.info("🟢 첫 번째 이미지 URL: {}", firstImageUrl);
+    	        }
 
     	        return result;
     	    } catch (Exception e) {
