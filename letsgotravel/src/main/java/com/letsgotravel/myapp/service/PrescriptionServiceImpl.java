@@ -150,6 +150,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 	@Override
 	public void resetAndSavePrescriptions(PrescriptionVo prescription, List<DrugVo> list) {
+		System.out.println("resetAndSavePrescriptions실행됨");
 		
 	};
 	
