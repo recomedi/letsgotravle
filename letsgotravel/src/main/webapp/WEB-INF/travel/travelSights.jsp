@@ -93,9 +93,7 @@
 	   
 	                   <div class="col info">
 	                       <div class="flex mb-20 justify-content-between">
-	                            <img id="dynamicImage" 
-					             src="${empty sessionScope.firstImageUrl ? pageContext.request.contextPath + '/resources/images/image 178.png' : sessionScope.firstImageUrl}" 
-					             alt="추천 이미지">
+	                           <img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관">
 	                           <div id="map" style="width:350px; height:300px;"></div>
 	                       </div>
 	                       <p class="text"></p>
@@ -229,45 +227,6 @@
     	
     	button.classList.add('green');
     }
-    
-    
-    
-    
-    
-    
-    
-    $(document).ready(function() {
-        let destination = "${requestScope.destination}";  // 여행 목적지 가져오기
-
-        if (destination) {
-            $.ajax({
-                url: "/myapp/naverImageTest/search",
-                type: "GET",
-                data: { query: destination },  // 목적지를 검색어로 사용
-                dataType: "json",
-                success: function(response) {
-                    console.log("✅ 네이버 이미지 검색 결과:", response);
-
-                    if (response.items && response.items.length > 0) {
-                        let firstImageUrl = response.items[0].thumbnail || response.items[0].link; // 첫 번째 이미지 URL
-                        console.log("✅ 첫 번째 이미지 URL:", firstImageUrl);
-
-                        $("#dynamicImage").attr("src", firstImageUrl);  // 이미지 업데이트
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.log("❌ 이미지 검색 실패:", xhr.responseText);
-                }
-            });
-        }
-    });
-
-    
-    
-    
-    
-    
-    
  
     </script>
 </body>

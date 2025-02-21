@@ -47,6 +47,7 @@
                 </ul>
             
                 <h3 class="main-title center mb-70">🤔 도시를 선택해주세요.</h3>
+                <p class="center mb-70">(각 지역은 여행 제한이나 입국 규제 등이 있을 수 있으니, 출발 전에 최신 정보를 확인하시기 바랍니다.)</p>
 	
             	<form name="frm">
 	            	<input type="hidden" name="peopleCount" id="peopleCount">

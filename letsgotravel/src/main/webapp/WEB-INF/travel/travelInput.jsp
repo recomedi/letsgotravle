@@ -38,7 +38,8 @@
                 <h3 class="main-title center mb-70">🤔 여행지를 입력해주세요.</h3>
 				<form name="frm">
 	                <div class="mb-2 center">
-	                    <input type="text" id="searchbox" name="city" placeholder='여행지를 "나라/도시" 형식으로 입력해주세요. (예: 프랑스/파리)' class="w-200">
+	                    <input type="text" id="searchbox" name="city" placeholder='여행지를 "나라/도시" 형식으로 입력해주세요. (예: 프랑스/파리)' class="w-200"
+	                    onkeydown="if(event.keyCode=='13'){event.preventDefault(); goTravelConditions();}">
 	                </div>
 	
 	                <div class="btn-box center mb-70 mt-50 flex justify-content-center">
@@ -67,7 +68,7 @@
 		sessionStorage.removeItem("restaurants");
 		sessionStorage.removeItem("schedule");			
 	}
-
+	
     function goTravelConditions() { 
 		
     	// 유효성 검사하기

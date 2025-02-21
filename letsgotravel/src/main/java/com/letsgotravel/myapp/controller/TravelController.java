@@ -158,8 +158,8 @@ public class TravelController {
 	    StringBuilder prompt1 = new StringBuilder();
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
-//	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 도시는 ");
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개 이상과 음식점 2개 이상 추천해줘. 도시는 ");
+	    // prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 도시는 ");
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개랑 음식점 2개 추천해줘. 도시는 ");  // 개발옹 코드. 수정예정
 	    prompt1.append(destination);
 	    prompt1.append("이고 총 인원은 ");
 	    prompt1.append(peopleCount);
@@ -263,12 +263,7 @@ public class TravelController {
 		logger.info("travelDetails 들어옴");
 
 		logger.info("calendarData:" + calendarData);
-//		//占쏙옙占쏙옙 占쏙옙占쏙옙
-//		sessionStorage.setItem("key", value);
-//
-//		//특占쏙옙 占쏙옙占쏙옙 占쏙옙 占쌀뤄옙占쏙옙占쏙옙
-//		sessionStorage.getItem("key");
-//
+
 //		//특占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙
 //		sessionStorage.removeItem("key");
 //
