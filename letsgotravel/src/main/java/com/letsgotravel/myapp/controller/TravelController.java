@@ -82,9 +82,7 @@ public class TravelController {
 	    prompt1.append(budgetMin + "만원 ~ " + budgetMax + "만원");
 	    prompt1.append("이야. 키워드는 ");
 	    prompt1.append(thema);
-	    prompt1.append("이고 여행경보 2단계초과 지역인 ");
-	    prompt1.append("러시아");  // 수정예정
-	    prompt1.append("와 내가 살고있는 한국은 제외하고 추천해줘.");
+	    prompt1.append("이고 내가 살고있는 한국은 제외하고 추천해줘.");
 	    prompt1.append(departureMonth);
 	    prompt1.append(" 기준의 일정을 추천해줬으면 좋겠어. 여행지의 대표관광지(3개), 대표음식(3개), ");
 	    prompt1.append(departureMonth);
@@ -124,7 +122,7 @@ public class TravelController {
 		    prompt2.append("없을 경우 없다고 말해줘.");
 		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
-			//String openAIResult2 = "{\"축제\" : [\"시부야 요요기 공원 이벤트 광장\", \"사카나 앤 재팬 페스티벌\"]}";			
+			//String openAIResult2 = "{\"축제\" : [\"시부야 요요기 공원 이벤트 광장\", \"사카나 앤 재팬 페스티벌\"]}";
 			ArrayList<String> openAIResultString = travelRecommendation.changeArray2(openAIResult2);
 		    
 		    if(!(openAIResultString.isEmpty())) {
@@ -159,7 +157,7 @@ public class TravelController {
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
 	    // prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 도시는 ");
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개랑 음식점 2개 추천해줘. 도시는 ");  // 개발옹 코드. 수정예정
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개랑 음식점 2개 추천해줘. 도시는 ");  // 개발용 코드. 수정예정
 	    prompt1.append(destination);
 	    prompt1.append("이고 총 인원은 ");
 	    prompt1.append(peopleCount);
