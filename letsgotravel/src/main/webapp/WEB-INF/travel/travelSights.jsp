@@ -25,7 +25,7 @@
     <title>관광지와 음식점을 선택해주세요.</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places&callback=initMap" async defer"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places&callback=initMap" async defer></script>
     <!-- 폰트어썸 불러오기 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
@@ -75,7 +75,9 @@
 	                			<c:forEach var="sight" items="${requestScope.openAIResult1Array[0]['추천관광지']}" varStatus="status">
 	                            <input type="checkbox" id="ck${status.index+1}" class="none" name="sightCk" value="${sight}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
-	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray[status.index]["설명"]}</textarea></button><br>
+								<button class="ml-5 center search-icon inline-block" type="button"
+								    onClick="viewDetail(this, ${requestScope.sightListArray[status.index]['latitude']}, ${requestScope.sightListArray[status.index]['longitude']});">
+								    <i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
@@ -84,7 +86,9 @@
 	                       		<c:forEach var="restaurant" items="${requestScope.openAIResult1Array[0]['추천음식점']}" varStatus="status">
 	                            <input type="checkbox" id="ck10${status.index+1}" class="none" name="restaurantCk" value="${restaurant}">
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label>
-	                            <button class="ml-5 center search-icon inline-block" type="button" onClick="viewDetail(this);"><i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray[status.index]["설명"]}</textarea></button><br>
+	                           <button class="ml-5 center search-icon inline-block" type="button" 
+								    onClick="viewDetail(this, ${requestScope.restaurantListArray[status.index]['latitude']}, ${requestScope.restaurantListArray[status.index]['longitude']});">
+								    <i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
@@ -94,7 +98,12 @@
 	                   <div class="col info">
 	                       <div class="flex mb-20 justify-content-between">
 	                           <img src="${pageContext.request.contextPath}/resources/images/image 178.png" alt="루브르박물관">
-	                           <div id="map" style="width:350px; height:300px;"></div>
+	                           <div id="map-${status.index}" 
+							    class="map" 
+							    data-lat="${requestScope.sightListArray[status.index]['latitude']}" 
+							    data-lng="${requestScope.sightListArray[status.index]['longitude']}" 
+							    style="width:350px; height:350px; border-radius:10px;">
+							</div>
 	                       </div>
 	                       <p class="text"></p>
 	                   </div>
@@ -211,12 +220,53 @@
 		return;
 	}    
     
-    // 상세 설명
-    function viewDetail(button) {
-    	infoArea = document.querySelector(".info .text");
-    	textValue = button.querySelector("textarea").value;
-        infoArea.innerText = textValue;
+    // 상세 설명 + 장소 데이터 가져오
+function viewDetail(button, latitude, longitude) {
+    let infoArea = document.querySelector(".info .text");
+    let textValue = button.querySelector("textarea").value;
+    infoArea.innerText = textValue;
+
+    // 지도 업데이트
+    let mapDiv = document.querySelector(".map");
+    mapDiv.setAttribute("data-lat", latitude);
+    mapDiv.setAttribute("data-lng", longitude);
+
+    initMap(latitude, longitude);
+}
+function initMap(latitude = null, longitude = null) {
+    let mapDiv = document.querySelector(".map");
+
+    // 데이터 속성에서 위도/경도 값 가져오기 (초기 지도 로드 시)
+    if (!latitude || !longitude) {
+        latitude = parseFloat(mapDiv.getAttribute("data-lat"));
+        longitude = parseFloat(mapDiv.getAttribute("data-lng"));
     }
+
+    if (!latitude || !longitude) {
+        console.error("위도와 경도 정보가 없습니다.");
+        return;
+    }
+
+    let latLng = { lat: latitude, lng: longitude };
+
+    let map = new google.maps.Map(mapDiv, {
+        center: latLng,
+        zoom: 16, //확대 크기
+        zoomControl: true,
+        cameraControl: false,
+        mapTypeControl: false, //지도,위성
+        scaleControl: true, // 밑에 보이는 맵 크기
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: true,
+    });
+
+    new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: "선택한 장소"
+    });
+}
     
     // 버튼이벤트
     function btnClick(button) {
@@ -224,10 +274,8 @@
     	buttons.forEach((btn) => {
     		btn.classList.remove('green');
     	});
-    	
     	button.classList.add('green');
     }
- 
     </script>
 </body>
 </html>

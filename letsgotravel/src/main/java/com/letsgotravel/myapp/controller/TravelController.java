@@ -178,7 +178,25 @@ public class TravelController {
 	    
 	    ArrayList<Map<String, Object>> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
 	    ArrayList<Map<String, Object>> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
-	   
+	   // 출력 내
+	    System.out.println("\n[관광지 목록 및 위도/경도 정보]");
+	    for (Map<String, Object> sight : sightListArray) {
+	        System.out.println("관광지: " + sight.get("sight"));
+	        System.out.println("위도: " + sight.get("latitude"));
+	        System.out.println("경도: " + sight.get("longitude"));
+	        System.out.println("설명: " + sight.get("설명"));
+	        System.out.println("---------------------------------");
+	    }
+
+	    System.out.println("\n[음식점 목록 및 위도/경도 정보]");
+	    for (Map<String, Object> restaurant : restaurantListArray) {
+	        System.out.println("음식점: " + restaurant.get("sight")); 
+	        System.out.println("위도: " + restaurant.get("latitude"));
+	        System.out.println("경도: " + restaurant.get("longitude"));
+	        System.out.println("설명: " + restaurant.get("설명"));
+	        System.out.println("---------------------------------");
+	    }
+	    
 		model.addAttribute("destination", destination);
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
 		model.addAttribute("sightListArray", sightListArray);
@@ -310,14 +328,12 @@ public class TravelController {
 				    		" \"설명\": \"도쿄타워(Tokyo Tower)는 일본 도쿄에 위치한 상징적인 탑으로, 1958년에 완공되었습니다. 높이는 약 333미터로, 당시 세계에서 가장 높은 철탑으로 설계되었으며, 프랑스의 파리 에펠탑을 모델로 한 디자인이 특징입니다.\"" +
 				            "}]");
 		    
-		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
+			Map<String, Object> sightInfo = travelRecommendation.changeString(openAIResult2);
+			
+	        sightInfo.put("sight", sight);  
 
-		    Map<String, Object> openAIResult1String = travelRecommendation.changeString(openAIResult2);
-		    
-		    openAIResult1String.put(sightType, sight);			
-
-		    returnSights.add(openAIResult1String);
+	        returnSights.add(sightInfo);
 	    }
 	    
 	    return returnSights;
