@@ -78,7 +78,7 @@ function check(){
                 <a href="${pageContext.request.contextPath}/member/memberFind.do" style="color:#A39C9C;">아이디/비밀번호 찾기</a>
             </div>
             <div class="links" style="color:#333;">아직 회원이 아니신가요? <a href="${pageContext.request.contextPath}/member/memberSignUp.do" class="signup">회원가입</a></div>
-            <div class="separator-container">
+<%--             <div class="separator-container">
                 <div class="separator"></div>
                 <div class="separator-text">OR</div>
                 <div class="separator"></div>
@@ -87,7 +87,7 @@ function check(){
                 <img src="${pageContext.request.contextPath}/resources/images/login_kakaolink_btn.png" alt="카카오 로그인">
                 <img src="${pageContext.request.contextPath}/resources/images/login_naver_btn.png" alt="네이버 로그인">
                 <img src="${pageContext.request.contextPath}/resources/images/login_google_btn.png" alt="구글 로그인">
-            </div>
+            </div> --%>
         </div>
         <hr>
           <%@ include file="/WEB-INF/footer.jsp" %>
