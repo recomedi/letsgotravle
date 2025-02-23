@@ -272,7 +272,14 @@
                         
                         let map = new google.maps.Map(mapDiv, {
                             center: latLng,
-                            zoom: 4
+                            zoom: 4 //확대 크기
+                            zoomControl: true,
+                            cameraControl: false,
+                            mapTypeControl: false, //지도,위성
+                            scaleControl: true, // 밑에 보이는 맵 크기
+                            streetViewControl: true,
+                            rotateControl: false,
+                            fullscreenControl: false,
                         });
 
                         new google.maps.Marker({

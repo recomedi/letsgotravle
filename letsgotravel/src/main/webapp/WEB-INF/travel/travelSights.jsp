@@ -225,6 +225,8 @@ function viewDetail(button, latitude, longitude) {
     let infoArea = document.querySelector(".info .text");
     let textValue = button.querySelector("textarea").value;
     infoArea.innerText = textValue;
+    console.log("위도:", latitude);
+    console.log("경도:", longitude);
 
     // 지도 업데이트
     let mapDiv = document.querySelector(".map");
@@ -246,19 +248,17 @@ function initMap(latitude = null, longitude = null) {
         console.error("위도와 경도 정보가 없습니다.");
         return;
     }
-
-    let latLng = { lat: latitude, lng: longitude };
-
+    let latLng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
     let map = new google.maps.Map(mapDiv, {
         center: latLng,
-        zoom: 16, //확대 크기
+        zoom: 13, //확대 크기
         zoomControl: true,
         cameraControl: false,
         mapTypeControl: false, //지도,위성
         scaleControl: true, // 밑에 보이는 맵 크기
-        streetViewControl: false,
+        streetViewControl: true,
         rotateControl: false,
-        fullscreenControl: true,
+        fullscreenControl: false,
     });
 
     new google.maps.Marker({
