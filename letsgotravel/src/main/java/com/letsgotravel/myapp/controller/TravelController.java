@@ -197,6 +197,15 @@ public class TravelController {
 	        System.out.println("---------------------------------");
 	    }
 	    
+	    if (!sightListArray.isEmpty()) {
+	        Map<String, Object> firstSight = sightListArray.get(0);
+	        model.addAttribute("firstLatitude", firstSight.get("latitude"));
+	        model.addAttribute("firstLongitude", firstSight.get("longitude"));
+	    } else {
+	        model.addAttribute("firstLatitude", 0); // 기본값 (0,0)
+	        model.addAttribute("firstLongitude", 0);
+	    }
+	    
 		model.addAttribute("destination", destination);
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
 		model.addAttribute("sightListArray", sightListArray);

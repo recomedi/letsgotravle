@@ -25,7 +25,7 @@
     <title>관광지와 음식점을 선택해주세요.</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
-	<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places&callback=initMap" async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places" async defer></script>
     <!-- 폰트어썸 불러오기 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
@@ -235,23 +235,65 @@ function viewDetail(button, latitude, longitude) {
 
     initMap(latitude, longitude);
 }
+    
+//Google Maps API가 로드될 때까지 기다렸다가 `initMap()` 실행
+function loadGoogleMapsAPI(callback) {
+    if (typeof google === "object" && typeof google.maps === "object") {
+        /* console.log("initMap 실행"); */
+        callback();
+    } else {
+        let script = document.createElement("script");
+        script.src = "https://maps.googleapis.com/maps/api/js?key=<%= googleMapsApiKey %>&libraries=places";
+        script.async = true;
+        script.defer = true;
+
+        script.onload = function () {
+            console.log("googleMap 실행");
+            callback();
+        };
+
+        script.onerror = function () {
+            console.error("Google Maps API 키값 확인");
+        };
+
+        document.head.appendChild(script);
+    }
+}
+
+window.onload = function () {
+
+    loadGoogleMapsAPI(function () {
+        let firstLat = parseFloat('${firstLatitude}');
+        let firstLng = parseFloat('${firstLongitude}');
+
+        if (!isNaN(firstLat) && !isNaN(firstLng) && firstLat !== 0 && firstLng !== 0) {
+            console.log("초기 위도,경도값:", firstLat, firstLng);
+            initMap(firstLat, firstLng);
+        }
+    });
+};
+
 function initMap(latitude = null, longitude = null) {
+    console.log("initMap 위도 경도값", latitude, longitude);
+
     let mapDiv = document.querySelector(".map");
 
-    // 데이터 속성에서 위도/경도 값 가져오기 (초기 지도 로드 시)
-    if (!latitude || !longitude) {
+    if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) {
         latitude = parseFloat(mapDiv.getAttribute("data-lat"));
         longitude = parseFloat(mapDiv.getAttribute("data-lng"));
     }
 
-    if (!latitude || !longitude) {
-        console.error("위도와 경도 정보가 없습니다.");
+    // 좌표가 유효하지 않을 경우 예외 처리
+    if (isNaN(latitude) || isNaN(longitude) || latitude === 0 || longitude === 0) {
+        console.error("지도에 없습니.");
         return;
     }
-    let latLng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+
+    let latLng = { lat: latitude, lng: longitude };
+
     let map = new google.maps.Map(mapDiv, {
         center: latLng,
-        zoom: 13, //확대 크기
+        zoom: 14, 
         zoomControl: true,
         cameraControl: false,
         mapTypeControl: false, //지도,위성
