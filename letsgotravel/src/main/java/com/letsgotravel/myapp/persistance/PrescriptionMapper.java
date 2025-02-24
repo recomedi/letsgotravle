@@ -20,6 +20,9 @@ public interface PrescriptionMapper {
     void saveDrug(DrugVo drug);
 
 	List<PrescriptionVo> findPrescriptionsByMidx(Integer midx);
+	// ✅ 특정 회원의 기존 약물 정보 삭제
+    int resetDrugsByMidx(@Param("midx") int midx);
 
-
+    // ✅ 특정 회원의 기존 처방전 삭제
+    int resetPrescriptionsByMidx(@Param("midx") int midx);
 }

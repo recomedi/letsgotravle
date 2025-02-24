@@ -23,6 +23,7 @@ public interface PrescriptionService {
 	int savePrescriptionAndDrugs(PrescriptionVo prescription, List<DrugVo> drugs);
 
 	List<PrescriptionVo> getPrescriptionsByMidx(Integer midx);
-
+	
+	 void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions);
 
 }

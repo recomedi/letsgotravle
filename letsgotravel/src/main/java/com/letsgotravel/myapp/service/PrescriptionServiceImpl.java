@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 @Service
+@Transactional
 public class PrescriptionServiceImpl implements PrescriptionService {
 
 
@@ -114,9 +115,32 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 	    return prescriptions;
 	}
+	
+	@Override
+	@Transactional
+	public void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions) {
+			System.out.println("reset enter?");
+	    // ✅ 기존 처방전과 약물 데이터 삭제
+		 int deletedDrugs = pm.resetDrugsByMidx(midx);
+		    int deletedPrescriptions = pm.resetPrescriptionsByMidx(midx);
 
+		    System.out.println("📌 삭제된 약물 개수: " + deletedDrugs);
+		    System.out.println("📌 삭제된 처방전 개수: " + deletedPrescriptions);
 
+		    if (deletedPrescriptions == 0) {
+		        System.out.println("❌ 기존 처방전이 삭제되지 않음! MyBatis 실행 문제 확인 필요.");
+		    }
 
-
-
+		    // ✅ 새로운 데이터 저장
+		    for (PrescriptionVo prescription : prescriptions) {
+		        prescription.setMidx(midx); // 회원 ID 설정
+		        int pidx = savePrescription(prescription); // 새로운 처방전 저장
+		        System.out.println("📌 새로운 처방전 저장 완료, pidx: " + pidx);
+		        for (DrugVo drug : prescription.getDrugs()) {
+		            drug.setPidx(pidx);
+		            saveDrug(drug); // 새로운 약물 정보 저장
+		            System.out.println("📌 새로운 약물 저장 완료: " + drug.getResDrugName());
+		        }
+		    }
+		}
 }
