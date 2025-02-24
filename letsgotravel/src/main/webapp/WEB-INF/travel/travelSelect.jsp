@@ -272,7 +272,7 @@
                         
                         let map = new google.maps.Map(mapDiv, {
                             center: latLng,
-                            zoom: 4 //확대 크기
+                            zoom: 4, //확대 크기
                             zoomControl: true,
                             cameraControl: false,
                             mapTypeControl: false, //지도,위성

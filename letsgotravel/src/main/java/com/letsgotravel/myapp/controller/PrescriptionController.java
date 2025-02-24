@@ -296,7 +296,7 @@ public class PrescriptionController {
 	                for (PrescriptionVo prescription : prescriptions) {
 	                    prescription.setMidx(midx);
 	                    System.out.println("📌 처방전 저장 시작: " + prescription.getCommBrandName());
-	                    prescriptionService.resetAndSavePrescriptions(prescription, prescription.getDrugs());
+	                    prescriptionService.savePrescriptionAndDrugs(prescription, prescription.getDrugs());
 	                }
 
 	                // 📌 저장이 끝나면 처방전 목록 페이지로 리디렉트
@@ -620,7 +620,7 @@ public class PrescriptionController {
 			                // 🔹 DB에 처방전 저장
 			                for (PrescriptionVo prescription : prescriptions) {
 			                    prescription.setMidx(midx);
-			                    prescriptionService.resetAndSavePrescriptions(prescription, prescription.getDrugs());
+			                    prescriptionService.savePrescriptionAndDrugs(prescription, prescription.getDrugs());
 			                }
 
 			                response.put("verified", true);
