@@ -17,5 +17,6 @@ public class SearchCriteria extends Criteria {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
+	
 
 }

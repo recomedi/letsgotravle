@@ -576,9 +576,17 @@ margin-right:50px;
           </tr>
         </thead>
 		     <tbody>
-				 <c:forEach var="prescription" items="${prescriptions}" varStatus="status">
+		     
+		     <c:if test="${empty sessionScope.midx}">
+    <script>
+        alert("로그인이 필요합니다.");
+        location.href = "${pageContext.request.contextPath}/memberLogin.do";
+    </script>
+</c:if>
+		     
+				<c:forEach var="prescription" items="${prescriptions}" varStatus="status">
 				    <tr onclick="window.location.href='${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}'">
-				        <td>${fn:length(prescriptions) - status.index}</td> <!-- 내림차순 번호 -->
+				        <td>${totalCount - ((cri.page - 1) * (cri.perPageNum != null ? cri.perPageNum : 10)) - status.index}</td>
 				        <td>
 				            <a href="${pageContext.request.contextPath}/prescription/prescriptionDetail.do?id=${prescription.pidx}">
 				                ${prescription.resMenufactureDate}
@@ -603,22 +611,23 @@ margin-right:50px;
 	      ※처방기관명을 클릭하시면 처방받으신 내용을 확인하실 수 있습니다.
 	    </section>
 	
-	    <div class="pagination">
-	      <a href="#" id="prev" onclick="changePage('prev')" style="display: none">&lt;</a>
-	      <!-- 이전 페이지 -->
-	      <a href="#" class="page-btn active" onclick="changePage(1)">1</a>
-	      <a href="#" class="page-btn" onclick="changePage(2)">2</a>
-	      <a href="#" class="page-btn" onclick="changePage(3)">3</a>
-	      <a href="#" class="page-btn" onclick="changePage(4)">4</a>
-	      <a href="#" class="page-btn" onclick="changePage(5)">5</a>
-	      <a href="#" class="page-btn" onclick="changePage(6)">6</a>
-	      <a href="#" class="page-btn" onclick="changePage(7)">7</a>
-	      <a href="#" class="page-btn" onclick="changePage(8)">8</a>
-	      <a href="#" class="page-btn" onclick="changePage(9)">9</a>
-	      <a href="#" class="page-btn" onclick="changePage(10)">10</a>
-	      <a href="#" id="next" onclick="changePage('next')">&gt;</a>
-	      <!-- 다음 페이지 -->
-	    </div>
+	   <div class="pagination">
+		    <!-- 이전 버튼 -->
+		    <c:if test="${pageMaker.prev}">
+		        <a href="${pageContext.request.contextPath}/prescription/prescriptionList.do?page=${pageMaker.startPage - 1}&perPageNum=${cri.perPageNum}">&lt;</a>
+		    </c:if>
+		
+		    <!-- 페이지 번호 버튼 -->
+		   <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+			    <a href="${pageContext.request.contextPath}/prescription/prescriptionList.do?page=${num}&perPageNum=${cri.perPageNum != null ? cri.perPageNum : 10}"
+			       class="${num == cri.page ? 'active' : ''}">${num}</a>
+			</c:forEach>
+		
+		    <!-- 다음 버튼 -->
+		    <c:if test="${pageMaker.next}">
+		        <a href="${pageContext.request.contextPath}/prescription/prescriptionList.do?page=${pageMaker.endPage + 1}&perPageNum=${cri.perPageNum}">&gt;</a>
+		    </c:if>
+		</div>
     </div>
     
     <%@ include file="/WEB-INF/footer.jsp" %>

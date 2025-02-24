@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.letsgotravel.myapp.domain.DrugVo;
 import com.letsgotravel.myapp.domain.PrescriptionVo;
+import com.letsgotravel.myapp.domain.SearchCriteria;
 import com.letsgotravel.myapp.persistance.PrescriptionMapper;
 
 
@@ -25,6 +26,9 @@ public interface PrescriptionService {
 	List<PrescriptionVo> getPrescriptionsByMidx(Integer midx);
 	
 	 void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions);
+	 
+	 List<PrescriptionVo> getPrescriptionsByMidxWithPaging(int midx, SearchCriteria cri);
+	 int getTotalPrescriptionsCount(int midx, SearchCriteria cri);
 
 
 }

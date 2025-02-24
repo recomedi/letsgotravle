@@ -1,6 +1,8 @@
 package com.letsgotravel.myapp.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.letsgotravel.myapp.domain.DrugVo;
 import com.letsgotravel.myapp.domain.PrescriptionVo;
+import com.letsgotravel.myapp.domain.SearchCriteria;
 import com.letsgotravel.myapp.persistance.PrescriptionMapper;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -143,6 +146,20 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		        }
 		    }
 		}
+	
+	@Override
+	public List<PrescriptionVo> getPrescriptionsByMidxWithPaging(int midx, SearchCriteria cri) {
+	    Map<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("midx", midx);
+	    paramMap.put("cri", cri); // MyBatis에서 cri.perPageNum, cri.pageStart로 접근 가능
+
+	    return pm.getPrescriptionsByMidxWithPaging(paramMap);
+	}
+
+	@Override
+	public int getTotalPrescriptionsCount(int midx, SearchCriteria cri) {
+	    return pm.getTotalPrescriptionsCount(midx, cri);
+	}
 
 
 

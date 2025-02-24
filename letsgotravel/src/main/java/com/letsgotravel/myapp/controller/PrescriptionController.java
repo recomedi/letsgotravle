@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +30,9 @@ import com.letsgotravel.myapp.api.EasyCodefConnector;
 import com.letsgotravel.myapp.api.EasyCodefToken;
 import com.letsgotravel.myapp.domain.DrugVo;
 import com.letsgotravel.myapp.domain.MemberVo;
+import com.letsgotravel.myapp.domain.PageMaker;
 import com.letsgotravel.myapp.domain.PrescriptionVo;
+import com.letsgotravel.myapp.domain.SearchCriteria;
 import com.letsgotravel.myapp.service.MemberService;
 import com.letsgotravel.myapp.service.PrescriptionService;
 
@@ -624,29 +627,38 @@ public class PrescriptionController {
 	
 	
 	
-			@RequestMapping(value = "prescriptionList.do", method = RequestMethod.GET)
-			public String prescriptionList(HttpSession session, Model model, @RequestParam(value = "midx", required = false) Integer midx) {
-				logger.debug("prescriptionList 들어옴");
-				// 🔹 로그인 여부 확인
+			@RequestMapping(value = "/prescriptionList.do", method = RequestMethod.GET)
+			public String prescriptionList(
+			        HttpSession session,  // ✅ 세션에서 midx 가져오기
+			        SearchCriteria cri,   // ✅ `SearchCriteria` 자동 바인딩
+			        Model model
+			) {
+			    Integer midx = (Integer) session.getAttribute("midx");  
 			    if (midx == null) {
-			        midx = (Integer) session.getAttribute("midx");
-			        if (midx == null) {
-			            return "redirect:/member/memberLogin.do"; // 로그인 안 한 경우 로그인 페이지로 이동
-			        }
+			        model.addAttribute("error", "로그인이 필요합니다.");
+			        return "redirect:/memberLogin.do";  
 			    }
 
-			    // 🔹 이제 세션이 아니라 DB에서 처방전 데이터를 가져옴
-			    List<PrescriptionVo> prescriptions = prescriptionService.getPrescriptionsByMidx(midx);
+			    // ✅ 페이지네이션 정보 확인 로그 추가
+			    System.out.println("현재 페이지: " + cri.getPage());
+			    System.out.println("페이지당 개수: " + cri.getPerPageNum());
 
-			    // 🔹 만약 DB에도 데이터가 없다면 본인인증 페이지로 이동
-//			    if (prescriptions == null || prescriptions.isEmpty()) {
-//			        return "redirect:/prescription/certification.do";
-//			    }
+			    int totalCount = prescriptionService.getTotalPrescriptionsCount(midx, cri);
+			    PageMaker pageMaker = new PageMaker();
+			    pageMaker.setCri(cri);
+			    pageMaker.setTotalCount(totalCount);
 
-			    // 🔹 가져온 데이터 모델에 추가
+			    List<PrescriptionVo> prescriptions = prescriptionService.getPrescriptionsByMidxWithPaging(midx, cri);
+			    
 			    model.addAttribute("prescriptions", prescriptions);
+			    model.addAttribute("pageMaker", pageMaker);
+			    model.addAttribute("totalCount", totalCount);
+			    model.addAttribute("cri", cri); // ✅ `cri` 객체를 Model에 추가
+
 			    return "WEB-INF/prescription/prescriptionList";
 			}
+
+
 
 
 	
