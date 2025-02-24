@@ -1,12 +1,14 @@
 package com.letsgotravel.myapp.persistance;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.letsgotravel.myapp.domain.DrugVo;
 import com.letsgotravel.myapp.domain.PrescriptionVo;
+import com.letsgotravel.myapp.domain.SearchCriteria;
 
 @Mapper
 public interface PrescriptionMapper {
@@ -25,4 +27,9 @@ public interface PrescriptionMapper {
 
     // ✅ 특정 회원의 기존 처방전 삭제
     int resetPrescriptionsByMidx(@Param("midx") int midx);
+
+    int getTotalPrescriptionsCount(@Param("midx") int midx, @Param("cri") SearchCriteria cri);
+
+	List<PrescriptionVo> getPrescriptionsByMidxWithPaging(Map<String, Object> paramMap);
+
 }

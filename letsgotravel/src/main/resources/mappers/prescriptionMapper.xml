@@ -52,7 +52,21 @@
 	        <result property="resDailyDosesNumber" column="resDailyDosesNumber"/>
 	        <result property="resTotalDosingdays" column="resTotalDosingdays"/>
 	    </collection>
-	</resultMap>	
+	</resultMap>
+	
+	<select id="getTotalPrescriptionsCount" parameterType="map" resultType="int">
+	    SELECT COUNT(*) FROM prescription WHERE midx = #{midx}
+	</select>
+	
+	<select id="getPrescriptionsByMidxWithPaging" parameterType="map" resultType="pv">
+	    SELECT * FROM prescription
+	    WHERE midx = #{midx}
+	    ORDER BY resMenufactureDate DESC
+	    LIMIT #{cri.perPageNum} OFFSET #{cri.pageStart}
+	</select>
+	
+	
+
 
     <!-- 처방전 저장 -->
     <insert id="insertPrescription" parameterType="com.letsgotravel.myapp.domain.PrescriptionVo" useGeneratedKeys="true" keyProperty="pidx">
