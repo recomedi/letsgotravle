@@ -26,5 +26,4 @@ public interface PrescriptionService {
 	
 	 void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions);
 
-
 }

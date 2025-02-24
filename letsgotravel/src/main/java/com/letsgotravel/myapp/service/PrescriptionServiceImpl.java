@@ -143,10 +143,4 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		        }
 		    }
 		}
-
-
-
-
-
-
 }

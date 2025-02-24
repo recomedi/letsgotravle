@@ -25,6 +25,4 @@ public interface PrescriptionMapper {
 
     // ✅ 특정 회원의 기존 처방전 삭제
     int resetPrescriptionsByMidx(@Param("midx") int midx);
-
-
 }

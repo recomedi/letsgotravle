@@ -31,7 +31,7 @@ public class ScrapController {
 
         if (midx == null) {  //로그인 안 했으면 로그인 페이지로 이동
             logger.warn("로그인이 필요합니다.");
-            return "redirect:/login.do"; 
+            return "redirect:/member/memberLogin.do";
         }
 
         logger.info("scrapList 실행됨! midx: " + midx + ", page: " + cri.getPage());
