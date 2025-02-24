@@ -106,6 +106,7 @@ public class TravelController {
 	    System.out.println(prompt1);
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 
+	    System.out.println("축제 제외 결과 : " + openAIResult1);
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray(openAIResult1);
 	    
 	    for(Map<String, Object> openAIResult : openAIResult1Array) {
@@ -157,9 +158,9 @@ public class TravelController {
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
 	    // prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 도시는 ");
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개랑 음식점 2개 추천해줘. 도시는 ");  // 개발용 코드. 수정예정
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 대표 관광지 2개랑 대표 음식점 2개 추천해줘. 대표 관광지랑 대표 음식점은 꼭 ");  // 개발용 코드. 수정예정
 	    prompt1.append(destination);
-	    prompt1.append("이고 총 인원은 ");
+	    prompt1.append(" 도시에 위치한 곳만 추천해줘. 방문할 총 인원은 ");
 	    prompt1.append(peopleCount);
 	    prompt1.append("명이고 예산은 ");	    
 	    prompt1.append(budgetMin + "만원 ~ " + budgetMax + "만원");
@@ -216,7 +217,7 @@ public class TravelController {
 
 	@RequestMapping(value = "/travelModify.do")
 	public String travelModify(
-			TravelConditionsVo tv, 
+			TravelConditionsVo tv,
 			@RequestParam(value = "sights", required = false) String sights, 
 			@RequestParam(value = "restaurants", required = false) String restaurants, 
 			Model model) throws Exception {
@@ -284,7 +285,8 @@ public class TravelController {
 			@RequestParam(value = "sights", required = false) String sights,
 			@RequestParam(value = "restaurants", required = false) String restaurants,
 			@RequestParam(value = "destination", required = false) String destination,
-			Model model) {
+			@RequestParam(value = "duration", required = false) int duration,
+			Model model) throws Exception {
 		logger.info("travelDetails 들어옴");
 
 		logger.info("calendarData:" + calendarData);
@@ -295,6 +297,9 @@ public class TravelController {
 //		//占쏙옙占쏙옙 占쏙옙체 占쏙옙占쏙옙
 //		sessionStorage.clear();		
 
+		ArrayList<ArrayList<Map<String, Object>>> calendarDataArrayAll = travelRecommendation.changeArray5(calendarData, duration);
+	    System.out.println(calendarDataArrayAll);
+	    
 		model.addAttribute("destination", destination);
 		
 		return "WEB-INF/travel/travelDetails";

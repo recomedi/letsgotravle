@@ -203,6 +203,49 @@ System.out.println(jsonArray);
         
         return travelCityList;
     }
+    
+    public ArrayList<ArrayList<Map<String, Object>>> changeArray5(String calendarData, int duration) throws Exception {
+           
+    	ArrayList<ArrayList<Map<String, Object>>> calendarDataListAll = new ArrayList<ArrayList<Map<String, Object>>>(); 
+    	
+    	for(int i = 0; i < duration; i++) {
+            ArrayList<Map<String, Object>> calendarDataList = new ArrayList<Map<String, Object>>();
+            calendarDataListAll.add(calendarDataList);
+    	}
+        
+        // content가 JSON 배열로 시작하는지 확인
+        // String cleanJson = calendarData.substring(calendarData.indexOf("["), calendarData.lastIndexOf("]") + 1);
+        
+        // JSON 배열 파싱 후 ArrayList로 변환
+        try {
+        	
+            JSONArray jsonArray = new JSONArray(calendarData);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+            	            	
+                JSONObject data = jsonArray.getJSONObject(i);
+                int day = Integer.parseInt(data.getString("start").substring(8,10));
+                System.out.println("day :" + day);
+                
+                new JSONArray(calendarData);
+                
+                HashMap<String, Object> dataMap = new HashMap<String, Object>();
+                dataMap.put("title", data.getString("title"));
+                dataMap.put("start", data.getString("start"));
+                
+                calendarDataListAll.get(day-1).add(dataMap);
+                
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("calendarDataListAll :" + calendarDataListAll);
+        return calendarDataListAll;
+    }
+    
+    
 }
 
 
