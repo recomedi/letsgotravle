@@ -5,11 +5,11 @@
 <mapper namespace="com.letsgotravel.myapp.persistance.PrescriptionMapper">
 
 
-	<delete id="resetDrugsByMidx" parameterType="int">
+	<delete id="resetDrugsByMidx" parameterType="java.lang.Integer">
 	    DELETE FROM DRUG WHERE pidx IN (SELECT pidx FROM PRESCRIPTION WHERE midx = #{midx});
 	</delete>
 	
-	<delete id="resetPrescriptionsByMidx" parameterType="int">
+	<delete id="resetPrescriptionsByMidx" parameterType="java.lang.Integer">
 	    DELETE FROM PRESCRIPTION WHERE midx = #{midx};
 	</delete>
 

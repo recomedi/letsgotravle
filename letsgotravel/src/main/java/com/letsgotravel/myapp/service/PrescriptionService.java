@@ -17,16 +17,14 @@ public interface PrescriptionService {
     PrescriptionVo getPrescriptionDetail(int pidx);
 
 	int savePrescription(PrescriptionVo prescription);
-	
+
 	void saveDrug(DrugVo drug);
 
 	int savePrescriptionAndDrugs(PrescriptionVo prescription, List<DrugVo> drugs);
 
 	List<PrescriptionVo> getPrescriptionsByMidx(Integer midx);
+	
+	 void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions);
 
-	void resetAndSavePrescriptions(PrescriptionVo prescription, List<DrugVo> list);
 
-	void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions);
-
-    
 }

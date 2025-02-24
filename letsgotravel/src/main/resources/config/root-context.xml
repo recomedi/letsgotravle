@@ -73,7 +73,6 @@
 	<!-- ✅ 트랜잭션 활성화 -->
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 	
-
 	<!-- ✅ AOP 설정 -->
 	<aop:aspectj-autoproxy />
 

@@ -225,8 +225,8 @@ public class PrescriptionController {
 
 	        // ✅ CODEF API 호출 준비
 	        EasyCodefToken tokenService = new EasyCodefToken();
-	        String clientId = "339dc4d8-9138-44a1-a2e3-7cf740b089a9";
-	        String clientSecret = "06ab49ab-0fb7-42af-991c-49cc18a76a3f";
+	        String clientId = CLIENT_ID;
+	        String clientSecret = CLIENT_SECRET;
 	        String accessToken = tokenService.getAccessToken(clientId, clientSecret);
 
 	        if (accessToken.isEmpty()) {
@@ -240,7 +240,7 @@ public class PrescriptionController {
 	        String requestBody = objectMapper.writeValueAsString(requestData);
 
 	        HashMap<String, Object> apiResponse = connector.getRequestProduct(
-	                "https://development.codef.io/v1/kr/public/hw/hira-list/my-medicine",
+	                API_URL,
 	                accessToken,
 	                requestBody
 	        );
@@ -284,7 +284,7 @@ public class PrescriptionController {
 	                    }
 	                }
 	            } else {
-	                // 📌 보안문자 필요 없음 → 바로 처방전 저장 후 목록 페이지로 이동
+	                // 📌 보안문자 필요 없음 → 기존 처방전 삭제 후 저장
 	                List<PrescriptionVo> prescriptions = getPrescriptionDataFromResponse(data);
 
 	                if (prescriptions == null || prescriptions.isEmpty()) {
@@ -292,12 +292,8 @@ public class PrescriptionController {
 	                    return response; // 본인인증이 필요하면 다시 인증 페이지로 이동
 	                }
 
-	                // 📌 처방전 데이터를 DB에 저장
-	                for (PrescriptionVo prescription : prescriptions) {
-	                    prescription.setMidx(midx);
-	                    System.out.println("📌 처방전 저장 시작: " + prescription.getCommBrandName());
-	                    prescriptionService.resetAndSavePrescriptions(prescription, prescription.getDrugs());
-	                }
+	                // ✅ 기존 처방전 및 약물 데이터 삭제 후 새 데이터 저장
+	              
 
 	                // 📌 저장이 끝나면 처방전 목록 페이지로 리디렉트
 	                response.put("redirect", "/prescription/prescriptionList.do");
@@ -307,11 +303,13 @@ public class PrescriptionController {
 
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	        response.put("error", "본인인증 중 오류 발생");
 	    }
 
 	    response.put("error", "요청 처리 중 오류 발생");
 	    return response;
 	}
+
 
 
 
@@ -365,22 +363,6 @@ public class PrescriptionController {
 	    return prescriptions;
 	}
 
-
-
-
-
-
-
-	private boolean isBase64(String str) {
-	    try {
-	        Base64.getDecoder().decode(str); // 디코딩 시도
-	        return true; // 디코딩 성공 시 유효한 Base64 문자열
-	    } catch (IllegalArgumentException e) {
-	        return false; // 디코딩 실패 시 유효하지 않은 문자열
-	    }
-	}
-	
-	
 
 	
 			@RequestMapping(value = "processSecureInput.do", method = RequestMethod.POST)
@@ -616,12 +598,11 @@ public class PrescriptionController {
 			                    prescription.setDrugs(drugs);
 			                    prescriptions.add(prescription);
 			                }
+			                prescriptionService.resetAndSavePrescriptions(midx, prescriptions);
+			                System.out.println("📌 기존 처방전 데이터 삭제 후 새로운 데이터 저장 완료!");
 
 			                // 🔹 DB에 처방전 저장
-			                for (PrescriptionVo prescription : prescriptions) {
-			                    prescription.setMidx(midx);
-			                    prescriptionService.resetAndSavePrescriptions(prescription, prescription.getDrugs());
-			                }
+			               
 
 			                response.put("verified", true);
 			                response.put("redirect", "/prescription/prescriptionList.do");
@@ -668,37 +649,22 @@ public class PrescriptionController {
 			}
 
 
-
-
-
-
-
-
 	
-	@RequestMapping(value = "prescriptionDetail.do", method = RequestMethod.GET)
-	public String getPrescriptionDetail(@RequestParam("id") int pidx, HttpSession session, Model model) {
-	    System.out.println("📌 받은 처방전 ID 값: " + pidx); // 요청된 ID 확인
-	    PrescriptionVo prescription = prescriptionService.getPrescriptionDetail(pidx);
-
-
-	    if (prescription == null) {
-	        System.out.println("❌ 해당 처방전이 존재하지 않음.");
-	        return "redirect:/prescription/prescriptionList.do";
-	    }
-
-	    model.addAttribute("prescription", prescription);
-	    model.addAttribute("drugs", prescription.getDrugs());
-
-	    return "WEB-INF/prescription/prescriptionDetail";
-	        }
-	
-	
-
-
-
-
-
-
-
+			@RequestMapping(value = "prescriptionDetail.do", method = RequestMethod.GET)
+			public String getPrescriptionDetail(@RequestParam("id") int pidx, HttpSession session, Model model) {
+			    System.out.println("📌 받은 처방전 ID 값: " + pidx); // 요청된 ID 확인
+			    PrescriptionVo prescription = prescriptionService.getPrescriptionDetail(pidx);
+		
+		
+			    if (prescription == null) {
+			        System.out.println("❌ 해당 처방전이 존재하지 않음.");
+			        return "redirect:/prescription/prescriptionList.do";
+			    }
+		
+			    model.addAttribute("prescription", prescription);
+			    model.addAttribute("drugs", prescription.getDrugs());
+		
+			    return "WEB-INF/prescription/prescriptionDetail";
+			        }
 	
 }

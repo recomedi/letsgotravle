@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 @Service
+@Transactional
 public class PrescriptionServiceImpl implements PrescriptionService {
 
 
@@ -24,12 +25,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
  private JdbcTemplate jdbcTemplate; // ⬅ 이 부분 추가!
 
     private PrescriptionMapper pm;
-    
+
     @Autowired
     public PrescriptionServiceImpl (SqlSession sqlSession) {
     	this.pm =sqlSession.getMapper(PrescriptionMapper.class);
     }
-    
+
 
     
     @Override
@@ -54,45 +55,13 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
         return prescription;
     }
-    
-    @Transactional
-    @Override
-    public void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions) {
-        System.out.println("📌 기존 처방 데이터 삭제 시작...");
-        
-        int deletedDrugs = pm.resetDrugsByMidx(midx);
-        System.out.println("✅ 삭제된 약물 개수: " + deletedDrugs);
-
-        int deletedPrescriptions = pm.resetPrescriptionsByMidx(midx);
-        System.out.println("✅ 삭제된 처방전 개수: " + deletedPrescriptions);
-
-        // 삭제 후 DB에 남아있는 데이터 개수 확인 (디버깅용)
-        List<PrescriptionVo> checkPrescriptions = pm.findPrescriptionsByMidx(midx);
-        System.out.println("📌 삭제 후 남은 처방전 개수: " + (checkPrescriptions != null ? checkPrescriptions.size() : 0));
-
-        for (PrescriptionVo prescription : prescriptions) {
-            prescription.setMidx(midx);
-            pm.insertPrescription(prescription);
-            int pidx = prescription.getPidx();
-
-            for (DrugVo drug : prescription.getDrugs()) {
-                drug.setPidx(pidx);
-                pm.insertDrug(drug);
-            }
-        }
-    }
-
-
-
-    
-
 
 
 
     @Override
     public int savePrescription(PrescriptionVo prescription) {
     String sql = "INSERT INTO PRESCRIPTION (midx, resMenufactureDate, resPrescribeOrg, resTelNo, commBrandName, commTelNo, date, ip, delyn) VALUES (?, ?, ?, ?, ?, ?, NOW(), '127.0.0.1', 'N')";
-        
+
         KeyHolder keyHolder = new GeneratedKeyHolder(); // 자동 생성된 pidx 받기
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -116,7 +85,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 		 String sql = "INSERT INTO DRUG (pidx, resDrugName, resPrescribeDrugEffect, resIngredients, resDrugCode, resContent, resOneDose, resDailyDosesNumber, resTotalDosingdays, date, ip, delyn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), '127.0.0.1', 'N')";
 	        jdbcTemplate.update(sql, drug.getPidx(), drug.getResDrugName(), drug.getResPrescribeDrugEffect(), drug.getResIngredients(), drug.getResDrugCode(), drug.getResContent(), drug.getResOneDose(), drug.getResDailyDosesNumber(), drug.getResTotalDosingdays());
 	    }
-	
+
 	
 	@Override
 	public int savePrescriptionAndDrugs(PrescriptionVo prescription, List<DrugVo> drugs) {
@@ -146,17 +115,38 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
 	    return prescriptions;
 	}
-
-
+	
 	@Override
-	public void resetAndSavePrescriptions(PrescriptionVo prescription, List<DrugVo> list) {
-		System.out.println("resetAndSavePrescriptions실행됨");
-		
-	};
-	
-	
-	
-	
-	
+	@Transactional
+	public void resetAndSavePrescriptions(int midx, List<PrescriptionVo> prescriptions) {
+			System.out.println("reset enter?");
+	    // ✅ 기존 처방전과 약물 데이터 삭제
+		 int deletedDrugs = pm.resetDrugsByMidx(midx);
+		    int deletedPrescriptions = pm.resetPrescriptionsByMidx(midx);
+
+		    System.out.println("📌 삭제된 약물 개수: " + deletedDrugs);
+		    System.out.println("📌 삭제된 처방전 개수: " + deletedPrescriptions);
+
+		    if (deletedPrescriptions == 0) {
+		        System.out.println("❌ 기존 처방전이 삭제되지 않음! MyBatis 실행 문제 확인 필요.");
+		    }
+
+		    // ✅ 새로운 데이터 저장
+		    for (PrescriptionVo prescription : prescriptions) {
+		        prescription.setMidx(midx); // 회원 ID 설정
+		        int pidx = savePrescription(prescription); // 새로운 처방전 저장
+		        System.out.println("📌 새로운 처방전 저장 완료, pidx: " + pidx);
+		        for (DrugVo drug : prescription.getDrugs()) {
+		            drug.setPidx(pidx);
+		            saveDrug(drug); // 새로운 약물 정보 저장
+		            System.out.println("📌 새로운 약물 저장 완료: " + drug.getResDrugName());
+		        }
+		    }
+		}
+
+
+
+
+
 
 }
