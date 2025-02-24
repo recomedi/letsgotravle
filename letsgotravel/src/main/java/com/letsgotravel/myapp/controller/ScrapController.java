@@ -26,24 +26,23 @@ public class ScrapController {
     private PageMaker pageMaker;
 
     @RequestMapping(value = "/scrapList.do")
-    public String scrapList() {
-//    public String scrapList(HttpSession session, Criteria cri, Model model) {
-//        Integer midx = (Integer) session.getAttribute("midx"); // 🔹 세션에서 midx 가져오기
-//
-//        if (midx == null) {  //로그인 안 했으면 로그인 페이지로 이동
-//            logger.warn("로그인이 필요합니다.");
-//            return "redirect:/login.do"; 
-//        }
-//
-//        logger.info("scrapList 실행됨! midx: " + midx + ", page: " + cri.getPage());
-//
-//        // 특정 사용자의 스크랩 목록 가져오기
-//        model.addAttribute("scrapList", scrapService.getScrapList(midx, cri));
-//
-//        int totalCount = scrapService.scrapTotalCount(midx);
-//        pageMaker.setCri(cri);
-//        pageMaker.setTotalCount(totalCount);
-//        model.addAttribute("pageMaker", pageMaker);
+    public String scrapList(HttpSession session, Criteria cri, Model model) {
+        Integer midx = (Integer) session.getAttribute("midx"); // 🔹 세션에서 midx 가져오기
+
+        if (midx == null) {  //로그인 안 했으면 로그인 페이지로 이동
+            logger.warn("로그인이 필요합니다.");
+            return "redirect:/member/memberLogin.do";
+        }
+
+        logger.info("scrapList 실행됨! midx: " + midx + ", page: " + cri.getPage());
+
+        // 특정 사용자의 스크랩 목록 가져오기
+        model.addAttribute("scrapList", scrapService.getScrapList(midx, cri));
+
+        int totalCount = scrapService.scrapTotalCount(midx);
+        pageMaker.setCri(cri);
+        pageMaker.setTotalCount(totalCount);
+        model.addAttribute("pageMaker", pageMaker);
 
         return "WEB-INF/scrap/scrapList";
     }
