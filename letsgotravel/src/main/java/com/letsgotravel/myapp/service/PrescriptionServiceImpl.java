@@ -161,9 +161,4 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	    return pm.getTotalPrescriptionsCount(midx, cri);
 	}
 
-
-
-
-
-
 }

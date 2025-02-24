@@ -30,5 +30,4 @@ public interface PrescriptionService {
 	 List<PrescriptionVo> getPrescriptionsByMidxWithPaging(int midx, SearchCriteria cri);
 	 int getTotalPrescriptionsCount(int midx, SearchCriteria cri);
 
-
 }

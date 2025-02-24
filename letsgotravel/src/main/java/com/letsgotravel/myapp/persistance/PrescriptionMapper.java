@@ -32,6 +32,4 @@ public interface PrescriptionMapper {
 
 	List<PrescriptionVo> getPrescriptionsByMidxWithPaging(Map<String, Object> paramMap);
 
-
-
 }

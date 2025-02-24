@@ -82,9 +82,7 @@ public class TravelController {
 	    prompt1.append(budgetMin + "만원 ~ " + budgetMax + "만원");
 	    prompt1.append("이야. 키워드는 ");
 	    prompt1.append(thema);
-	    prompt1.append("이고 여행경보 2단계초과 지역인 ");
-	    prompt1.append("러시아");  // 수정예정
-	    prompt1.append("와 내가 살고있는 한국은 제외하고 추천해줘.");
+	    prompt1.append("이고 내가 살고있는 한국은 제외하고 추천해줘.");
 	    prompt1.append(departureMonth);
 	    prompt1.append(" 기준의 일정을 추천해줬으면 좋겠어. 여행지의 대표관광지(3개), 대표음식(3개), ");
 	    prompt1.append(departureMonth);
@@ -124,7 +122,7 @@ public class TravelController {
 		    prompt2.append("없을 경우 없다고 말해줘.");
 		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
-			//String openAIResult2 = "{\"축제\" : [\"시부야 요요기 공원 이벤트 광장\", \"사카나 앤 재팬 페스티벌\"]}";			
+			//String openAIResult2 = "{\"축제\" : [\"시부야 요요기 공원 이벤트 광장\", \"사카나 앤 재팬 페스티벌\"]}";
 			ArrayList<String> openAIResultString = travelRecommendation.changeArray2(openAIResult2);
 		    
 		    if(!(openAIResultString.isEmpty())) {
@@ -159,7 +157,7 @@ public class TravelController {
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
 	    // prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 도시는 ");
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개랑 음식점 2개 추천해줘. 도시는 ");  // 개발옹 코드. 수정예정
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개랑 음식점 2개 추천해줘. 도시는 ");  // 개발용 코드. 수정예정
 	    prompt1.append(destination);
 	    prompt1.append("이고 총 인원은 ");
 	    prompt1.append(peopleCount);
@@ -180,7 +178,34 @@ public class TravelController {
 	    
 	    ArrayList<Map<String, Object>> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
 	    ArrayList<Map<String, Object>> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
-	   
+	   // 출력 내
+	    System.out.println("\n[관광지 목록 및 위도/경도 정보]");
+	    for (Map<String, Object> sight : sightListArray) {
+	        System.out.println("관광지: " + sight.get("sight"));
+	        System.out.println("위도: " + sight.get("latitude"));
+	        System.out.println("경도: " + sight.get("longitude"));
+	        System.out.println("설명: " + sight.get("설명"));
+	        System.out.println("---------------------------------");
+	    }
+
+	    System.out.println("\n[음식점 목록 및 위도/경도 정보]");
+	    for (Map<String, Object> restaurant : restaurantListArray) {
+	        System.out.println("음식점: " + restaurant.get("sight")); 
+	        System.out.println("위도: " + restaurant.get("latitude"));
+	        System.out.println("경도: " + restaurant.get("longitude"));
+	        System.out.println("설명: " + restaurant.get("설명"));
+	        System.out.println("---------------------------------");
+	    }
+	    
+	    if (!sightListArray.isEmpty()) {
+	        Map<String, Object> firstSight = sightListArray.get(0);
+	        model.addAttribute("firstLatitude", firstSight.get("latitude"));
+	        model.addAttribute("firstLongitude", firstSight.get("longitude"));
+	    } else {
+	        model.addAttribute("firstLatitude", 0); // 기본값 (0,0)
+	        model.addAttribute("firstLongitude", 0);
+	    }
+	    
 		model.addAttribute("destination", destination);
 		model.addAttribute("openAIResult1Array", openAIResult1Array);
 		model.addAttribute("sightListArray", sightListArray);
@@ -307,19 +332,17 @@ public class TravelController {
 		    prompt2.append(sight);
 		    prompt2.append("에 대해 에 대해 위도, 경도, 설명(String 형식)해줘. \"물론입니다\"나 \"알겠습니다\" 같은 부가적인 말은 하지 말아줘. 길고 자세하게 설명 부탁해. 존댓말로 해줘. 위의 내용을 json 형식으로 부탁해. 예시를 보여줄게.");
 		    prompt2.append("[{" + 
-				    		" \"latitude\": \"37.5665\", " +
-				    		" \"longitude\": \"37.5665\", " +
+				    		" \"latitude\": \"35.6587722\", " +
+				    		" \"longitude\": \"139.745389\", " +
 				    		" \"설명\": \"도쿄타워(Tokyo Tower)는 일본 도쿄에 위치한 상징적인 탑으로, 1958년에 완공되었습니다. 높이는 약 333미터로, 당시 세계에서 가장 높은 철탑으로 설계되었으며, 프랑스의 파리 에펠탑을 모델로 한 디자인이 특징입니다.\"" +
 				            "}]");
 		    
-		    System.out.println(prompt2);
 			String openAIResult2 = openAiService.getTravelRecommendation(prompt2.toString());
+			Map<String, Object> sightInfo = travelRecommendation.changeString(openAIResult2);
+			
+	        sightInfo.put("sight", sight);  
 
-		    Map<String, Object> openAIResult1String = travelRecommendation.changeString(openAIResult2);
-		    
-		    openAIResult1String.put(sightType, sight);			
-
-		    returnSights.add(openAIResult1String);
+	        returnSights.add(sightInfo);
 	    }
 	    
 	    return returnSights;

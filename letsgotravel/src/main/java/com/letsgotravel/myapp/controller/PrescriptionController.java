@@ -679,4 +679,5 @@ public class PrescriptionController {
 			    return "WEB-INF/prescription/prescriptionDetail";
 			        }
 	
+
 }

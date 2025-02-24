@@ -46,7 +46,7 @@
                     <li class="relative step-item flex justify-content-center align-items-center"><i class="fa-solid fa-star-of-life"></i></li>
                 </ul>
             
-                <h3 class="main-title center mb-70">🤔 도시를 선택해주세요.</h3>
+                <h3 class="main-title center mb-10">🤔 도시를 선택해주세요.</h3>
                 <p class="center mb-70">(각 지역은 여행 제한이나 입국 규제 등이 있을 수 있으니, 출발 전에 최신 정보를 확인하시기 바랍니다.)</p>
 	
             	<form name="frm">
@@ -272,7 +272,14 @@
                         
                         let map = new google.maps.Map(mapDiv, {
                             center: latLng,
-                            zoom: 4
+                            zoom: 4, //확대 크기
+                            zoomControl: true,
+                            cameraControl: false,
+                            mapTypeControl: false, //지도,위성
+                            scaleControl: true, // 밑에 보이는 맵 크기
+                            streetViewControl: true,
+                            rotateControl: false,
+                            fullscreenControl: false,
                         });
 
                         new google.maps.Marker({
