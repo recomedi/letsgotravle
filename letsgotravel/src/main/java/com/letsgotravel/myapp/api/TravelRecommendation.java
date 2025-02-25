@@ -1,6 +1,7 @@
 package com.letsgotravel.myapp.api;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -205,7 +206,7 @@ System.out.println(jsonArray);
     }
     
     public ArrayList<ArrayList<Map<String, Object>>> changeArray5(String calendarData, int duration) throws Exception {
-           
+        
     	ArrayList<ArrayList<Map<String, Object>>> calendarDataListAll = new ArrayList<ArrayList<Map<String, Object>>>(); 
     	
     	for(int i = 0; i < duration; i++) {
@@ -223,7 +224,7 @@ System.out.println(jsonArray);
 
             for (int i = 0; i < jsonArray.length(); i++) {
             	            	
-                JSONObject data = jsonArray.getJSONObject(i);
+            	JSONObject data = jsonArray.getJSONObject(i);
                 int day = Integer.parseInt(data.getString("start").substring(8,10));
                 System.out.println("day :" + day);
                 
@@ -234,7 +235,7 @@ System.out.println(jsonArray);
                 dataMap.put("start", data.getString("start"));
                 
                 calendarDataListAll.get(day-1).add(dataMap);
-                
+
             }
 
         } catch (Exception e) {
@@ -242,9 +243,16 @@ System.out.println(jsonArray);
         }
         
         System.out.println("calendarDataListAll :" + calendarDataListAll);
+
+        for(int i = 0; i < duration; i++) {
+	        // start 기준으로 정렬
+	        calendarDataListAll.get(i).sort(Comparator.comparing(e -> e.get("start").toString()));
+        }
+        
+        System.out.println("calendarDataListAll :" + calendarDataListAll);
+        
         return calendarDataListAll;
     }
-    
     
 }
 
