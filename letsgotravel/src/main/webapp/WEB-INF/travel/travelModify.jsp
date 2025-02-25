@@ -39,6 +39,7 @@
                 	<input type="hidden" name="sights" id="sights">
                 	<input type="hidden" name="restaurants" id="restaurants">
                 	<input type="hidden" name="destination" id="destination">
+                	<input type="hidden" name="duration" id="duration">
                		<div class="calendar-wrap">
 	                    <div class="calendar-box">
 	                        <div id="calendar"></div>
@@ -250,6 +251,7 @@
 		    document.querySelector('#sights').value = sessionStorage.getItem('sights');
 		    document.querySelector('#restaurants').value = sessionStorage.getItem('restaurants');
 		    document.querySelector('#destination').value = sessionStorage.getItem('destination');
+		    document.querySelector('#duration').value = sessionStorage.getItem('duration');
 		    
 			let fm = document.frm;
 			fm.action="${pageContext.request.contextPath}/travel/travelDetails.do";

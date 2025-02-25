@@ -488,7 +488,7 @@ section:not(.allheaders) {
 <%@ include file="/WEB-INF/header1.jsp"%>
 
 <c:if test="${empty sessionScope.midx}">
-    <c:redirect url="/login.do" />
+    <c:redirect url="/member/memberLogin.do" />
 </c:if>
 
 <nav class="breadcrumb">
