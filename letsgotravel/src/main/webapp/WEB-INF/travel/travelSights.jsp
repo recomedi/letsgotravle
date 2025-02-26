@@ -163,15 +163,15 @@
 	    	var chkArray = {};
 	    	
 		    function getCheckedValues(name) {		
-		    	
+		    	alert(21);
 		    	const checkboxes = document.querySelectorAll('input[type="checkbox"][name="{name}"]:checked');
 		    	checkboxes.forEach(function(checkbox) {
-		    		
+		    		alert(2);
 		    	    // 'checkbox'는 체크된 체크박스를 가리킴
 		    	    const button = checkbox.closest('div').querySelector('button');  // 부모 요소에서 button을 찾음
 		    	    const textarea = button.querySelector('textarea');
 		    	    const value = textarea.value;
-		    	    
+		    	    alert("value : " + value);
 		    	    chkArray[checkbox.value] = value;
 		    	});
 
@@ -180,11 +180,11 @@
 		    getCheckedValues("sightCk");
 		    getCheckedValues("restaurantCk");
 		    document.querySelector("#placeName").value = JSON.stringify(chkArray);  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
-		    
+
 	    	function findCheckedValue(sights) {
 	    		
 				// 선택된 목록에서 value 찾기
-	   			let value = "";
+				let value = "";
 	   			findChecked(sights).forEach((el) => {
 	   				value += el.value + ', ';
 	   			});
