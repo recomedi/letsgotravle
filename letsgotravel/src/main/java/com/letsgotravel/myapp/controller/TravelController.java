@@ -90,7 +90,7 @@ public class TravelController {
 	    prompt1.append(departureMonth);
 	    prompt1.append(" 기준의 성수기여부, 한국 대비 물가, 한국 대비 치안, 한국 대비 위생, 한국 대비 교통, ");
 	    prompt1.append(departureMonth);
-	    prompt1.append(" 기간에 라마단같이 문화적으로 주의해야하는 기간이 있으면 알려줘. 위의 내용을 json 형식으로 6개의 도시를 알려줘. 예시를 보여줄게.");
+	    prompt1.append(" 기간에 라마단같이 문화적으로 주의해야하는 기간이 있으면 알려줘. 위의 내용을 json 형식으로 3개의 도시를 알려줘. 예시를 보여줄게.");  // 나머지 3개는 더보기 클릭시 보여줌
 	    prompt1.append("{" +
 		    	    "  \"나라/도시\": \"일본/오사카\"," +
 		    	    "  \"대표관광지\", [\"오사카 성\", \"유니버셜 스튜디오 재팬\"]," +
@@ -106,7 +106,6 @@ public class TravelController {
 	    System.out.println(prompt1);
 	    String openAIResult1 = openAiService.getTravelRecommendation(prompt1.toString());
 
-	    System.out.println("축제 제외 결과 : " + openAIResult1);
 	    ArrayList<Map<String, Object>> openAIResult1Array = travelRecommendation.changeArray(openAIResult1);
 	    
 	    for(Map<String, Object> openAIResult : openAIResult1Array) {
@@ -157,11 +156,11 @@ public class TravelController {
 	    StringBuilder prompt1 = new StringBuilder();
 	    prompt1.append("너는 ");
 	    prompt1.append(groupType);
-	    // prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 도시는 ");
-	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 대표 관광지 2개랑 대표 음식점 2개 추천해줘. 대표 관광지랑 대표 음식점은 꼭 ");  // 개발용 코드. 수정예정
+	    // prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 20개 이상과 음식점 20개 이상 추천해줘. 위치는 ");
+	    prompt1.append(" 여행전문가야. 내가 말하는 조건에 맞는 관광지 2개랑 음식점 2개 추천해줘. 위치는 ");  // 개발용 코드. 수정예정
 	    prompt1.append(destination);
-	    prompt1.append(" 도시에 위치한 곳만 추천해줘. 방문할 총 인원은 ");
-	    prompt1.append(peopleCount);
+	    prompt1.append("에 있는 곳이어야되. 유명한 관광지랑 유명한 음식점으로 추천해줘. 총 인원은 ");
+	    prompt1.append(peopleCount);	    
 	    prompt1.append("명이고 예산은 ");	    
 	    prompt1.append(budgetMin + "만원 ~ " + budgetMax + "만원");
 	    prompt1.append("이야. 키워드는 ");
@@ -217,9 +216,11 @@ public class TravelController {
 
 	@RequestMapping(value = "/travelModify.do")
 	public String travelModify(
-			TravelConditionsVo tv,
+			TravelConditionsVo tv, 
 			@RequestParam(value = "sights", required = false) String sights, 
 			@RequestParam(value = "restaurants", required = false) String restaurants, 
+			@RequestParam(value = "sightCk", required = false) String sightCk, 
+			@RequestParam(value = "restaurantCk", required = false) String restaurantCk, 			
 			Model model) throws Exception {
 		
 		logger.info("travelModify 들어옴");
@@ -232,6 +233,9 @@ public class TravelController {
 	    int budgetMax = tv.getBudgetMax();
 	    String thema = tv.getThema();
 	    int duration = tv.getDuration();
+	    
+	    System.out.println("sightCk" + sightCk);
+	    System.out.println("restaurantCk" + restaurantCk);
 	    
 	    // 추천 장소 prompt
 	    StringBuilder prompt1 = new StringBuilder();
@@ -298,9 +302,12 @@ public class TravelController {
 //		sessionStorage.clear();		
 
 		ArrayList<ArrayList<Map<String, Object>>> calendarDataArrayAll = travelRecommendation.changeArray5(calendarData, duration);
-	    System.out.println(calendarDataArrayAll);
-	    
+
+		System.out.println("sights : " + sights);
+		System.out.println("restaurants : " + restaurants);
 		model.addAttribute("destination", destination);
+		model.addAttribute("duration", duration);
+		model.addAttribute("calendarDataArrayAll", calendarDataArrayAll);
 		
 		return "WEB-INF/travel/travelDetails";
 	}

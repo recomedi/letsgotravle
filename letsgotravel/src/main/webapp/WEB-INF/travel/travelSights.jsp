@@ -62,7 +62,8 @@
 	                   	   <input type="hidden" name="sights" id="sightsInput">
 	                   	   <input type="hidden" name="restaurants" id="restaurantsInput">
 	                   	   <input type="hidden" name="duration" id="duration">
-	                   	   <input type="hidden" name="placeName" id="placeName">
+	                   	   <input type="hidden" name="placeName" id="sightCk">
+	                   	   <input type="hidden" name="placeName" id="restaurantCk">
 	                       <div class="flex justify-content-between">                    
 	                           <div class="btn-box flex">
 	                               <label class="btn btn2 green" for="sights" onClick="btnClick(this);">관광지</label> <label class="btn btn2" for="restaurants" onClick="btnClick(this);">음식점</label>
@@ -77,7 +78,7 @@
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck${status.index+1}"> ${sight}</label>
 								<button class="ml-5 center search-icon inline-block" type="button"
 								    onClick="viewDetail(this, ${requestScope.sightListArray[status.index]['latitude']}, ${requestScope.sightListArray[status.index]['longitude']});">
-								    <i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.sightListArray[status.index]["설명"]}</textarea></button><br>
+								    <i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none" data-value="ck${status.index+1}">${requestScope.sightListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                       
@@ -88,7 +89,7 @@
 	                            <label class="relative mt-20 pl-35 inline-block" for="ck10${status.index+1}"> ${restaurant}</label>
 	                           <button class="ml-5 center search-icon inline-block" type="button" 
 								    onClick="viewDetail(this, ${requestScope.restaurantListArray[status.index]['latitude']}, ${requestScope.restaurantListArray[status.index]['longitude']});">
-								    <i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none">${requestScope.restaurantListArray[status.index]["설명"]}</textarea></button><br>
+								    <i class="fa-solid fa-magnifying-glass icon"></i><textarea class="none" data-value="ck10${status.index+1}">${requestScope.restaurantListArray[status.index]["설명"]}</textarea></button><br>
 	                       		</c:forEach>
 	                       </div>
 	                   </div>
@@ -160,27 +161,24 @@
 		
 		if (ans == true) {		    		    
 
-	    	var chkArray = {};
-	    	
-		    function getCheckedValues(name) {		
-		    	alert(21);
-		    	const checkboxes = document.querySelectorAll('input[type="checkbox"][name="{name}"]:checked');
+		    function getCheckedValues(name) {
+		    	var chkArray = {};
+		    	
+		    	const checkboxes = document.querySelectorAll('input[type="checkbox"][name="' + name + '"]:checked');
 		    	checkboxes.forEach(function(checkbox) {
-		    		alert(2);
 		    	    // 'checkbox'는 체크된 체크박스를 가리킴
-		    	    const button = checkbox.closest('div').querySelector('button');  // 부모 요소에서 button을 찾음
-		    	    const textarea = button.querySelector('textarea');
+		    	    const checkboxId = checkbox.id;
+		    	    const textarea = document.querySelector('textarea[data-value="' + checkboxId + '"]');
 		    	    const value = textarea.value;
-		    	    alert("value : " + value);
+		    	    alert(checkbox.value + " : " + value);
 		    	    chkArray[checkbox.value] = value;
 		    	});
-
+		    	document.querySelector("#" + name).value = JSON.stringify(chkArray);  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
 		    }
 		    
 		    getCheckedValues("sightCk");
 		    getCheckedValues("restaurantCk");
-		    document.querySelector("#placeName").value = JSON.stringify(chkArray);  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
-
+		    
 	    	function findCheckedValue(sights) {
 	    		
 				// 선택된 목록에서 value 찾기
