@@ -62,8 +62,8 @@
 	                   	   <input type="hidden" name="sights" id="sightsInput">
 	                   	   <input type="hidden" name="restaurants" id="restaurantsInput">
 	                   	   <input type="hidden" name="duration" id="duration">
-	                   	   <input type="hidden" name="placeName" id="sightCk">
-	                   	   <input type="hidden" name="placeName" id="restaurantCk">
+	                   	   <input type="hidden" name="sightCk" id="sightCk">
+	                   	   <input type="hidden" name="restaurantCk" id="restaurantCk">
 	                       <div class="flex justify-content-between">                    
 	                           <div class="btn-box flex">
 	                               <label class="btn btn2 green" for="sights" onClick="btnClick(this);">관광지</label> <label class="btn btn2" for="restaurants" onClick="btnClick(this);">음식점</label>
@@ -162,16 +162,20 @@
 		if (ans == true) {		    		    
 
 		    function getCheckedValues(name) {
-		    	var chkArray = {};
 		    	
+		    	var chkArray = [];
+    	
 		    	const checkboxes = document.querySelectorAll('input[type="checkbox"][name="' + name + '"]:checked');
 		    	checkboxes.forEach(function(checkbox) {
+			    	var chkValue = {};
+			    	
 		    	    // 'checkbox'는 체크된 체크박스를 가리킴
 		    	    const checkboxId = checkbox.id;
 		    	    const textarea = document.querySelector('textarea[data-value="' + checkboxId + '"]');
 		    	    const value = textarea.value;
-		    	    alert(checkbox.value + " : " + value);
-		    	    chkArray[checkbox.value] = value;
+		    	    chkValue["name"] = checkbox.value;
+		    	    chkValue["info"] = value;
+		    	    chkArray.push(chkValue);
 		    	});
 		    	document.querySelector("#" + name).value = JSON.stringify(chkArray);  // JSON.stringify로 객체를 문자열로 변환하여 hidden input에 저장
 		    }

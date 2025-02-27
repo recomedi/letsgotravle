@@ -219,8 +219,8 @@ public class TravelController {
 			TravelConditionsVo tv, 
 			@RequestParam(value = "sights", required = false) String sights, 
 			@RequestParam(value = "restaurants", required = false) String restaurants, 
-			@RequestParam(value = "sightCk", required = false) String sightCk, 
-			@RequestParam(value = "restaurantCk", required = false) String restaurantCk, 			
+			@RequestParam(value = "sightCk", required = false) String[] sightCk, 
+			@RequestParam(value = "restaurantCk", required = false) String[] restaurantCk, 			
 			Model model) throws Exception {
 		
 		logger.info("travelModify 들어옴");
@@ -234,8 +234,8 @@ public class TravelController {
 	    String thema = tv.getThema();
 	    int duration = tv.getDuration();
 	    
-	    System.out.println("sightCk" + sightCk);
-	    System.out.println("restaurantCk" + restaurantCk);
+	    System.out.println("sightCk" + sightCk[0]);
+	    System.out.println("sightCk" + sightCk[1]);
 	    
 	    // 추천 장소 prompt
 	    StringBuilder prompt1 = new StringBuilder();
