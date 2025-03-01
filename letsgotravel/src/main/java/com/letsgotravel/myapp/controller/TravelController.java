@@ -179,24 +179,24 @@ public class TravelController {
 	    ArrayList<Map<String, Object>> sightListArray = getSightArray(openAIResult1Array, "추천관광지");
 	    ArrayList<Map<String, Object>> restaurantListArray = getSightArray(openAIResult1Array, "추천음식점");
 	   // 출력 내
-	    System.out.println("\n[관광지 목록 및 위도/경도 정보]");
-	    for (Map<String, Object> sight : sightListArray) {
-	        System.out.println("관광지: " + sight.get("sight"));
-	        System.out.println("위도: " + sight.get("latitude"));
-	        System.out.println("경도: " + sight.get("longitude"));
-	        System.out.println("설명: " + sight.get("설명"));
-	        System.out.println("---------------------------------");
-	    }
-
-	    System.out.println("\n[음식점 목록 및 위도/경도 정보]");
-	    for (Map<String, Object> restaurant : restaurantListArray) {
-	        System.out.println("음식점: " + restaurant.get("sight")); 
-	        System.out.println("위도: " + restaurant.get("latitude"));
-	        System.out.println("경도: " + restaurant.get("longitude"));
-	        System.out.println("설명: " + restaurant.get("설명"));
-	        System.out.println("---------------------------------");
-	    }
-	    
+//	    System.out.println("\n[관광지 목록 및 위도/경도 정보]");
+//	    for (Map<String, Object> sight : sightListArray) {
+//	        System.out.println("관광지: " + sight.get("sight"));
+//	        System.out.println("위도: " + sight.get("latitude"));
+//	        System.out.println("경도: " + sight.get("longitude"));
+//	        System.out.println("설명: " + sight.get("설명"));
+//	        System.out.println("---------------------------------");
+//	    }
+//
+//	    System.out.println("\n[음식점 목록 및 위도/경도 정보]");
+//	    for (Map<String, Object> restaurant : restaurantListArray) {
+//	        System.out.println("음식점: " + restaurant.get("sight")); 
+//	        System.out.println("위도: " + restaurant.get("latitude"));
+//	        System.out.println("경도: " + restaurant.get("longitude"));
+//	        System.out.println("설명: " + restaurant.get("설명"));
+//	        System.out.println("---------------------------------");
+//	    }
+//	    
 	    if (!sightListArray.isEmpty()) {
 	        Map<String, Object> firstSight = sightListArray.get(0);
 	        model.addAttribute("firstLatitude", firstSight.get("latitude"));
