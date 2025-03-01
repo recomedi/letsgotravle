@@ -295,11 +295,11 @@ public class TravelController {
 
 		logger.info("calendarData:" + calendarData);
 
-//		//특占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙
+//		//특정세션 삭제
 //		sessionStorage.removeItem("key");
 //
-//		//占쏙옙占쏙옙 占쏙옙체 占쏙옙占쏙옙
-//		sessionStorage.clear();		
+//		//세션 전체 삭제
+//		sessionStorage.clear();	
 
 		ArrayList<ArrayList<Map<String, Object>>> calendarDataArrayAll = travelRecommendation.changeArray5(calendarData, duration);
 
